@@ -71,9 +71,8 @@
             echo "  bun dev:db      - Start Convex development server only"
             echo "  bun build       - Build the application"
             echo "  bun start       - Start production server"
-            echo "  bun lint        - Check code with Biome"
-            echo "  bun format      - Format code with Biome"
-            echo "  bun typecheck   - Run TypeScript type checking"
+            echo "  bun check       - Check code with Biome"
+            echo "  bun check:types - Run TypeScript type checking"
             echo ""
             echo ""
           '';
