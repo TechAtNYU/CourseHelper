@@ -74,7 +74,6 @@
             echo "  bun check       - Check code with Biome"
             echo "  bun check:types - Run TypeScript type checking"
             echo ""
-            echo ""
           '';
         };
       }
