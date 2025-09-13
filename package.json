@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "doppler run -- next dev --turbopack",
     "dev:db": "convex dev",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "build": "doppler run -- next build --turbopack",
+    "start": "doppler run -- next start",
     "check": "biome check",
     "check:types": "tsc --noEmit"
   },
