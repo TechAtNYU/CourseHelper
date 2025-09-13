@@ -53,6 +53,7 @@
           buildInputs = with pkgs; [
             nodejs_20
             bun
+            doppler
 
             git
 
@@ -61,6 +62,25 @@
 
           shellHook = ''
             bun install
+
+            # Check and configure Doppler
+            if ! doppler configure get token --scope / >/dev/null 2>&1; then
+              echo "🔑 Doppler not configured. Please enter your service token:"
+              echo -n "Token: "
+              read -s DOPPLER_TOKEN
+              echo ""
+              if [ -n "$DOPPLER_TOKEN" ]; then
+                echo "$DOPPLER_TOKEN" | doppler configure set token --scope /
+                echo "✅ Doppler configured successfully"
+              else
+                echo "⚠️ No token provided. You can configure later with:"
+                echo "echo 'your-token' | doppler configure set token --scope /"
+              fi
+            else
+              echo "🔑 Doppler already configured"
+            fi
+
+            echo ""
             echo "🚀 Development environment loaded!"
             echo "📦 Node.js: $(node --version)"
             echo "🥖 Bun: $(bun --version)"
