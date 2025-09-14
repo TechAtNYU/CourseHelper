@@ -11,6 +11,7 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.32.0",
     "@t3-oss/env-nextjs": "^0.13.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
