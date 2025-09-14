@@ -19,32 +19,17 @@
 
         dev = pkgs.writeShellScriptBin "dev" ''
           #!${pkgs.bash}/bin/bash
+          gum style --foreground "#a6e3a1" "📡 Starting Convex server..."
+          bun dev:db &
 
-          echo "🚀 Starting development servers..."
-          echo ""
-
-          cleanup() {
-            echo ""
-            echo "🛑 Shutting down servers..."
-            jobs -p | xargs -r kill
-            exit 0
-          }
-
-          trap cleanup SIGINT SIGTERM
-
-          echo "📡 Starting Convex server..."
-          bun dev:db
-
-          sleep 2
-
-          echo "🌐 Starting Next.js server..."
-          bun dev
+          gum style --foreground "#a6e3a1" "🌐 Starting Next.js server..."
+          bun dev &
 
           echo ""
-          echo "✅ Both servers are starting up!"
+          gum style \
+             --italic \
+            "Press Ctrl+C to stop both servers"
           echo ""
-          echo "Press Ctrl+C to stop both servers"
-
           wait
         '';
       in
@@ -56,43 +41,51 @@
             doppler
 
             git
+            gh
+            gum
 
             dev
           ];
 
           shellHook = ''
-            bun install
+            gum spin --title "Installing dependencies..." -- bun install
 
             # Check and configure Doppler
             if ! doppler configure get token --scope / >/dev/null 2>&1; then
-              echo "🔑 Doppler not configured. Please enter your service token:"
-              echo -n "Token: "
-              read -s DOPPLER_TOKEN
-              echo ""
+              gum style --foreground "#f9e2af" "Doppler not configured yet"
+              
+              DOPPLER_TOKEN=$(gum input --password --placeholder "Enter your Doppler service token")
+              
               if [ -n "$DOPPLER_TOKEN" ]; then
                 echo "$DOPPLER_TOKEN" | doppler configure set token --scope /
-                echo "✅ Doppler configured successfully"
+                gum style --foreground "#a6e3a1" "✅ Doppler configured successfully"
+                clear
               else
-                echo "⚠️ No token provided. You can configure later with:"
-                echo "echo 'your-token' | doppler configure set token --scope /"
+                gum style --foreground "#f38ba8" "⚠️ No token provided"
+                gum style --foreground "#f38ba8" --italic "Configure later with: echo 'your-token' | doppler configure set token --scope /"
               fi
-            else
-              echo "🔑 Doppler already configured"
             fi
 
-            echo ""
-            echo "🚀 Development environment loaded!"
-            echo "📦 Node.js: $(node --version)"
-            echo "🥖 Bun: $(bun --version)"
-            echo ""
-            echo "Available commands:"
-            echo "  dev             - Start both Next.js and Convex servers"
-            echo "  bun dev         - Start Next.js development server only"
-            echo "  bun dev:db      - Start Convex development server only"
-            echo "  bun build       - Build the application"
-            echo "  bun start       - Start production server"
-            echo "  bun check       - Check code with Biome"
-            echo "  bun check:types - Run TypeScript type checking"
+            gum style --foreground "#a6e3a1" \
+              --align center --width 60 --padding "1 2" \
+              "🚀 Development Environment Ready!"
+
+            gum style --foreground "#cba6f7" --bold \
+              --align center --width 60 --padding "0 2" \
+              "📦 Node.js: $(node --version)
+            🥖 Bun: $(bun --version)
+            "
+
+            gum style --bold "Available Commands:"
+
+            gum style --margin "0 2" \
+              "$(gum style --bold --foreground "#89b4fa" 'dev')             - Start both Next.js and Convex servers" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun dev')         - Start Next.js development server only" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun dev:db')      - Start Convex development server only" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun build')       - Build the application" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun start')       - Start production server" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun check')       - Check code with Biome" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun check:types') - Run TypeScript type checking"
             echo ""
           '';
         };
