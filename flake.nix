@@ -82,7 +82,7 @@
               "$(gum style --bold --foreground "#89b4fa" 'dev')             - Start both Next.js and Convex servers" \
               "$(gum style --bold --foreground "#89b4fa" 'bun dev')         - Start Next.js development server only" \
               "$(gum style --bold --foreground "#89b4fa" 'bun dev:db')      - Start Convex development server only" \
-              "$(gum style --bold --foreground "#89b4fa" 'bun build')       - Build the application" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun run build')   - Build the application" \
               "$(gum style --bold --foreground "#89b4fa" 'bun start')       - Start production server" \
               "$(gum style --bold --foreground "#89b4fa" 'bun check')       - Check code with Biome" \
               "$(gum style --bold --foreground "#89b4fa" 'bun check:types') - Run TypeScript type checking"
