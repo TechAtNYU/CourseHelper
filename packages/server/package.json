@@ -1,0 +1,21 @@
+{
+  "name": "@dev-team-fall-25/server",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "convex dev",
+    "dashboard": "convex dashboard",
+    "check": "biome check",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "convex": "^1.27.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.4",
+    "typescript": "^5.9.2",
+    "@types/bun": "latest"
+  },
+  "module": "index.ts",
+  "peerDependencies": {}
+}

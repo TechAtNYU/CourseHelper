@@ -16,22 +16,6 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
-        dev = pkgs.writeShellScriptBin "dev" ''
-          #!${pkgs.bash}/bin/bash
-          gum style --foreground "#a6e3a1" "📡 Starting Convex server..."
-          bun dev:db &
-
-          gum style --foreground "#a6e3a1" "🌐 Starting Next.js server..."
-          bun dev &
-
-          echo ""
-          gum style \
-             --italic \
-            "Press Ctrl+C to stop both servers"
-          echo ""
-          wait
-        '';
       in
       {
         devShells.default = pkgs.mkShell {
@@ -39,12 +23,11 @@
             nodejs_20
             bun
             doppler
+            turbo
 
             git
             gh
             gum
-
-            dev
           ];
 
           shellHook = ''
@@ -79,11 +62,7 @@
             gum style --bold "Available Commands:"
 
             gum style --margin "0 2" \
-              "$(gum style --bold --foreground "#89b4fa" 'dev')             - Start both Next.js and Convex servers" \
-              "$(gum style --bold --foreground "#89b4fa" 'bun dev')         - Start Next.js development server only" \
-              "$(gum style --bold --foreground "#89b4fa" 'bun dev:db')      - Start Convex development server only" \
-              "$(gum style --bold --foreground "#89b4fa" 'bun run build')   - Build the application" \
-              "$(gum style --bold --foreground "#89b4fa" 'bun start')       - Start production server" \
+              "$(gum style --bold --foreground "#89b4fa" 'bun dev')         - Start development servers" \
               "$(gum style --bold --foreground "#89b4fa" 'bun check')       - Check code with Biome" \
               "$(gum style --bold --foreground "#89b4fa" 'bun check:types') - Run TypeScript type checking"
             echo ""
