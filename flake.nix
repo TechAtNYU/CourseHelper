@@ -24,6 +24,7 @@
             bun
             doppler
             turbo
+            nodePackages.vercel
 
             git
             gh
