@@ -4,7 +4,7 @@ set -e
 
 SOURCE_FILE="./packages/server/.env.local"
 WEB_DEST_FILE="./apps/web/.env.local"
-CHROME_DEST_FILE="./apps/chrome/.env.local"
+CHROME_DEST_FILE="./apps/chrome/.env"
 
 echo "Copying and modifying environment file for web app..."
 echo "Source: $SOURCE_FILE"
