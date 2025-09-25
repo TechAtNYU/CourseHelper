@@ -29,9 +29,7 @@ export default function HelloWorld(props: { msg: string }) {
         , the official starter
       </p>
 
-      <p className="read-the-docs">
-        Click on the Vite, React and CRXJS logos to learn more
-      </p>
+      <p>Click on the Vite, React and CRXJS logos to learn more</p>
     </>
   );
 }
