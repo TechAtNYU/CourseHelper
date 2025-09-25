@@ -9,6 +9,7 @@
     "dashboard": "bun run --filter '@dev-team-fall-25/server' dashboard",
     "clean": "turbo run clean && rm -rf node_modules",
     "check": "turbo run check",
+    "check:fix": "turbo run check -- --fix",
     "check:types": "turbo run check:types"
   },
   "engines": {
