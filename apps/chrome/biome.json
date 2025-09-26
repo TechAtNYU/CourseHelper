@@ -3,9 +3,14 @@
   "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "extends": "//",
   "files": {
-    "includes": ["**", "!dist"]
+    "includes": ["**", "!dist", "!src/components/ui"]
   },
   "linter": {
+    "rules": {
+      "suspicious": {
+        "noUnknownAtRules": "off"
+      }
+    },
     "domains": {
       "react": "recommended"
     }

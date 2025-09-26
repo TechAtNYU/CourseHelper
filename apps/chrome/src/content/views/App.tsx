@@ -1,5 +1,5 @@
 function App() {
-  // biome-ignore lint/complexity/noUselessFragments: <explanation>
+  // biome-ignore lint/complexity/noUselessFragments: temp
   return <></>;
 }
 
