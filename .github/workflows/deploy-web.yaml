@@ -1,17 +1,16 @@
-name: Deploy
+name: Deploy (web)
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+  push:
     branches:
       - main
+    paths:
+      - "apps/web/**"
+      - "packages/server/**"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     environment: deploy
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
