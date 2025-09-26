@@ -38,7 +38,7 @@ jobs:
           node-version: 20
 
       - name: 📦 Install dependencies
-        run: bun install
+        run: bun ci
 
       - name: 🔍 Type Check
         run: bun check:types
