@@ -16,6 +16,5 @@
     "typescript": "^5.9.2",
     "@types/bun": "latest"
   },
-  "module": "index.ts",
   "peerDependencies": {}
 }
