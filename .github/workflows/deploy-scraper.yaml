@@ -1,0 +1,22 @@
+name: deploy (scraper)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/scraper/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: deploy-scraper
+
+    steps:
+      - name: 💾 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
