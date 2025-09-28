@@ -35,7 +35,7 @@
             gum spin --title "Installing dependencies..." -- bun install
 
             # Check and configure Doppler
-            if ! doppler configure get token >/dev/null 2>&1; then
+            if [ -z "$(doppler configure get token --plain 2>/dev/null)" ]; then
               gum style --foreground "#f9e2af" "Doppler not configured yet"
               
               DOPPLER_TOKEN=$(gum input --password --placeholder "Enter your Doppler service token")
