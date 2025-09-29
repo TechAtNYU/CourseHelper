@@ -1,6 +1,5 @@
-import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requirements } from "./schemas/programs";
+import { mutation, query } from "./_generated/server";
 
 export const getRequirement = query({
   args: { id: v.id("requirements") },
