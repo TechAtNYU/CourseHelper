@@ -1,6 +1,6 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import { protectedMutation, protectedQuery } from "./helpers/auth";
+import { internalMutation } from "./_generated/server";
+import { protectedQuery } from "./helpers/auth";
 
 export const getRequirement = protectedQuery({
   args: { id: v.id("requirements") },
@@ -19,7 +19,7 @@ export const getRequirementsByProgram = protectedQuery({
   },
 });
 
-export const createRequirement = protectedMutation({
+export const createRequirementInternal = internalMutation({
   args: {
     programId: v.id("programs"),
     isMajor: v.boolean(),
@@ -29,7 +29,7 @@ export const createRequirement = protectedMutation({
       v.literal("options"),
     ),
     courses: v.array(v.string()),
-    creditsRequired: v.optional(v.int64()),
+    creditsRequired: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     if (args.type === "options") {
@@ -54,14 +54,7 @@ export const createRequirement = protectedMutation({
   },
 });
 
-export const deleteRequirement = protectedMutation({
-  args: { id: v.id("requirements") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-  },
-});
-
-export const deleteRequirementsByProgram = protectedMutation({
+export const deleteRequirementsByProgramInternal = internalMutation({
   args: { programId: v.id("programs") },
   handler: async (ctx, args) => {
     const requirementsToDelete = await ctx.db

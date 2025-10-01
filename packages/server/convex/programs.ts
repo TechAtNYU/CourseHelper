@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { protectedMutation, protectedQuery } from "./helpers/auth";
+import { internalMutation } from "./_generated/server";
+import { protectedQuery } from "./helpers/auth";
 import { programs } from "./schemas/programs";
 
 export const getProgram = protectedQuery({
@@ -19,14 +20,14 @@ export const getProgramByName = protectedQuery({
   },
 });
 
-export const deleteProgram = protectedMutation({
+export const deleteProgramInternal = internalMutation({
   args: { id: v.id("programs") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },
 });
 
-export const upsertProgram = protectedMutation({
+export const upsertProgramInternal = internalMutation({
   args: programs,
   handler: async (ctx, args) => {
     const existing = await ctx.db

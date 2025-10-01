@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { protectedMutation, protectedQuery } from "./helpers/auth";
+import { internalMutation } from "./_generated/server";
+import { protectedQuery } from "./helpers/auth";
 
 export const getPrerequisite = protectedQuery({
   args: { id: v.id("prerequisites") },
@@ -18,7 +19,7 @@ export const getPrerequisitesByCourse = protectedQuery({
   },
 });
 
-export const createPrerequisite = protectedMutation({
+export const createPrerequisiteInternal = internalMutation({
   args: {
     courseId: v.id("courses"),
     type: v.union(
@@ -27,7 +28,7 @@ export const createPrerequisite = protectedMutation({
       v.literal("options"),
     ),
     courses: v.array(v.string()),
-    creditsRequired: v.optional(v.int64()),
+    creditsRequired: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     if (args.type === "options") {
@@ -50,14 +51,7 @@ export const createPrerequisite = protectedMutation({
   },
 });
 
-export const deletePrerequisite = protectedMutation({
-  args: { id: v.id("prerequisites") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-  },
-});
-
-export const deletePrerequisitesByCourse = protectedMutation({
+export const deletePrerequisitesByCourseInternal = internalMutation({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args) => {
     const prerequisitesToDelete = await ctx.db

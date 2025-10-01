@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "convex": "^1.27.3",
-    "convex-helpers": "^0.1.104"
+    "convex-helpers": "^0.1.104",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
