@@ -3,7 +3,7 @@
   "name": "scraper",
   "main": "src/index.ts",
   "minify": true,
-  "compatibility_date": "2025-09-26"
+  "compatibility_date": "2025-09-26",
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
@@ -22,13 +22,14 @@
   //     "bucket_name": "my-bucket"
   //   }
   // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "scraper-ops",
+      "database_id": "",
+      "migrations_dir": "./src/drizzle/migrations"
+    }
+  ]
   // "ai": {
   //   "binding": "AI"
   // },
