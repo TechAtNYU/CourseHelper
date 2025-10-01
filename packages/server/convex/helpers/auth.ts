@@ -65,7 +65,7 @@ export function apiAction<T = unknown>(
 ) {
   return httpAction(async (ctx, request) => {
     try {
-      const apiKey = request.headers.get("x-api-key");
+      const apiKey = request.headers.get("X-API-KEY");
       authApiKey(apiKey);
 
       const body = await request.json();

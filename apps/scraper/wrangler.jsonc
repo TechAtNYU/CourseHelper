@@ -30,6 +30,6 @@
     }
   ],
   "vars": {
-    "SCRAPING_BASE_URL": "https://bulletins.nyu.edu"
+    "SCRAPING_BASE_URL": "https://bulletins.nyu.edu/"
   }
 }

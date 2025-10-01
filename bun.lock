@@ -43,9 +43,11 @@
     "apps/scraper": {
       "name": "scraper",
       "dependencies": {
+        "@dev-team-fall-25/server": "workspace:*",
         "dotenv": "^17.2.3",
         "drizzle-orm": "^0.44.5",
         "hono": "^4.9.9",
+        "zod": "^4.1.11",
       },
       "devDependencies": {
         "@biomejs/biome": "2.2.4",
