@@ -1,15 +1,14 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import { prerequisites } from "./schemas/courses";
+import { protectedMutation, protectedQuery } from "./helpers/auth";
 
-export const getPrerequisite = query({
+export const getPrerequisite = protectedQuery({
   args: { id: v.id("prerequisites") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
 });
 
-export const getPrerequisitesByCourse = query({
+export const getPrerequisitesByCourse = protectedQuery({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args) => {
     return await ctx.db
@@ -19,7 +18,7 @@ export const getPrerequisitesByCourse = query({
   },
 });
 
-export const createPrerequisite = mutation({
+export const createPrerequisite = protectedMutation({
   args: {
     courseId: v.id("courses"),
     type: v.union(
@@ -51,14 +50,14 @@ export const createPrerequisite = mutation({
   },
 });
 
-export const deletePrerequisite = mutation({
+export const deletePrerequisite = protectedMutation({
   args: { id: v.id("prerequisites") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },
 });
 
-export const deletePrerequisitesByCourse = mutation({
+export const deletePrerequisitesByCourse = protectedMutation({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args) => {
     const prerequisitesToDelete = await ctx.db

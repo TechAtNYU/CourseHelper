@@ -1,16 +1,15 @@
 import { v } from "convex/values";
-import { partial } from "convex-helpers/validators";
-import { mutation, query } from "./_generated/server";
+import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { courses } from "./schemas/courses";
 
-export const getCourseById = query({
+export const getCourseById = protectedQuery({
   args: { id: v.id("courses") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
 });
 
-export const getCourseByCode = query({
+export const getCourseByCode = protectedQuery({
   args: { code: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
@@ -20,14 +19,14 @@ export const getCourseByCode = query({
   },
 });
 
-export const deleteCourse = mutation({
+export const deleteCourse = protectedMutation({
   args: { id: v.id("courses") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },
 });
 
-export const upsertCourse = mutation({
+export const upsertCourse = protectedMutation({
   args: courses,
   handler: async (ctx, args) => {
     const existing = await ctx.db
