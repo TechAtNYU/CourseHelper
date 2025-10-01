@@ -25,6 +25,12 @@ jobs:
       - name: 📦 Install dependencies
         run: bun install
 
+      - name: 📦 Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
+      - name: 🔑 Sync secrets with Cloudflare Worker
+        run: doppler secrets --json | jq -c 'with_entries(.value = .value.computed)') | wrangler secret bulk
+
       - name: 🚀 Deploy to Cloudflare Workers
         run: bun run deploy
         env:
