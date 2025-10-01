@@ -1,12 +1,11 @@
-"use client";
-
-// import { useAuth } from "@clerk/nextjs";
-// import { ConvexReactClient } from "convex/react";
-// import { ConvexProviderWithClerk } from "convex/react-clerk";
-// import type { ReactNode } from "react";
-// import { env } from "@/lib/env";
-
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import {
+  BookOpen,
+  Calendar,
+  LayoutDashboard,
+  Map as MapIcon,
+  Settings,
+  TrendingUp,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -15,6 +14,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -22,40 +22,26 @@ import {
 
 // Menu items.
 const menuItems = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
+  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Schedule", url: "/schedule", icon: Calendar },
+  { title: "4-Year Plan", url: "/four-year-plan", icon: MapIcon },
+  { title: "Degree Progress", url: "/degree-progress", icon: TrendingUp },
+  { title: "Course Catalog", url: "/course-catalog", icon: BookOpen },
 ];
 
 const footer = {
   title: "Settings",
-  url: "#",
+  url: "/settings",
   icon: Settings,
 };
 
 export function DashboardSidebar() {
   return (
     <Sidebar>
+      <SidebarHeader>Course Helper</SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Course Helper</SidebarGroupLabel>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -73,6 +59,16 @@ export function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <a href={footer.url}>
+                <footer.icon />
+                <span>{footer.title}</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );
