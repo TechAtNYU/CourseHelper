@@ -41,4 +41,14 @@ echo "Retrieved CLERK_JWT_ISSUER_DOMAIN from Doppler: $CLERK_JWT_ISSUER_DOMAIN"
 echo "Setting CLERK_JWT_ISSUER_DOMAIN in Convex environment..."
 (cd ./packages/server && bunx convex env set CLERK_JWT_ISSUER_DOMAIN "$CLERK_JWT_ISSUER_DOMAIN")
 
+echo "Setting up CONVEX_API_KEY..."
+CONVEX_API_KEY=$(doppler secrets get CONVEX_API_KEY --plain)
+echo "Retrieved CONVEX_API_KEY from Doppler"
+
+echo "Setting CONVEX_API_KEY in Convex environment..."
+(cd ./packages/server && bunx convex env set CONVEX_API_KEY "$CONVEX_API_KEY")
+
+echo "Adding CONVEX_API_KEY to scraper environment file..."
+echo "CONVEX_API_KEY=$CONVEX_API_KEY" >> "$SCRAPER_DEST_FILE"
+
 echo "Setup complete!"
