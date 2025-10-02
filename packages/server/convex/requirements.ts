@@ -1,14 +1,16 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation } from "./_generated/server";
+import { protectedQuery } from "./helpers/auth";
+import { requirements } from "./schemas/programs";
 
-export const getRequirement = query({
+export const getRequirement = protectedQuery({
   args: { id: v.id("requirements") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
 });
 
-export const getRequirementsByProgram = query({
+export const getRequirementsByProgram = protectedQuery({
   args: { programId: v.id("programs") },
   handler: async (ctx, args) => {
     return await ctx.db
@@ -18,49 +20,33 @@ export const getRequirementsByProgram = query({
   },
 });
 
-export const createRequirement = mutation({
+export const createRequirementInternal = internalMutation({
   args: {
-    programId: v.id("programs"),
-    isMajor: v.boolean(),
-    type: v.union(
-      v.literal("required"),
-      v.literal("alternative"),
-      v.literal("options"),
-    ),
-    courses: v.array(v.string()),
-    creditsRequired: v.optional(v.int64()),
+    requirement: requirements,
   },
   handler: async (ctx, args) => {
-    if (args.type === "options") {
-      if (args.creditsRequired === undefined) {
-        throw new Error("creditsRequired is required for options type");
-      }
+    const newReq = args.requirement;
+    if (newReq.type === "options") {
       return await ctx.db.insert("requirements", {
-        programId: args.programId,
-        isMajor: args.isMajor,
-        type: args.type,
-        courses: args.courses,
-        creditsRequired: args.creditsRequired,
+        programId: newReq.programId,
+        isMajor: newReq.isMajor,
+        type: newReq.type,
+        courses: newReq.courses,
+        courseLevels: newReq.courseLevels,
+        creditsRequired: newReq.creditsRequired,
       });
     } else {
       return await ctx.db.insert("requirements", {
-        programId: args.programId,
-        isMajor: args.isMajor,
-        type: args.type,
-        courses: args.courses,
+        programId: newReq.programId,
+        isMajor: newReq.isMajor,
+        type: newReq.type,
+        courses: newReq.courses,
       });
     }
   },
 });
 
-export const deleteRequirement = mutation({
-  args: { id: v.id("requirements") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-  },
-});
-
-export const deleteRequirementsByProgram = mutation({
+export const deleteRequirementsByProgramInternal = internalMutation({
   args: { programId: v.id("programs") },
   handler: async (ctx, args) => {
     const requirementsToDelete = await ctx.db

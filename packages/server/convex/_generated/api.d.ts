@@ -14,6 +14,8 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as courses from "../courses.js";
+import type * as helpers_auth from "../helpers/auth.js";
+import type * as http from "../http.js";
 import type * as prerequisites from "../prerequisites.js";
 import type * as programs from "../programs.js";
 import type * as requirements from "../requirements.js";
@@ -30,6 +32,8 @@ import type * as schemas_programs from "../schemas/programs.js";
  */
 declare const fullApi: ApiFromModules<{
   courses: typeof courses;
+  "helpers/auth": typeof helpers_auth;
+  http: typeof http;
   prerequisites: typeof prerequisites;
   programs: typeof programs;
   requirements: typeof requirements;

@@ -1,15 +1,16 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation } from "./_generated/server";
+import { protectedQuery } from "./helpers/auth";
 import { prerequisites } from "./schemas/courses";
 
-export const getPrerequisite = query({
+export const getPrerequisite = protectedQuery({
   args: { id: v.id("prerequisites") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
 });
 
-export const getPrerequisitesByCourse = query({
+export const getPrerequisitesByCourse = protectedQuery({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args) => {
     return await ctx.db
@@ -19,46 +20,30 @@ export const getPrerequisitesByCourse = query({
   },
 });
 
-export const createPrerequisite = mutation({
+export const createPrerequisiteInternal = internalMutation({
   args: {
-    courseId: v.id("courses"),
-    type: v.union(
-      v.literal("required"),
-      v.literal("alternative"),
-      v.literal("options"),
-    ),
-    courses: v.array(v.string()),
-    creditsRequired: v.optional(v.int64()),
+    prereq: prerequisites,
   },
   handler: async (ctx, args) => {
-    if (args.type === "options") {
-      if (args.creditsRequired === undefined) {
-        throw new Error("creditsRequired is required for options type");
-      }
+    const newPrereq = args.prereq;
+    if (newPrereq.type === "options") {
       return await ctx.db.insert("prerequisites", {
-        courseId: args.courseId,
-        type: args.type,
-        courses: args.courses,
-        creditsRequired: args.creditsRequired,
+        courseId: newPrereq.courseId,
+        type: newPrereq.type,
+        courses: newPrereq.courses,
+        creditsRequired: newPrereq.creditsRequired,
       });
     } else {
       return await ctx.db.insert("prerequisites", {
-        courseId: args.courseId,
-        type: args.type,
-        courses: args.courses,
+        courseId: newPrereq.courseId,
+        type: newPrereq.type,
+        courses: newPrereq.courses,
       });
     }
   },
 });
 
-export const deletePrerequisite = mutation({
-  args: { id: v.id("prerequisites") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-  },
-});
-
-export const deletePrerequisitesByCourse = mutation({
+export const deletePrerequisitesByCourseInternal = internalMutation({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args) => {
     const prerequisitesToDelete = await ctx.db

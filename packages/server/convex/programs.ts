@@ -1,15 +1,16 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation } from "./_generated/server";
+import { protectedQuery } from "./helpers/auth";
 import { programs } from "./schemas/programs";
 
-export const getProgram = query({
+export const getProgram = protectedQuery({
   args: { id: v.id("programs") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
 });
 
-export const getProgramByName = query({
+export const getProgramByName = protectedQuery({
   args: { name: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
@@ -19,14 +20,14 @@ export const getProgramByName = query({
   },
 });
 
-export const deleteProgram = mutation({
+export const deleteProgramInternal = internalMutation({
   args: { id: v.id("programs") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },
 });
 
-export const upsertProgram = mutation({
+export const upsertProgramInternal = internalMutation({
   args: programs,
   handler: async (ctx, args) => {
     const existing = await ctx.db
