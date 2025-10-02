@@ -1,14 +1,19 @@
 import {
   BookOpen,
   Calendar,
+  ChevronUp,
   LayoutDashboard,
   Map as MapIcon,
   Settings,
   TrendingUp,
   User2,
-  ChevronUp
 } from "lucide-react";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -22,14 +27,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem
-
-} from "@/components/ui/dropdown-menu";
-
 // Menu items.
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -39,9 +36,7 @@ const menuItems = [
   { title: "Course Catalog", url: "/course-catalog", icon: BookOpen },
 ];
 
-const footerItems = [
-  { title: "Settings", url: "/settings", icon: Settings },
-];
+const footerItems = [{ title: "Settings", url: "/settings", icon: Settings }];
 
 export function DashboardSidebar() {
   return (
