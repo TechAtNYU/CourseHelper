@@ -5,6 +5,8 @@ import {
   Map as MapIcon,
   Settings,
   TrendingUp,
+  User2,
+  ChevronUp
 } from "lucide-react";
 
 import {
@@ -20,6 +22,14 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
+
+} from "@/components/ui/dropdown-menu";
+
 // Menu items.
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -29,11 +39,9 @@ const menuItems = [
   { title: "Course Catalog", url: "/course-catalog", icon: BookOpen },
 ];
 
-const footer = {
-  title: "Settings",
-  url: "/settings",
-  icon: Settings,
-};
+const footerItems = [
+  { title: "Settings", url: "/settings", icon: Settings },
+];
 
 export function DashboardSidebar() {
   return (
@@ -60,14 +68,35 @@ export function DashboardSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href={footer.url}>
-                <footer.icon />
-                <span>{footer.title}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {footerItems.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <a href={item.url}>
+                  <item.icon />
+                  <span>{item.title}</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton>
+                <User2 /> Username
+                <ChevronUp className="ml-auto" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="right"
+              className="w-[--radix-popper-anchor-width]"
+            >
+              <DropdownMenuItem>
+                <span>Account</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <span>Sign out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
