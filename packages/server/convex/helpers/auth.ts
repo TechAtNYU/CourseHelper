@@ -61,7 +61,7 @@ export const protectedAction = customAction(
 
 export function apiAction<T = unknown>(
   handler: (ctx: ActionCtx, body: T) => Promise<Response>,
-  schema?: z.ZodMiniType<T>,
+  schema: z.ZodMiniType<T>,
 ) {
   return httpAction(async (ctx, request) => {
     try {
@@ -70,23 +70,20 @@ export function apiAction<T = unknown>(
 
       const body = await request.json();
 
-      if (schema) {
-        const result = schema.safeParse(body);
-        if (!result.success) {
-          return new Response(
-            JSON.stringify({
-              error: "Invalid request body",
-              issues: result.error.issues,
-            }),
-            {
-              status: 400,
-              headers: { "Content-Type": "application/json" },
-            },
-          );
-        }
+      const result = schema.safeParse(body);
+      if (!result.success) {
+        return new Response(
+          JSON.stringify({
+            error: "Invalid request body",
+            issues: result.error.issues,
+          }),
+          {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       }
-
-      return await handler(ctx, body as T);
+      return await handler(ctx, result.data);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Internal server error";
