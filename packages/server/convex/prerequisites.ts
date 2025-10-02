@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
+import { prerequisites } from "./schemas/courses";
 
 export const getPrerequisite = protectedQuery({
   args: { id: v.id("prerequisites") },
@@ -21,31 +22,22 @@ export const getPrerequisitesByCourse = protectedQuery({
 
 export const createPrerequisiteInternal = internalMutation({
   args: {
-    courseId: v.id("courses"),
-    type: v.union(
-      v.literal("required"),
-      v.literal("alternative"),
-      v.literal("options"),
-    ),
-    courses: v.array(v.string()),
-    creditsRequired: v.optional(v.number()),
+    prereq: prerequisites,
   },
   handler: async (ctx, args) => {
-    if (args.type === "options") {
-      if (args.creditsRequired === undefined) {
-        throw new Error("creditsRequired is required for options type");
-      }
+    const newPrereq = args.prereq;
+    if (newPrereq.type === "options") {
       return await ctx.db.insert("prerequisites", {
-        courseId: args.courseId,
-        type: args.type,
-        courses: args.courses,
-        creditsRequired: args.creditsRequired,
+        courseId: newPrereq.courseId,
+        type: newPrereq.type,
+        courses: newPrereq.courses,
+        creditsRequired: newPrereq.creditsRequired,
       });
     } else {
       return await ctx.db.insert("prerequisites", {
-        courseId: args.courseId,
-        type: args.type,
-        courses: args.courses,
+        courseId: newPrereq.courseId,
+        type: newPrereq.type,
+        courses: newPrereq.courses,
       });
     }
   },

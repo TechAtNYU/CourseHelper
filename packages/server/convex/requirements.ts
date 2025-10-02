@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
+import { requirements } from "./schemas/programs";
 
 export const getRequirement = protectedQuery({
   args: { id: v.id("requirements") },
@@ -21,34 +22,25 @@ export const getRequirementsByProgram = protectedQuery({
 
 export const createRequirementInternal = internalMutation({
   args: {
-    programId: v.id("programs"),
-    isMajor: v.boolean(),
-    type: v.union(
-      v.literal("required"),
-      v.literal("alternative"),
-      v.literal("options"),
-    ),
-    courses: v.array(v.string()),
-    creditsRequired: v.optional(v.number()),
+    requirement: requirements,
   },
   handler: async (ctx, args) => {
-    if (args.type === "options") {
-      if (args.creditsRequired === undefined) {
-        throw new Error("creditsRequired is required for options type");
-      }
+    const newReq = args.requirement;
+    if (newReq.type === "options") {
       return await ctx.db.insert("requirements", {
-        programId: args.programId,
-        isMajor: args.isMajor,
-        type: args.type,
-        courses: args.courses,
-        creditsRequired: args.creditsRequired,
+        programId: newReq.programId,
+        isMajor: newReq.isMajor,
+        type: newReq.type,
+        courses: newReq.courses,
+        courseLevels: newReq.courseLevels,
+        creditsRequired: newReq.creditsRequired,
       });
     } else {
       return await ctx.db.insert("requirements", {
-        programId: args.programId,
-        isMajor: args.isMajor,
-        type: args.type,
-        courses: args.courses,
+        programId: newReq.programId,
+        isMajor: newReq.isMajor,
+        type: newReq.type,
+        courses: newReq.courses,
       });
     }
   },
