@@ -144,20 +144,30 @@ http.route({
   path: "/api/requirements/create",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const payload = {
-      programId: body.programId as Id<"programs">,
-      isMajor: body.isMajor,
-      type: body.type,
-      courses: body.courses,
-      ...(body.type === "options" && body.creditsRequired !== undefined
-        ? { creditsRequired: body.creditsRequired }
-        : {}),
-    };
+    let result: Id<"requirements">;
 
-    const result = await ctx.runMutation(
-      internal.requirements.createRequirementInternal,
-      payload,
-    );
+    if (body.type === "options") {
+      result = await ctx.runMutation(
+        internal.requirements.createRequirementInternal,
+        {
+          programId: body.programId as Id<"programs">,
+          isMajor: body.isMajor,
+          type: body.type,
+          courses: body.courses,
+          creditsRequired: body.creditsRequired,
+        },
+      );
+    } else {
+      result = await ctx.runMutation(
+        internal.requirements.createRequirementInternal,
+        {
+          programId: body.programId as Id<"programs">,
+          isMajor: body.isMajor,
+          type: body.type,
+          courses: body.courses,
+        },
+      );
+    }
 
     return new Response(JSON.stringify({ success: true, id: result }), {
       status: 200,
@@ -188,19 +198,28 @@ http.route({
   path: "/api/prerequisites/create",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const payload = {
-      courseId: body.courseId as Id<"courses">,
-      type: body.type,
-      courses: body.courses,
-      ...(body.type === "options" && body.creditsRequired !== undefined
-        ? { creditsRequired: Number(body.creditsRequired) }
-        : {}),
-    };
+    let result: Id<"prerequisites">;
 
-    const result = await ctx.runMutation(
-      internal.prerequisites.createPrerequisiteInternal,
-      payload,
-    );
+    if (body.type === "options") {
+      result = await ctx.runMutation(
+        internal.prerequisites.createPrerequisiteInternal,
+        {
+          courseId: body.courseId as Id<"courses">,
+          type: body.type,
+          courses: body.courses,
+          creditsRequired: body.creditsRequired,
+        },
+      );
+    } else {
+      result = await ctx.runMutation(
+        internal.prerequisites.createPrerequisiteInternal,
+        {
+          courseId: body.courseId as Id<"courses">,
+          type: body.type,
+          courses: body.courses,
+        },
+      );
+    }
 
     return new Response(JSON.stringify({ success: true, id: result }), {
       status: 200,

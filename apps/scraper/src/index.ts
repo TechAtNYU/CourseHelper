@@ -1,6 +1,5 @@
 /** biome-ignore-all lint/correctness/noUnusedFunctionParameters: disable for now as they haven't been implemented yet */
 import { Hono } from "hono";
-import { ConvexApi } from "./lib/convex";
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
