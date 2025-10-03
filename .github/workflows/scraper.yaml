@@ -14,6 +14,9 @@ jobs:
       run:
         working-directory: ./apps/scraper
     environment: deploy-scraper
+    env:
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
     steps:
       - name: 💾 Checkout code
@@ -29,9 +32,7 @@ jobs:
         uses: dopplerhq/cli-action@v3
 
       - name: 🔑 Sync secrets with Cloudflare Worker
-        run: doppler secrets --json | jq -c 'with_entries(.value = .value.computed)') | wrangler secret bulk
+        run: doppler secrets --json | jq -c 'with_entries(.value = .value.computed)' | bunx wrangler secret bulk
 
       - name: 🚀 Deploy to Cloudflare Workers
         run: bun run deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
