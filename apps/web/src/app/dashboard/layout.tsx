@@ -3,7 +3,7 @@
 
 import { cookies } from "next/headers";
 
-import { DashboardSidebar } from "@/components/DashboardSidebar";
+import { DashboardSidebar } from "@/app/dashboard/components/dashboard-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default async function Layout({
