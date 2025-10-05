@@ -28,11 +28,11 @@ import { NavBottom } from "./nav-buttom";
 
 const config = {
   navMain: [
-    { title: "Dashboard", url: "/", icon: LayoutDashboard },
-    { title: "Schedule", url: "/schedule", icon: Calendar },
-    { title: "4-Year Plan", url: "/plan", icon: MapIcon },
-    { title: "Degree Progress", url: "/progress", icon: TrendingUp },
-    { title: "Course Catalog", url: "/courses", icon: BookOpen },
+    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "Schedule", url: "/dashboard/schedule", icon: Calendar },
+    { title: "4-Year Plan", url: "/dashboard/plan", icon: MapIcon },
+    { title: "Degree Progress", url: "/dashboard/progress", icon: TrendingUp },
+    { title: "Course Catalog", url: "/dashboard/courses", icon: BookOpen },
   ],
   navBottom: [
     { title: "Settings", url: "/settings", icon: Settings },
