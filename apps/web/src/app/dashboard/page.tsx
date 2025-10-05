@@ -1,5 +1,12 @@
+import { AppHeader } from "./components/app-header";
+
 const DashboardPage = () => {
-  return <div></div>;
+  return (
+    <>
+      <AppHeader title="Dashboard" />
+      <main></main>
+    </>
+  );
 };
 
 export default DashboardPage;
