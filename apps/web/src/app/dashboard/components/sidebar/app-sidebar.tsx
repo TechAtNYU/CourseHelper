@@ -40,13 +40,16 @@ const config = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, isSignedIn } = useUser();
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+    initial: string;
+  };
+}
 
-  if (!isSignedIn) {
-    return;
-  }
-
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -71,14 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <Separator />
       <SidebarFooter>
-        <NavUser
-          user={{
-            name: user.fullName || "Unknown User",
-            email: user.primaryEmailAddress?.emailAddress || "",
-            avatar: user.imageUrl || "",
-            initial: user.firstName?.[0] || user.lastName?.[0] || "UU",
-          }}
-        />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );
