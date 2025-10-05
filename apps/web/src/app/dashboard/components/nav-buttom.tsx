@@ -1,7 +1,5 @@
-"use client";
-
 import type { LucideIcon } from "lucide-react";
-
+import type * as React from "react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,18 +7,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
-export function NavMain({
+export function NavBottom({
   items,
+  ...props
 }: {
   items: {
     title: string;
     url: string;
     icon: LucideIcon;
   }[];
-}) {
+} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
-    <SidebarGroup>
+    <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
