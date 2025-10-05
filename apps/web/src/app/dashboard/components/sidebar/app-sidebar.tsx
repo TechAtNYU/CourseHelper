@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
 import {
   ArrowUpCircleIcon,
   BookOpen,
@@ -12,6 +11,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type * as React from "react";
+import { NavBottom } from "@/app/dashboard/components/sidebar/nav-buttom";
 import { NavMain } from "@/app/dashboard/components/sidebar/nav-main";
 import { NavUser } from "@/app/dashboard/components/sidebar/nav-user";
 import { Separator } from "@/components/ui/separator";
@@ -24,7 +24,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { NavBottom } from "@/app/dashboard/components/sidebar/nav-buttom";
 
 const config = {
   navMain: [

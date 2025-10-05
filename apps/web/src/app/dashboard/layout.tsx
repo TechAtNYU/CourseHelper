@@ -1,8 +1,7 @@
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
-
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { auth, currentUser } from "@clerk/nextjs/server";
 
 export default async function Layout({
   children,
