@@ -1,6 +1,6 @@
 "use client";
 
-import { NavMain } from "@/app/dashboard/components/nav-main";
+import { useUser } from "@clerk/nextjs";
 import {
   ArrowUpCircleIcon,
   BookOpen,
@@ -12,8 +12,9 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type * as React from "react";
-
+import { NavMain } from "@/app/dashboard/components/nav-main";
 import { NavUser } from "@/app/dashboard/components/nav-user";
+import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -24,8 +25,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { NavBottom } from "./nav-buttom";
-import { useUser } from "@clerk/nextjs";
-import { Separator } from "@/components/ui/separator";
 
 const config = {
   navMain: [
@@ -41,9 +40,7 @@ const config = {
   ],
 };
 
-export function DashboardSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, isSignedIn } = useUser();
 
   if (!isSignedIn) {
