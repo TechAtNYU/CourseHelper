@@ -3,7 +3,8 @@
 import type { ChangeEvent } from "react";
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react"; // shadcn-compatible icon
+import { X } from "lucide-react";
+import { extractPdfText, isDegreeProgressReport } from "@/lib/extractPdfText"; // PDF extraction helper
 
 type Props = {
   onFileSelected?: (file: File | null) => void;
@@ -18,29 +19,59 @@ export default function FileUploadButton({
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (!f) return;
-    //validate file type
+
+    // Validate file type
     if (f.type !== "application/pdf") {
       setFile(null);
       setError("Please choose a PDF file.");
-      e.currentTarget.value = "";
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
-    //validate file size
+
+    // Validate file size
     const maxBytes = maxSizeMB * 1024 * 1024;
     if (f.size > maxBytes) {
       setFile(null);
       setError(`File is too large. Max ${maxSizeMB} MB.`);
-      e.currentTarget.value = "";
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
+    // Verify it's a Degree Progress Report
+    try {
+      const ok = await isDegreeProgressReport(f);
+      if (!ok) {
+        setError("This PDF doesn’t look like a Degree Progress Report.");
+        setFile(null);
+        if (inputRef.current) inputRef.current.value = "";
+        return;
+      }
+    } catch (err) {
+      console.error("Error verifying PDF:", err);
+      setError("Could not verify the PDF file.");
+      setFile(null);
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
+    // So file is valid
     setError(null);
     setFile(f);
     onFileSelected?.(f);
-    e.currentTarget.value = "";
+
+    try {
+      const text = await extractPdfText(f);
+      console.log("=== EXTRACTED TEXT (FULL) ===");
+      console.log(text);
+      console.log("Total characters:", text.length);
+    } catch (err) {
+      console.error("PDF extraction failed:", err);
+    } finally {
+      if (inputRef.current) inputRef.current.value = "";
+    }
   }
 
   function handleRemoveFile() {
@@ -72,7 +103,6 @@ export default function FileUploadButton({
           </Button>
         </label>
 
-        {/* Selected file display */}
         {file && (
           <div className="flex items-center gap-2 text-sm">
             <span>{file.name}</span>
@@ -88,7 +118,6 @@ export default function FileUploadButton({
         )}
       </div>
 
-      {/* Error display */}
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );

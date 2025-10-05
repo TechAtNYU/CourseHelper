@@ -26,5 +26,9 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "lucide-react": "^0.544.0",
+    "pdfjs-dist": "^5.4.149"
   }
 }

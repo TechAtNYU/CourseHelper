@@ -6,9 +6,7 @@ const DashboardPage = () => {
     <>
       <AppHeader title="Dashboard" />
       <main>
-        <div>
-          <FileUploadButton />
-        </div>
+        <FileUploadButton />
       </main>
     </>
   );
