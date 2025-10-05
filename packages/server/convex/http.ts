@@ -5,8 +5,9 @@ import type { Id } from "./_generated/dataModel";
 import { apiAction } from "./helpers/auth";
 
 export const ZUpsertCourse = z.object({
+  program: z.string(),
   code: z.string(),
-  level: z.string(),
+  level: z.coerce.number(),
   title: z.string(),
   credits: z.int(),
   description: z.string(),
@@ -60,7 +61,12 @@ export const ZCreateRequirement = z.discriminatedUnion("type", [
     isMajor: z.boolean(),
     type: z.literal("options"),
     courses: z.array(z.string()),
-    courseLevels: z.array(z.string()),
+    courseLevels: z.array(
+      z.object({
+        program: z.string(),
+        level: z.coerce.number(),
+      }),
+    ),
     creditsRequired: z.number(),
   }),
 ]);

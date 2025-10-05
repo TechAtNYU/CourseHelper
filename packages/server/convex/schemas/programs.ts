@@ -24,7 +24,12 @@ const requirements = v.union(
     isMajor: v.boolean(),
     type: v.literal("options"),
     courses: v.array(v.string()), // course code
-    courseLevels: v.array(v.string()), // course levels
+    courseLevels: v.array(
+      v.object({
+        program: v.string(),
+        level: v.number(),
+      }),
+    ), // course levels
     creditsRequired: v.number(),
   }),
 );
