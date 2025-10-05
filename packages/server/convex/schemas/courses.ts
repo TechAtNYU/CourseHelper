@@ -2,9 +2,10 @@ import { v } from "convex/values";
 
 const courses = {
   code: v.string(), // CSCI-UA 101
-  level: v.string(), // 100
+  program: v.string(), // CSCI-UA
+  level: v.number(), // 100
   title: v.string(), // Intro to Computer Science
-  credits: v.int64(), // 4
+  credits: v.number(), // 4
   description: v.string(),
   courseUrl: v.string(),
 };
@@ -24,7 +25,7 @@ const prerequisites = v.union(
     courseId: v.id("courses"),
     type: v.literal("options"),
     courses: v.array(v.string()), // course code
-    creditsRequired: v.int64(),
+    creditsRequired: v.number(),
   }),
 );
 

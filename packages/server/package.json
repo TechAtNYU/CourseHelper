@@ -10,12 +10,13 @@
   },
   "dependencies": {
     "convex": "^1.27.3",
-    "convex-helpers": "^0.1.104"
+    "convex-helpers": "^0.1.104",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
-    "typescript": "^5.9.3",
-    "@types/bun": "latest"
+    "@biomejs/biome": "2.2.5",
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {}
 }
