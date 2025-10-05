@@ -4,7 +4,8 @@ import type { ChangeEvent } from "react";
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { extractPdfText, isDegreeProgressReport } from "@/lib/extractPdfText"; // PDF extraction helper
+import { extractPdfText, isDegreeProgressReport } from "@/lib/extractPdfText";
+import { extractCourseHistory } from "@/lib/extractPdfText";
 
 type Props = {
   onFileSelected?: (file: File | null) => void;
@@ -64,13 +65,20 @@ export default function FileUploadButton({
 
     try {
       const text = await extractPdfText(f);
-      console.log("=== EXTRACTED TEXT (FULL) ===");
+      console.log("=== EXTRACTED TEXT ===");
       console.log(text);
-      console.log("Total characters:", text.length);
     } catch (err) {
       console.error("PDF extraction failed:", err);
     } finally {
       if (inputRef.current) inputRef.current.value = "";
+    }
+
+    try {
+      const historyText = await extractCourseHistory(f);
+      console.log("=== COURSE HISTORY ===");
+      console.log(historyText);
+    } catch (err) {
+      console.error(err);
     }
   }
 

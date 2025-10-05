@@ -1,6 +1,7 @@
-import * as pdfjs from "pdfjs-dist";
+// @ts-expect-error no types for legacy build, safe to ignore
+import * as pdfjs from "pdfjs-dist/legacy/build/pdf";
 
-// point PDF.js to its web worker
+// point PDF.js to its web worker (CDN is fine with Bun)
 pdfjs.GlobalWorkerOptions.workerSrc =
   "https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.149/build/pdf.worker.min.mjs";
 
@@ -35,4 +36,14 @@ export async function isDegreeProgressReport(file: File) {
     .toLowerCase();
 
   return pageText.includes("degree progress report");
+}
+
+export async function extractCourseHistory(file: File) {
+  const full = await extractPdfText(file);
+  const normalized = full.replace(/\u00A0/g, " ");
+  const idx = normalized.toLowerCase().indexOf("course history");
+  if (idx === -1) {
+    throw new Error(`"Course History" heading not found in this PDF.`);
+  }
+  return normalized.slice(idx).trim();
 }
