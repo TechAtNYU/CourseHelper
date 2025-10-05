@@ -5,6 +5,11 @@ import * as pdfjs from "pdfjs-dist/legacy/build/pdf";
 pdfjs.GlobalWorkerOptions.workerSrc =
   "https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.149/build/pdf.worker.min.mjs";
 
+interface PdfTextItem {
+  str?: string;
+  [key: string]: unknown;
+}
+
 export async function extractPdfText(file: File) {
   const buf = await file.arrayBuffer();
   const task = pdfjs.getDocument({ data: buf });
@@ -16,10 +21,10 @@ export async function extractPdfText(file: File) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
     const line = content.items
-      .map((it: any) => ("str" in it ? it.str : ""))
+      .map((it: PdfTextItem) => it.str ?? "")
       .filter(Boolean)
       .join(" ");
-    text += line + "\n\n";
+    text += `${line}\n\n`;
   }
 
   return text.trim();
@@ -31,7 +36,7 @@ export async function isDegreeProgressReport(file: File) {
   const page1 = await pdf.getPage(1);
   const content = await page1.getTextContent();
   const pageText = content.items
-    .map((it: any) => ("str" in it ? it.str : ""))
+    .map((it: PdfTextItem) => it.str ?? "")
     .join(" ")
     .toLowerCase();
 

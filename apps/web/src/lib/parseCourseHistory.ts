@@ -25,12 +25,14 @@ export function parseCourseHistory(text: string): Course[] {
   // Look for pattern: 20XX followed by semester
   const coursePattern = /20\d{2}\s+(Sum|Spr|Fall|Win)/gi;
   const matches = [];
-  let match;
+  let match: RegExpExecArray | null = null;
 
   // Find all positions where courses start
   const regex = new RegExp(coursePattern.source, "gi");
-  while ((match = regex.exec(text)) !== null) {
+  match = regex.exec(text);
+  while (match !== null) {
     matches.push(match.index);
+    match = regex.exec(text);
   }
 
   // Extract each course block

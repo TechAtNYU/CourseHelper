@@ -1,11 +1,14 @@
 "use client";
 
-import type { ChangeEvent } from "react";
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { extractPdfText, isDegreeProgressReport } from "@/lib/extractPdfText";
-import { extractCourseHistory } from "@/lib/extractPdfText";
+import type { ChangeEvent } from "react";
+import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  extractCourseHistory,
+  extractPdfText,
+  isDegreeProgressReport,
+} from "@/lib/extractPdfText";
 import { parseCourseHistory } from "@/lib/parseCourseHistory";
 
 type Props = {

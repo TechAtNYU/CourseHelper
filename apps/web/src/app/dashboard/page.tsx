@@ -1,5 +1,5 @@
-import { AppHeader } from "./components/app-header";
 import FileUploadButton from "@/components/FileUploadButton";
+import { AppHeader } from "./components/app-header";
 
 const DashboardPage = () => {
   return (
