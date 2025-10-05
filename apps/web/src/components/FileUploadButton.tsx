@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { extractPdfText, isDegreeProgressReport } from "@/lib/extractPdfText";
 import { extractCourseHistory } from "@/lib/extractPdfText";
+import { parseCourseHistory } from "@/lib/parseCourseHistory";
 
 type Props = {
   onFileSelected?: (file: File | null) => void;
@@ -77,6 +78,10 @@ export default function FileUploadButton({
       const historyText = await extractCourseHistory(f);
       console.log("=== COURSE HISTORY ===");
       console.log(historyText);
+
+      const result = parseCourseHistory(historyText);
+      console.log("=== PARSED COURSE HISTORY ===");
+      console.log("Parsed courses:", result);
     } catch (err) {
       console.error(err);
     }
