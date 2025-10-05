@@ -1,13 +1,5 @@
-export type Course = {
-  code: string;
-  codeType: string;
-  title: string;
-  credits: number;
-  description: string;
-  prerequisites?: string[];
-  courseUrl: string;
-  createdAt: string;
-};
+import type { Doc } from "../../../../../packages/server/convex/_generated/dataModel";
+export type Course = Doc<"courses">;
 
 export type TermCourses = {
   term: "Fall" | "Spring" | "Summer" | "J-Term";
@@ -18,3 +10,4 @@ export type YearPlan = {
   year: "Freshman" | "Sophomore" | "Junior" | "Senior";
   terms: TermCourses[];
 };
+
