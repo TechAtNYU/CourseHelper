@@ -2,7 +2,8 @@ import { v } from "convex/values";
 
 const courses = {
   code: v.string(), // CSCI-UA 101
-  level: v.string(), // 100
+  program: v.string(), // CSCI-UA
+  level: v.number(), // 100
   title: v.string(), // Intro to Computer Science
   credits: v.number(), // 4
   description: v.string(),

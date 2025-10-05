@@ -20,6 +20,18 @@ export const getCourseByCode = protectedQuery({
   },
 });
 
+export const getCourseByProgramLevel = protectedQuery({
+  args: { program: v.string(), level: v.number() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("courses")
+      .withIndex("by_program_level", (q) =>
+        q.eq("program", args.program).eq("level", args.level),
+      )
+      .unique();
+  },
+});
+
 export const deleteCourseInternal = internalMutation({
   args: { id: v.id("courses") },
   handler: async (ctx, args) => {
