@@ -10,4 +10,3 @@ export type YearPlan = {
   year: "Freshman" | "Sophomore" | "Junior" | "Senior";
   terms: TermCourses[];
 };
-
