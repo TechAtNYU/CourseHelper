@@ -12,8 +12,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type * as React from "react";
-import { NavMain } from "@/app/dashboard/components/nav-main";
-import { NavUser } from "@/app/dashboard/components/nav-user";
+import { NavMain } from "@/app/dashboard/components/sidebar/nav-main";
+import { NavUser } from "@/app/dashboard/components/sidebar/nav-user";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -24,7 +24,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { NavBottom } from "./nav-buttom";
+import { NavBottom } from "@/app/dashboard/components/sidebar/nav-buttom";
 
 const config = {
   navMain: [
