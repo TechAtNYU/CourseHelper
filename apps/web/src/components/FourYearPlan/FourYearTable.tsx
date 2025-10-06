@@ -69,6 +69,17 @@ export default function FourYearTable({ data }: FourYearTableProps) {
     return map;
   }, [filteredData]);
 
+  // only show terms with course
+  const visibleTerms = useMemo(() => {
+    return allTerms.filter((term) => {
+      return filteredData.some((yearPlan) => {
+        const termMap = yearTermMap.get(yearPlan.year);
+        const courses = termMap?.get(term) || [];
+        return courses.length > 0;
+      });
+    });
+  }, [allTerms, filteredData, yearTermMap]);
+
   return (
     <div className="space-y-3 overflow-x-auto">
       {/* Filters */}
@@ -142,7 +153,7 @@ export default function FourYearTable({ data }: FourYearTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allTerms.map((term) => (
+          {visibleTerms.map((term) => (
             <TableRow key={term}>
               <TableCell className="font-medium bg-muted/30">{term}</TableCell>
               {filteredData.map((yearPlan) => {
