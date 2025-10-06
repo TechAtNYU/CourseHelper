@@ -19,6 +19,7 @@ import type * as http from "../http.js";
 import type * as prerequisites from "../prerequisites.js";
 import type * as programs from "../programs.js";
 import type * as requirements from "../requirements.js";
+import type * as schemas_courseOfferings from "../schemas/courseOfferings.js";
 import type * as schemas_courses from "../schemas/courses.js";
 import type * as schemas_programs from "../schemas/programs.js";
 
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   prerequisites: typeof prerequisites;
   programs: typeof programs;
   requirements: typeof requirements;
+  "schemas/courseOfferings": typeof schemas_courseOfferings;
   "schemas/courses": typeof schemas_courses;
   "schemas/programs": typeof schemas_programs;
 }>;

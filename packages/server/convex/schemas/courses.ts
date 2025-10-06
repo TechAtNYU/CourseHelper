@@ -29,4 +29,32 @@ const prerequisites = v.union(
   }),
 );
 
-export { courses, prerequisites };
+const userCourses = {
+  userId: v.string(),
+  courseId: v.id("courses"),
+  title: v.string(),
+  year: v.number(), // 2025
+  term: v.union(
+    v.literal("spring"),
+    v.literal("summer"),
+    v.literal("fall"),
+    v.literal("j-term"),
+  ),
+  grade: v.union(
+    v.literal("a"),
+    v.literal("a-"),
+    v.literal("b+"),
+    v.literal("b"),
+    v.literal("b-"),
+    v.literal("c+"),
+    v.literal("c"),
+    v.literal("c-"),
+    v.literal("d+"),
+    v.literal("d"),
+    v.literal("p"),
+    v.literal("f"),
+    v.literal("w"),
+  ),
+};
+
+export { courses, prerequisites, userCourses };
