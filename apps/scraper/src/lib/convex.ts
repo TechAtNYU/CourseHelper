@@ -2,10 +2,12 @@ import {
   ZCreatePrerequisite,
   ZCreateRequirement,
   ZDeleteCourse,
+  ZDeleteCourseOffering,
   ZDeletePrerequisites,
   ZDeleteProgram,
   ZDeleteRequirements,
   ZUpsertCourse,
+  ZUpsertCourseOffering,
   ZUpsertProgram,
 } from "@dev-team-fall-25/server/convex/http";
 import type * as z from "zod/mini";
@@ -95,5 +97,22 @@ export class ConvexApi {
 
   async deletePrerequisites(data: z.infer<typeof ZDeletePrerequisites>) {
     await this.request("/api/prerequisites/delete", ZDeletePrerequisites, data);
+  }
+
+  async upsertCourseOffering(data: z.infer<typeof ZUpsertCourseOffering>) {
+    const result = await this.request(
+      "/api/courseOfferings/upsert",
+      ZUpsertCourseOffering,
+      data,
+    );
+    return result.id;
+  }
+
+  async deleteCourseOffering(data: z.infer<typeof ZDeleteCourseOffering>) {
+    await this.request(
+      "/api/courseOfferings/delete",
+      ZDeleteCourseOffering,
+      data,
+    );
   }
 }
