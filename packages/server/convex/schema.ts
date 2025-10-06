@@ -16,7 +16,7 @@ export default defineSchema({
   courseOfferings: defineTable(courseOfferings)
     .index("by_course", ["courseId"])
     .index("by_term_year", ["term", "year"])
-    .index("by_course_term", ["courseId", "term", "year"]),
+    .index("by_course_term_section", ["courseId", "term", "year", "section"]),
   userCourses: defineTable(userCourses).index("by_user", ["userId"]),
   userCourseOfferings: defineTable(userCourseOfferings).index("by_user", [
     "userId",

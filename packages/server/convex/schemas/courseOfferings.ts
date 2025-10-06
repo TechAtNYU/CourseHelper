@@ -3,7 +3,7 @@ import { v } from "convex/values";
 const courseOfferings = {
   courseId: v.id("courses"),
   title: v.string(),
-  sectionNumber: v.string(),
+  section: v.string(),
   year: v.number(), // 2025
   term: v.union(
     v.literal("spring"),
