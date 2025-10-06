@@ -113,6 +113,41 @@ export const ZDeletePrerequisites = z.object({
   ),
 });
 
+export const ZUpsertCourseOffering = z.object({
+  courseId: z.pipe(
+    z.string(),
+    z.transform((val) => val as Id<"courses">),
+  ),
+  title: z.string(),
+  section: z.string(),
+  year: z.number(),
+  term: z.enum(["spring", "summer", "fall", "j-term"]),
+  instructor: z.string(),
+  location: z.string(),
+  days: z.array(
+    z.enum([
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ]),
+  ),
+  startTime: z.string(),
+  endTime: z.string(),
+  status: z.enum(["open", "closed", "waitlist"]),
+  waitlistNum: z.number(),
+});
+
+export const ZDeleteCourseOffering = z.object({
+  id: z.pipe(
+    z.string(),
+    z.transform((val) => val as Id<"courseOfferings">),
+  ),
+});
+
 const http = httpRouter();
 
 http.route({
@@ -239,6 +274,38 @@ http.route({
       headers: { "Content-Type": "application/json" },
     });
   }, ZDeletePrerequisites),
+});
+
+http.route({
+  path: "/api/courseOfferings/upsert",
+  method: "POST",
+  handler: apiAction(async (ctx, body) => {
+    const result = await ctx.runMutation(
+      internal.courseOfferings.upsertCourseOfferingInternal,
+      body,
+    );
+
+    return new Response(JSON.stringify({ success: true, id: result }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }, ZUpsertCourseOffering),
+});
+
+http.route({
+  path: "/api/courseOfferings/delete",
+  method: "POST",
+  handler: apiAction(async (ctx, body) => {
+    await ctx.runMutation(
+      internal.courseOfferings.deleteCourseOfferingInternal,
+      body,
+    );
+
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }, ZDeleteCourseOffering),
 });
 
 export default http;
