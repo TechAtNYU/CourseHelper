@@ -1,16 +1,16 @@
-// @ts-expect-error no types for legacy build, safe to ignore
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf";
-
-// point PDF.js to its web worker (CDN is fine with Bun)
-pdfjs.GlobalWorkerOptions.workerSrc =
-  "https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.149/build/pdf.worker.min.mjs";
-
 interface PdfTextItem {
   str?: string;
   [key: string]: unknown;
 }
 
+async function getPdfJs() {
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+  return pdfjs;
+}
+
 export async function extractPdfText(file: File) {
+  const pdfjs = await getPdfJs();
   const buf = await file.arrayBuffer();
   const task = pdfjs.getDocument({ data: buf });
   const pdf = await task.promise;
@@ -31,6 +31,7 @@ export async function extractPdfText(file: File) {
 }
 
 export async function isDegreeProgressReport(file: File) {
+  const pdfjs = await getPdfJs();
   const buf = await file.arrayBuffer();
   const pdf = await pdfjs.getDocument({ data: buf }).promise;
   const page1 = await pdf.getPage(1);
