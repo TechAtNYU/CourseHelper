@@ -3,10 +3,6 @@
   "workspaces": {
     "": {
       "name": "dev-team-fall-25",
-      "dependencies": {
-        "lucide-react": "^0.544.0",
-        "pdfjs-dist": "^5.4.149",
-      },
       "devDependencies": {
         "@types/bun": "latest",
         "turbo": "^2.5.8",
