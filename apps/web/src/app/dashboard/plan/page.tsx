@@ -1,4 +1,4 @@
-import FourYearPlan from "@/components/FourYearPlan/FourYearPlan";
+import FourYearPlan from "@/modules/four-year-plan/components/FourYearPlan";
 import { AppHeader } from "../components/app-header";
 
 const PlanPage = () => {
