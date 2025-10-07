@@ -3,7 +3,7 @@ import { AppHeader } from "./components/app-header";
 const DashboardPage = () => {
   return (
     <>
-      <AppHeader title="Dashboard" />
+      <AppHeader title="Home" />
       <main></main>
     </>
   );
