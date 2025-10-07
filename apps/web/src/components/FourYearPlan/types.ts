@@ -1,4 +1,4 @@
-import type { Doc } from "../../../../../packages/server/convex/_generated/dataModel";
+import type { Doc } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 export type Course = Doc<"courses">;
 
 export type TermCourses = {

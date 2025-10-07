@@ -1,4 +1,4 @@
-import type { Id } from "../../../../../packages/server/convex/_generated/dataModel";
+import type { Id } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 import type { YearPlan } from "./types";
 
 export const sampleData: YearPlan[] = [
