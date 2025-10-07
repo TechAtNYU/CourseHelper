@@ -6,7 +6,7 @@ interface Course {
   grade: string;
   units: string;
   type: string;
-  meta?: string;
+  meta?: Record<string, string>;
 }
 
 export function parseCourseHistory(text: string): Course[] {
@@ -41,17 +41,19 @@ export function parseCourseHistory(text: string): Course[] {
     const end = i < matches.length - 1 ? matches[i + 1] : text.length;
     const block = text.substring(start, end).trim();
 
-    // Check for notes(the metadata) first and remove them from the block for parsing
-    let note = "";
-    const noteMatch = block.match(
-      /(Repeat Code:|Course Topic:)\s+(.+?)(?=\s*$)/,
+    // Check for metadata first and remove them from the block for parsing
+    const meta: Record<string, string> = {};
+    const metaMatch = block.match(
+      /(Repeat Code|Course Topic):\s+(.+?)(?=\s*$)/,
     );
-    if (noteMatch) {
-      note = `${noteMatch[1]} ${noteMatch[2]}`.trim();
+    if (metaMatch) {
+      const key = metaMatch[1].replace(/\s+/g, "");
+      const value = metaMatch[2].trim();
+      meta[key] = value;
     }
 
     const cleanBlock = block
-      .replace(/(Repeat Code:|Course Topic:).+$/, "")
+      .replace(/(Repeat Code|Course Topic):\s+.+$/, "")
       .trim();
 
     const parts = cleanBlock.split(/\s{3,}/);
@@ -75,8 +77,8 @@ export function parseCourseHistory(text: string): Course[] {
         type: hasGrade ? parts[6].trim() : parts[5].trim(),
       };
 
-      if (note) {
-        course.meta = note;
+      if (Object.keys(meta).length > 0) {
+        course.meta = meta;
       }
 
       courses.push(course);
