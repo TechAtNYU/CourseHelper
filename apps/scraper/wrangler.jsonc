@@ -4,6 +4,9 @@
   "main": "src/index.ts",
   "minify": true,
   "compatibility_date": "2025-09-26",
+  "observability": {
+    "enabled": true
+  },
   "triggers": {
     "crons": ["0 */6 * * *"] // Run every 6 hours
   },
