@@ -1,4 +1,4 @@
-import FileUploadButton from "@/components/FileUploadButton";
+import FileUploadButton from "@/modules/report-parsing/components/FileUploadButton";
 import { AppHeader } from "./components/app-header";
 
 const DashboardPage = () => {

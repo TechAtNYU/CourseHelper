@@ -8,8 +8,8 @@ import {
   extractCourseHistory,
   extractPdfText,
   isDegreeProgressReport,
-} from "@/lib/extractPdfText";
-import { parseCourseHistory } from "@/lib/parseCourseHistory";
+} from "../utils/extractPdfText";
+import { parseCourseHistory } from "../utils/parseCourseHistory";
 
 type Props = {
   onFileSelected?: (file: File | null) => void;
