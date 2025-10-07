@@ -8,18 +8,16 @@ import {
   extractCourseHistory,
   extractPdfText,
   isDegreeProgressReport,
-} from "../utils/extractPdfText";
-import { parseCourseHistory } from "../utils/parseCourseHistory";
+} from "../utils/extract-pdf-text";
+import { parseCourseHistory } from "../utils/parse-course-history";
 
-type Props = {
-  onFileSelected?: (file: File | null) => void;
+type FileUploadButtonProps = {
   maxSizeMB?: number;
 };
 
 export default function FileUploadButton({
-  onFileSelected,
   maxSizeMB = 20,
-}: Props) {
+}: FileUploadButtonProps) {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -65,7 +63,6 @@ export default function FileUploadButton({
     // So file is valid
     setError(null);
     setFile(f);
-    onFileSelected?.(f);
 
     try {
       const text = await extractPdfText(f);
@@ -93,7 +90,6 @@ export default function FileUploadButton({
   function handleRemoveFile() {
     setFile(null);
     setError(null);
-    onFileSelected?.(null);
     if (inputRef.current) inputRef.current.value = "";
   }
 

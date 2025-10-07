@@ -6,7 +6,7 @@ interface Course {
   grade: string;
   units: string;
   type: string;
-  note?: string;
+  meta?: string;
 }
 
 export function parseCourseHistory(text: string): Course[] {
@@ -76,7 +76,7 @@ export function parseCourseHistory(text: string): Course[] {
       };
 
       if (note) {
-        course.note = note;
+        course.meta = note;
       }
 
       courses.push(course);
