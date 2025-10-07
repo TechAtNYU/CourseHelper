@@ -5,6 +5,7 @@ import {
 } from "./schemas/courseOfferings";
 import { courses, prerequisites, userCourses } from "./schemas/courses";
 import { programs, requirements } from "./schemas/programs";
+import { students } from "./schemas/students";
 
 export default defineSchema({
   programs: defineTable(programs).index("by_program_name", ["name"]),
@@ -21,4 +22,5 @@ export default defineSchema({
   userCourseOfferings: defineTable(userCourseOfferings).index("by_user", [
     "userId",
   ]),
+  students: defineTable(students).index("by_user_id", ["userId"]),
 });
