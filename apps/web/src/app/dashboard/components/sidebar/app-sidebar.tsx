@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  ArrowUpCircleIcon,
-  BookOpen,
-  Calendar,
-  LayoutDashboard,
-  Map as MapIcon,
-  Send,
-  Settings,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowUpCircleIcon } from "lucide-react";
 import type * as React from "react";
 import { NavBottom } from "@/app/dashboard/components/sidebar/nav-buttom";
 import { NavMain } from "@/app/dashboard/components/sidebar/nav-main";
@@ -24,20 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
-const config = {
-  navMain: [
-    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-    { title: "Schedule", url: "/dashboard/schedule", icon: Calendar },
-    { title: "4-Year Plan", url: "/dashboard/plan", icon: MapIcon },
-    { title: "Degree Progress", url: "/dashboard/progress", icon: TrendingUp },
-    { title: "Course Catalog", url: "/dashboard/courses", icon: BookOpen },
-  ],
-  navBottom: [
-    { title: "Settings", url: "/settings", icon: Settings },
-    { title: "Feedback", url: "/feedback", icon: Send },
-  ],
-};
+import config from "../../../../lib/config";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: {
@@ -68,8 +46,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <Separator />
       <SidebarContent>
-        <NavMain items={config.navMain} />
-        <NavBottom items={config.navBottom} className="mt-auto" />
+        <NavMain items={config.sidebar.navMain} />
+        <NavBottom items={config.sidebar.navBottom} className="mt-auto" />
       </SidebarContent>
       <Separator />
       <SidebarFooter>

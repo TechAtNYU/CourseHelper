@@ -8,6 +8,8 @@ const DashboardPage = () => {
       <main>
         <FileUploadButton />
       </main>
+      <AppHeader title="Home" />
+      <main></main>
     </>
   );
 };
