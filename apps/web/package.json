@@ -8,8 +8,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "check": "biome check",
-    "check:types": "tsc --noEmit",
-    "postinstall": "cp ../../node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/"
+    "check:types": "tsc --noEmit"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.33.1",
