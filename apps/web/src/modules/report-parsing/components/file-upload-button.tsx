@@ -6,7 +6,6 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   extractCourseHistory,
-  extractPdfText,
   isDegreeProgressReport,
 } from "../utils/extract-pdf-text";
 import { parseCourseHistory } from "../utils/parse-course-history";
@@ -65,22 +64,8 @@ export default function FileUploadButton({
     setFile(f);
 
     try {
-      const text = await extractPdfText(f);
-      console.log("=== EXTRACTED TEXT ===");
-      console.log(text);
-    } catch (err) {
-      console.error("PDF extraction failed:", err);
-    } finally {
-      if (inputRef.current) inputRef.current.value = "";
-    }
-
-    try {
       const historyText = await extractCourseHistory(f);
-      console.log("=== COURSE HISTORY ===");
-      console.log(historyText);
-
       const result = parseCourseHistory(historyText);
-      console.log("=== PARSED COURSE HISTORY ===");
       console.log("Parsed courses:", result);
     } catch (err) {
       console.error(err);
