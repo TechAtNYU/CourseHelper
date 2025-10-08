@@ -1,9 +1,9 @@
-// import { AppHeader } from "./components/app-header";
+import { AppHeader } from "../components/app-header";
 
 const SchedulePage = () => {
   return (
     <>
-      {/* <AppHeader title="Dashboard" /> */}
+      <AppHeader title="Schedule" />
       <main>
         <h1>Calendar</h1>
       </main>
