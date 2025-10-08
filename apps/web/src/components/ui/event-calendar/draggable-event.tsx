@@ -60,10 +60,10 @@ export function DraggableEvent({
   } | null>(null);
 
   // Check if this is a multi-day event
-  const eventStart = new Date(event.start);
-  const eventEnd = new Date(event.end);
-  const isMultiDayEvent =
-    isMultiDay || event.allDay || differenceInDays(eventEnd, eventStart) >= 1;
+  // const eventStart = new Date(event.start);
+  // const eventEnd = new Date(event.end);
+  // const isMultiDayEvent =
+  //   isMultiDay || event.allDay || differenceInDays(eventEnd, eventStart) >= 1;
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -72,7 +72,7 @@ export function DraggableEvent({
         event,
         view,
         height: height || elementRef.current?.offsetHeight || null,
-        isMultiDay: isMultiDayEvent,
+        isMultiDay: false,
         multiDayWidth: multiDayWidth,
         dragHandlePosition,
         isFirstDay,
@@ -107,12 +107,12 @@ export function DraggableEvent({
         transform: CSS.Translate.toString(transform),
         height: height || "auto",
         width:
-          isMultiDayEvent && multiDayWidth ? `${multiDayWidth}%` : undefined,
+           undefined,
       }
     : {
         height: height || "auto",
         width:
-          isMultiDayEvent && multiDayWidth ? `${multiDayWidth}%` : undefined,
+           undefined,
       };
 
   // Handle touch start to track where on the event the user touched

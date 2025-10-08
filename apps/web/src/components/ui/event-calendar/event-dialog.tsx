@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { CalendarEvent, EventColor } from "./types";
+import { TimeSlot, CalendarEvent, EventColor } from "./types";
 import { DefaultEndHour, DefaultStartHour, EndHour, StartHour } from "./constants";
 
 export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
@@ -53,8 +53,9 @@ export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
     id: "",
     title: eventTitle,
     description: "Lecture on basic algorithms",
-    start,
-    end,
+    timeSlots: [{ start: start, end: end }],
+    // start,
+    // end,
     allDay: false,
     location: "Room 101",
     color: "emerald" as EventColor,
@@ -88,8 +89,7 @@ export function addClassToCalendar(
     id: "",
     title: eventTitle,
     description: "Lecture on basic algorithms",
-    start,
-    end,
+    timeSlots: [{ start: start, end: end }],
     allDay: false,
     location: "Room 101",
     color: "emerald" as EventColor,
@@ -134,8 +134,11 @@ export function EventDialog({
       setTitle(event.title || "");
       setDescription(event.description || "");
 
-      const start = new Date(event.start);
-      const end = new Date(event.end);
+      // Use first timeslot if available
+      const firstSlot = event.timeSlots?.[0];
+      const start = firstSlot ? new Date(firstSlot.start) : new Date();
+      const end = firstSlot ? new Date(firstSlot.end) : new Date();
+
 
       setStartDate(start);
       setEndDate(end);
@@ -228,8 +231,7 @@ export function EventDialog({
       id: event?.id || "",
       title: eventTitle,
       description,
-      start,
-      end,
+      timeSlots: [{ start: start, end: end }],
       allDay,
       location,
       color,
