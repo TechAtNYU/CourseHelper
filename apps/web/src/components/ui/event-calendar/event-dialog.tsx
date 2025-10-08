@@ -34,6 +34,33 @@ import { cn } from "@/lib/utils";
 import { CalendarEvent, EventColor } from "./types";
 import { DefaultEndHour, DefaultStartHour, EndHour, StartHour } from "./constants";
 
+export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 = Sunday, 3 = Wednesday
+  const daysUntilWednesday = (3 - dayOfWeek + 7) % 7;
+  const wednesday = new Date(today);
+  wednesday.setDate(today.getDate() + daysUntilWednesday);
+
+  const start = new Date(wednesday);
+  start.setHours(9, 15, 0, 0);
+
+  const end = new Date(wednesday);
+  end.setHours(10, 15, 0, 0);
+
+  const eventTitle = "Basic Algorithms";
+
+  onSave({
+    id: "",
+    title: eventTitle,
+    description: "Lecture on basic algorithms",
+    start,
+    end,
+    allDay: false,
+    location: "Room 101",
+    color: "emerald" as EventColor,
+  });
+}
+
 interface EventDialogProps {
   event: CalendarEvent | null;
   isOpen: boolean;
@@ -173,6 +200,8 @@ export function EventDialog({
       color,
     });
   };
+
+  
 
   const handleDelete = () => {
     if (event?.id) {

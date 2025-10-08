@@ -45,6 +45,7 @@ import {
   WeekCellsHeight,
 } from "./constants";
 import type { CalendarEvent, CalendarView } from "./types";
+import {addBasicAlgorithms} from './event-dialog';
 
 export interface EventCalendarProps {
   events?: CalendarEvent[];
@@ -220,45 +221,45 @@ export function EventCalendar({
     });
   };
 
-  const viewTitle = useMemo(() => {
-    if (view === "month") {
-      return format(currentDate, "MMMM yyyy");
-    } else if (view === "week") {
-      const start = startOfWeek(currentDate, { weekStartsOn: 0 });
-      const end = endOfWeek(currentDate, { weekStartsOn: 0 });
-      if (isSameMonth(start, end)) {
-        return format(start, "MMMM yyyy"); // returns like "October 2025" (header)
-      } else {
-        return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
-      }
-    } else if (view === "day") {
-      return (
-        <>
-          <span className="min-[480px]:hidden" aria-hidden="true">
-            {format(currentDate, "MMM d, yyyy")}
-          </span>
-          <span className="max-[479px]:hidden min-md:hidden" aria-hidden="true">
-            {format(currentDate, "MMMM d, yyyy")}
-          </span>
-          <span className="max-md:hidden">
-            {format(currentDate, "EEE MMMM d, yyyy")}
-          </span>
-        </>
-      );
-    } else if (view === "agenda") {
-      // Show the month range for agenda view
-      const start = currentDate;
-      const end = addDays(currentDate, AgendaDaysToShow - 1);
+  // const viewTitle = useMemo(() => {
+  //   if (view === "month") {
+  //     return format(currentDate, "MMMM yyyy");
+  //   } else if (view === "week") {
+  //     const start = startOfWeek(currentDate, { weekStartsOn: 0 });
+  //     const end = endOfWeek(currentDate, { weekStartsOn: 0 });
+  //     if (isSameMonth(start, end)) {
+  //       return format(start, "MMMM yyyy"); // returns like "October 2025" (header)
+  //     } else {
+  //       return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+  //     }
+  //   } else if (view === "day") {
+  //     return (
+  //       <>
+  //         <span className="min-[480px]:hidden" aria-hidden="true">
+  //           {format(currentDate, "MMM d, yyyy")}
+  //         </span>
+  //         <span className="max-[479px]:hidden min-md:hidden" aria-hidden="true">
+  //           {format(currentDate, "MMMM d, yyyy")}
+  //         </span>
+  //         <span className="max-md:hidden">
+  //           {format(currentDate, "EEE MMMM d, yyyy")}
+  //         </span>
+  //       </>
+  //     );
+  //   } else if (view === "agenda") {
+  //     // Show the month range for agenda view
+  //     const start = currentDate;
+  //     const end = addDays(currentDate, AgendaDaysToShow - 1);
 
-      if (isSameMonth(start, end)) {
-        return format(start, "MMMM yyyy");
-      } else {
-        return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
-      }
-    } else {
-      return format(currentDate, "MMMM yyyy");
-    }
-  }, [currentDate, view]);
+  //     if (isSameMonth(start, end)) {
+  //       return format(start, "MMMM yyyy");
+  //     } else {
+  //       return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+  //     }
+  //   } else {
+  //     return format(currentDate, "MMMM yyyy");
+  //   }
+  // }, [currentDate, view]);
 
   return (
     <div
@@ -279,7 +280,7 @@ export function EventCalendar({
           )}
         >
           <div className="flex items-center gap-1 sm:gap-4">
-            <Button
+            {/* <Button
               variant="outline"
               className="max-[479px]:aspect-square max-[479px]:p-0!"
               onClick={handleToday}
@@ -290,8 +291,8 @@ export function EventCalendar({
                 aria-hidden="true"
               />
               <span className="max-[479px]:sr-only">Today</span>
-            </Button>
-            <div className="flex items-center sm:gap-2">
+            </Button> */}
+            {/* <div className="flex items-center sm:gap-2">
               <Button
                 variant="ghost"
                 size="icon"
@@ -308,9 +309,9 @@ export function EventCalendar({
               >
                 <ChevronRightIcon size={16} aria-hidden="true" />
               </Button>
-            </div>
+            </div> */}
             <h2 className="text-sm font-semibold sm:text-lg md:text-xl">
-              {viewTitle}
+              Spring 2026
             </h2>
           </div>
           <div className="flex items-center gap-2">
@@ -361,6 +362,23 @@ export function EventCalendar({
                 aria-hidden="true"
               />
               <span className="max-sm:sr-only">New event</span>
+            </Button>
+
+             <Button
+              className="max-[479px]:aspect-square max-[479px]:p-0!"
+              size="sm"
+              onClick={() => {
+                // setSelectedEvent(null); // Ensure we're creating a new event
+                // setIsEventDialogOpen(true);
+                addBasicAlgorithms(handleEventSave);
+              }}
+            >
+              <PlusIcon
+                className="opacity-60 sm:-ms-1"
+                size={16}
+                aria-hidden="true"
+              />
+              <span className="max-sm:sr-only">Add BA</span>
             </Button>
           </div>
         </div>
