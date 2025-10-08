@@ -48,14 +48,15 @@ function EventWrapper({
   onTouchStart,
 }: EventWrapperProps) {
   // Always use the currentTime (if provided) to determine if the event is in the past
-  const displayEnd = currentTime
-    ? new Date(
-        new Date(currentTime).getTime() +
-          (new Date(event.end).getTime() - new Date(event.start).getTime()),
-      )
-    : new Date(event.end);
+  // const displayEnd = currentTime
+  //   ? new Date(
+  //       new Date(currentTime).getTime() +
+  //         (new Date(event.end).getTime() - new Date(event.start).getTime()),
+  //     )
+  //   : new Date(event.end);
 
-  const isEventInPast = isPast(displayEnd);
+  const isEventInPast = false;
+  // const isEventInPast = isPast(displayEnd);
 
   return (
     <button
@@ -114,21 +115,43 @@ export function EventItem({
   const eventColor = event.color;
 
   // Use the provided currentTime (for dragging) or the event's actual time
+  // const displayStart = useMemo(() => {
+  //   return currentTime || new Date(event.start);
+  // }, [currentTime, event.start]);
+
+  // const displayEnd = useMemo(() => {
+  //   return currentTime
+  //     ? new Date(
+  //         new Date(currentTime).getTime() +
+  //           (new Date(event.end).getTime() - new Date(event.start).getTime()),
+  //       )
+  //     : new Date(event.end);
+  // }, [currentTime, event.start, event.end]);
+
+  // // Calculate event duration in minutes
+  // const durationMinutes = useMemo(() => {
+  //   return differenceInMinutes(displayEnd, displayStart);
+  // }, [displayStart, displayEnd]);
+  // Calculate event duration for the first time slot (example)
   const displayStart = useMemo(() => {
-    return currentTime || new Date(event.start);
-  }, [currentTime, event.start]);
+    if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
+    return currentTime || new Date(event.timeSlots[0].start);
+  }, [currentTime, event.timeSlots]);
 
   const displayEnd = useMemo(() => {
+    if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
     return currentTime
       ? new Date(
           new Date(currentTime).getTime() +
-            (new Date(event.end).getTime() - new Date(event.start).getTime()),
+            (new Date(event.timeSlots[0].end).getTime() -
+              new Date(event.timeSlots[0].start).getTime())
         )
-      : new Date(event.end);
-  }, [currentTime, event.start, event.end]);
+      : new Date(event.timeSlots[0].end);
+  }, [currentTime, event.timeSlots]);
 
-  // Calculate event duration in minutes
+  // Calculate duration in minutes
   const durationMinutes = useMemo(() => {
+    if (!displayStart || !displayEnd) return 0;
     return differenceInMinutes(displayEnd, displayStart);
   }, [displayStart, displayEnd]);
 
@@ -227,7 +250,8 @@ export function EventItem({
         getEventColorClasses(eventColor),
         className,
       )}
-      data-past-event={isPast(new Date(event.end)) || undefined}
+      // data-past-event={isPast(new Date(event.end)) || undefined}
+      data-past-event={undefined}
       onClick={onClick}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
