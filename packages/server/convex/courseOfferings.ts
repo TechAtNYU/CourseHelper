@@ -32,7 +32,7 @@ export const getCourseOfferingsByTerm = protectedQuery({
 
 export const getCourseOfferingsByCourseTerm = protectedQuery({
   args: {
-    courseId: v.id("courses"),
+    courseCode: v.string(),
     term: v.union(
       v.literal("spring"),
       v.literal("summer"),
@@ -46,7 +46,7 @@ export const getCourseOfferingsByCourseTerm = protectedQuery({
       .query("courseOfferings")
       .withIndex("by_course_term_section", (q) =>
         q
-          .eq("courseId", args.courseId)
+          .eq("courseCode", args.courseCode)
           .eq("term", args.term)
           .eq("year", args.year),
       )
@@ -68,7 +68,7 @@ export const upsertCourseOfferingInternal = internalMutation({
       .query("courseOfferings")
       .withIndex("by_course_term_section", (q) =>
         q
-          .eq("courseId", args.courseId)
+          .eq("courseCode", args.courseCode)
           .eq("term", args.term)
           .eq("year", args.year)
           .eq("section", args.section),

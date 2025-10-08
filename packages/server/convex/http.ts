@@ -114,10 +114,7 @@ export const ZDeletePrerequisites = z.object({
 });
 
 export const ZUpsertCourseOffering = z.object({
-  courseId: z.pipe(
-    z.string(),
-    z.transform((val) => val as Id<"courses">),
-  ),
+  courseCode: z.string(),
   title: z.string(),
   section: z.string(),
   year: z.number(),
