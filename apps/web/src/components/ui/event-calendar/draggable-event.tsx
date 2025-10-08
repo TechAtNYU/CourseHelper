@@ -20,6 +20,7 @@ interface DraggableEventProps {
   isFirstDay?: boolean;
   isLastDay?: boolean;
   "aria-hidden"?: boolean | "true" | "false";
+  draggable?: boolean;
 }
 
 export function DraggableEvent({
@@ -33,7 +34,24 @@ export function DraggableEvent({
   isFirstDay = true,
   isLastDay = true,
   "aria-hidden": ariaHidden,
+  draggable = false,
 }: DraggableEventProps) {
+  if (!draggable) {
+    return (
+      <div style={{ height: height || "auto" }}>
+        <EventItem
+          event={event}
+          view={view}
+          showTime={showTime}
+          isFirstDay={isFirstDay}
+          isLastDay={isLastDay}
+          onClick={onClick}
+          aria-hidden={ariaHidden}
+        />
+      </div>
+    );
+  }
+
   const { activeId } = useCalendarDnd();
   const elementRef = useRef<HTMLDivElement>(null);
   const [dragHandlePosition, setDragHandlePosition] = useState<{

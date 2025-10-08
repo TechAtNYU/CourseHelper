@@ -338,13 +338,14 @@ export function WeekView({
                     onClick={(e) => handleEventClick(positionedEvent.event, e)}
                     showTime
                     height={positionedEvent.height}
+                    draggable={false}
                   />
                 </div>
               </div>
             ))}
 
             {/* Current time indicator - only show for today's column */}
-            {currentTimeVisible && isToday(day) && (
+            {/* {currentTimeVisible && isToday(day) && (
               <div
                 className="pointer-events-none absolute right-0 left-0 z-20"
                 style={{ top: `${currentTimePosition}%` }}
@@ -354,8 +355,8 @@ export function WeekView({
                   <div className="bg-primary h-[2px] w-full"></div>
                 </div>
               </div>
-            )}
-            {hours.map((hour) => {
+            )} */}
+            {/* {hours.map((hour) => {
               const hourValue = getHours(hour);
               return (
                 <div
@@ -363,7 +364,7 @@ export function WeekView({
                   className="border-border/70 relative min-h-[var(--week-cells-height)] border-b last:border-b-0"
                 >
                   {/* Quarter-hour intervals */}
-                  {[0, 1, 2, 3].map((quarter) => {
+                  {/* {[0, 1, 2, 3].map((quarter) => {
                     const quarterHourTime = hourValue + quarter * 0.25;
                     return (
                       <DroppableCell
@@ -392,7 +393,7 @@ export function WeekView({
                   })}
                 </div>
               );
-            })}
+            })} */} 
           </div>
         ))}
       </div>
