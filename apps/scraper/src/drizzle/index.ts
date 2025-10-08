@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/d1";
 
-const createDB = async (env: CloudflareBindings) => {
+const createDB = (env: CloudflareBindings) => {
   return drizzle(env.DB);
 };
 
