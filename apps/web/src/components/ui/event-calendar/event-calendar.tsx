@@ -35,7 +35,7 @@ import {
   CalendarDndProvider,
   DayView,
   EventDialog,
-  MonthView,
+  // MonthView,
   WeekView,
 } from ".";
 import {

@@ -41,11 +41,20 @@ export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
   const wednesday = new Date(today);
   wednesday.setDate(today.getDate() + daysUntilWednesday);
 
+  const thursday = new Date(today);
+  thursday.setDate(today.getDate() + 1);
+
   const start = new Date(wednesday);
   start.setHours(9, 15, 0, 0);
 
   const end = new Date(wednesday);
   end.setHours(10, 15, 0, 0);
+
+  const start2 = new Date(thursday);
+  start2.setHours(9, 15, 0, 0);
+
+  const end2 = new Date(thursday);
+  end2.setHours(10, 15, 0, 0);
 
   const eventTitle = "Basic Algorithms";
 
@@ -53,7 +62,7 @@ export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
     id: "",
     title: eventTitle,
     description: "Lecture on basic algorithms",
-    timeSlots: [{ start: start, end: end }],
+    timeSlots: [{ start: start, end: end }, { start: start2, end: end2 }],
     // start,
     // end,
     allDay: false,
