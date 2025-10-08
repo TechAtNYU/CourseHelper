@@ -45,7 +45,7 @@ import {
   WeekCellsHeight,
 } from "./constants";
 import type { CalendarEvent, CalendarView } from "./types";
-import {addBasicAlgorithms} from './event-dialog';
+import {addClassToCalendar,addBasicAlgorithms} from './event-dialog';
 
 export interface EventCalendarProps {
   events?: CalendarEvent[];
@@ -370,7 +370,7 @@ export function EventCalendar({
               onClick={() => {
                 // setSelectedEvent(null); // Ensure we're creating a new event
                 // setIsEventDialogOpen(true);
-                addBasicAlgorithms(handleEventSave);
+                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"]);
               }}
             >
               <PlusIcon
@@ -384,14 +384,14 @@ export function EventCalendar({
         </div>
 
         <div className="flex flex-1 flex-col">
-          {view === "month" && (
+          {/* {view === "month" && (
             <MonthView
               currentDate={currentDate}
               events={events}
               onEventSelect={handleEventSelect}
               onEventCreate={handleEventCreate}
             />
-          )}
+          )} */}
           {view === "week" && (
             <WeekView
               currentDate={currentDate}

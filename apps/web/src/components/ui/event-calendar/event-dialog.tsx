@@ -74,31 +74,80 @@ export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
 export function addClassToCalendar(
   onSave: (event: CalendarEvent) => void,
   title: string,
-  daysOfWeek: string[],
-  startTime: Date,
-  endTime: Date,
+  timeSlots: string[], // format: ["Wednesday 9 15 10 15"]
+  // daysOfWeek: string[],
+  // startTime: Date,
+  // endTime: Date,
   // location?: string, // optional
   color: EventColor = "emerald"
 ) {
-  const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 = Sunday, 3 = Wednesday
-  const daysUntilWednesday = (3 - dayOfWeek + 7) % 7;
-  const wednesday = new Date(today);
-  wednesday.setDate(today.getDate() + daysUntilWednesday);
+  const slots: any[] = [];
 
-  const start = new Date(wednesday);
-  start.setHours(9, 15, 0, 0);
+  for (const slot of timeSlots) {
+    const parts = slot.split(" "); 
+    const day = parts[0];
+    const startHour = Number(parts[1]);
+    const startMinute = Number(parts[2]);
+    const endHour = Number(parts[3]);
+    const endMinute = Number(parts[4]);
+    let date: Date;
 
-  const end = new Date(wednesday);
-  end.setHours(10, 15, 0, 0);
+    switch (day) {
+      case "Monday":
+        date = new Date("2025-10-06");
+        break;
+      case "Tuesday":
+        date = new Date("2025-10-07");
+        break;
+      case "Wednesday":
+        date = new Date("2025-10-08");
+        break;
+      case "Thursday":
+        date = new Date("2025-10-09");
+        break;
+      case "Friday":
+        date = new Date("2025-10-10");
+        break;
+      case "Saturday":
+        date = new Date("2025-10-11");
+        break;
+      case "Sunday":
+        date = new Date("2025-10-12");
+        break;
+      default:
+        throw new Error(`Invalid day: ${day}`);
+    }
+
+    const start = new Date(date);
+    start.setHours(startHour, startMinute, 0, 0);
+    const end = new Date(date);
+    end.setHours(endHour, endMinute, 0, 0);
+    slots.push({start:start, end:end})
+  }
+
+  // const today = new Date();
+  // const dayOfWeek = today.getDay(); // 0 = Sunday, 3 = Wednesday
+  // const daysUntilWednesday = (3 - dayOfWeek + 7) % 7;
+  // const wednesday = new Date(today);
+  // wednesday.setDate(today.getDate() + daysUntilWednesday);
+
+  // const start = new Date(wednesday);
+  // start.setHours(9, 15, 0, 0);
+
+  // const end = new Date(wednesday);
+  // end.setHours(10, 15, 0, 0);
 
   const eventTitle = "Basic Algorithms";
 
+  
+ // This date is a Wednesday
+  // const thursday = new Date("2025-10-09");  // This date is a Thursday
+
   onSave({
     id: "",
-    title: eventTitle,
+    title: title,
     description: "Lecture on basic algorithms",
-    timeSlots: [{ start: start, end: end }],
+    timeSlots: slots,
     allDay: false,
     location: "Room 101",
     color: "emerald" as EventColor,
