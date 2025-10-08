@@ -378,7 +378,39 @@ export function EventCalendar({
                 size={16}
                 aria-hidden="true"
               />
-              <span className="max-sm:sr-only">Add BA</span>
+              <span className="max-sm:sr-only">Math M/T</span>
+            </Button>
+            <Button
+              className="max-[479px]:aspect-square max-[479px]:p-0!"
+              size="sm"
+              onClick={() => {
+                // setSelectedEvent(null); // Ensure we're creating a new event
+                // setIsEventDialogOpen(true);
+                addClassToCalendar(handleEventSave, "French", ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],"rose");
+              }}
+            >
+              <PlusIcon
+                className="opacity-60 sm:-ms-1"
+                size={16}
+                aria-hidden="true"
+              />
+              <span className="max-sm:sr-only">French T/Th</span>
+            </Button>
+            <Button
+              className="max-[479px]:aspect-square max-[479px]:p-0!"
+              size="sm"
+              onClick={() => {
+                // setSelectedEvent(null); // Ensure we're creating a new event
+                // setIsEventDialogOpen(true);
+                addClassToCalendar(handleEventSave, "CS", ["Monday 14 15 15 45", "Wednesday 8 0 10 0"], "sky");
+              }}
+            >
+              <PlusIcon
+                className="opacity-60 sm:-ms-1"
+                size={16}
+                aria-hidden="true"
+              />
+              <span className="max-sm:sr-only">CS M/W</span>
             </Button>
           </div>
         </div>

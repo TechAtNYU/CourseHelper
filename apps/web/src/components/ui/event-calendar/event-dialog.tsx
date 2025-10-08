@@ -150,7 +150,7 @@ export function addClassToCalendar(
     timeSlots: slots,
     allDay: false,
     location: "Room 101",
-    color: "emerald" as EventColor,
+    color: color,
   });
 }
 
