@@ -10,6 +10,7 @@
     "check": "biome check",
     "check:types": "tsc --noEmit"
   },
+  "packageManager": "bun@1.2.23",
   "dependencies": {
     "@clerk/nextjs": "^6.33.3",
     "@dev-team-fall-25/server": "workspace:*",
