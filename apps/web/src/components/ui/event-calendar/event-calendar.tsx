@@ -61,7 +61,7 @@ export function EventCalendar({
   onEventUpdate,
   onEventDelete,
   className,
-  initialView = "month",
+  initialView = "week",
 }: EventCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>(initialView);
@@ -227,7 +227,7 @@ export function EventCalendar({
       const start = startOfWeek(currentDate, { weekStartsOn: 0 });
       const end = endOfWeek(currentDate, { weekStartsOn: 0 });
       if (isSameMonth(start, end)) {
-        return format(start, "MMMM yyyy");
+        return format(start, "MMMM yyyy"); // returns like "October 2025" (header)
       } else {
         return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
       }
@@ -314,7 +314,7 @@ export function EventCalendar({
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="gap-1.5 max-[479px]:h-8">
                   <span>
@@ -346,7 +346,7 @@ export function EventCalendar({
                   Agenda <DropdownMenuShortcut>A</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
             <Button
               className="max-[479px]:aspect-square max-[479px]:p-0!"
               size="sm"

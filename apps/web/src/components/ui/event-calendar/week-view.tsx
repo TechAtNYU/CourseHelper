@@ -224,12 +224,13 @@ export function WeekView({
             <span className="sm:hidden" aria-hidden="true">
               {format(day, "E")[0]} {format(day, "d")}
             </span>
-            <span className="max-sm:hidden">{format(day, "EEE dd")}</span>
+            <span className="max-sm:hidden">{format(day, "EEEE")}</span>
+            {/* <span className="max-sm:hidden">{format(day, "EEE dd")}</span> */}
           </div>
         ))}
       </div>
 
-      {showAllDaySection && (
+      {/* {showAllDaySection && (
         <div className="border-border/70 bg-muted/50 border-b">
           <div className="grid grid-cols-8">
             <div className="border-border/70 relative border-r">
@@ -275,7 +276,7 @@ export function WeekView({
                         isLastDay={isLastDay}
                       >
                         {/* Show title if it's the first day of the event or the first visible day in the week */}
-                        <div
+                        {/* <div
                           className={cn(
                             "truncate",
                             !shouldShowTitle && "invisible",
@@ -292,7 +293,7 @@ export function WeekView({
             })}
           </div>
         </div>
-      )}
+      )} */} 
 
       <div className="grid flex-1 grid-cols-8 overflow-hidden">
         <div className="border-border/70 grid auto-cols-fr border-r">
