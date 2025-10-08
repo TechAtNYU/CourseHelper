@@ -34,21 +34,20 @@ export const addUserCourseOffering = protectedMutation({
   },
 });
 
-export const setAlternativeCourseOffering = protectedMutation({
+export const updateUserCourseOffering = protectedMutation({
   args: {
     id: v.id("userCourseOfferings"),
-    alternativeOf: v.id("userCourseOfferings"),
+    ...omit(userCourseOfferings, ["userId"]),
   },
   handler: async (ctx, args) => {
-    const userOffering = await ctx.db.get(args.id);
+    const { id, ...updates } = args;
+    const userOffering = await ctx.db.get(id);
 
     if (!userOffering || userOffering.userId !== ctx.user.subject) {
       throw new Error("User course offering not found or unauthorized");
     }
 
-    return await ctx.db.patch(args.id, {
-      alternativeOf: args.alternativeOf,
-    });
+    return await ctx.db.patch(args.id, updates);
   },
 });
 

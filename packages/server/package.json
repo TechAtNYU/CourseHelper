@@ -9,9 +9,9 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
-    "convex": "^1.27.3",
+    "convex": "^1.27.4",
     "convex-helpers": "^0.1.104",
-    "zod": "^4.1.11"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
