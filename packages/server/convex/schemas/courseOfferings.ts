@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 
 const courseOfferings = {
-  courseId: v.id("courses"),
+  course: v.string(), // course code
   title: v.string(),
   section: v.string(),
   year: v.number(), // 2025
@@ -31,7 +31,7 @@ const courseOfferings = {
     v.literal("closed"),
     v.literal("waitlist"),
   ),
-  waitlistNum: v.number(),
+  waitlistNum: v.optional(v.number()),
 };
 
 const userCourseOfferings = {
