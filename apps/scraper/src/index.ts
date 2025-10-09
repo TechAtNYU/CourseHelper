@@ -1,16 +1,16 @@
-import {
+import type {
   ZUpsertPrerequisites,
   ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
+import type z from "zod";
 import getDB from "./drizzle";
 import { errorLogs, jobs } from "./drizzle/schema";
 import { ConvexApi } from "./lib/convex";
 import { JobError, type JobMessage } from "./lib/queue";
 import { discoverCourses, scrapeCourse } from "./modules/courses";
 import { discoverPrograms, scrapeProgram } from "./modules/programs";
-import z from "zod";
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 

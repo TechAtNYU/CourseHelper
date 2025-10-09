@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/correctness/noUnusedFunctionParameters: bypass for now */
 import type {
-  ZUpsertPrerequisites,
   ZUpsertCourse,
+  ZUpsertPrerequisites,
 } from "@dev-team-fall-25/server/convex/http";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type * as z from "zod/mini";
