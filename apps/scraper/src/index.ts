@@ -1,8 +1,13 @@
+import {
+  ZCreatePrerequisites,
+  ZCreateRequirements,
+} from "@dev-team-fall-25/server/convex/http";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import createDB from "./drizzle";
-import { jobs } from "./drizzle/schema";
-import { type JobMessage } from "./lib/queue";
+import { errorLogs, jobs } from "./drizzle/schema";
+import { ConvexApi } from "./lib/convex";
+import type { JobError, JobMessage } from "./lib/queue";
 import { discoverCourses, scrapeCourse } from "./modules/courses";
 import { discoverPrograms, scrapeProgram } from "./modules/programs";
 
@@ -52,6 +57,10 @@ export default {
     ctx: ExecutionContext,
   ) {
     const db = createDB(env);
+    const convex = new ConvexApi({
+      baseUrl: env.CONVEX_SITE_URL,
+      apiKey: env.CONVEX_API_KEY,
+    });
 
     for (const message of batch.messages) {
       const { jobId } = message.body;
@@ -108,10 +117,51 @@ export default {
               }
               case "program": {
                 const res = await scrapeProgram(job.url, db, env);
+
+                const programId = await convex.upsertProgram(res.program);
+
+                if (!programId) {
+                  const error = new Error(
+                    "Failed to upsert program: no ID returned",
+                  ) as JobError;
+                  error.type = "validation";
+                  throw error;
+                }
+                const newRequirements = ZCreateRequirements.parse(
+                  res.requirements.map((req) => ({
+                    ...req,
+                    programId: programId,
+                  })),
+                );
+
+                if (res.requirements.length > 0) {
+                  await convex.createRequirements(newRequirements);
+                }
                 break;
               }
               case "course": {
                 const res = await scrapeCourse(job.url, db, env);
+
+                const courseId = await convex.upsertCourse(res.course);
+
+                if (!courseId) {
+                  const error = new Error(
+                    "Failed to upsert course: no ID returned",
+                  ) as JobError;
+                  error.type = "validation";
+                  throw error;
+                }
+
+                const newPrerequisites = ZCreatePrerequisites.parse(
+                  res.prerequisites.map((prereq) => ({
+                    ...prereq,
+                    courseId: courseId,
+                  })),
+                );
+
+                if (res.prerequisites.length > 0) {
+                  await convex.createPrerequisites(newPrerequisites);
+                }
                 break;
               }
             }
@@ -122,7 +172,17 @@ export default {
               .where(eq(jobs.id, jobId));
 
             message.ack();
-          } catch (_error) {
+          } catch (error) {
+            const jobError = error as JobError;
+
+            await db.insert(errorLogs).values({
+              jobId: jobId,
+              errorType: jobError.type || "unknown",
+              errorMessage: jobError.message || "Unknown error",
+              stackTrace: jobError.stack || null,
+              timestamp: new Date(),
+            });
+
             await db
               .update(jobs)
               .set({ status: "failed" })

@@ -25,25 +25,26 @@ export const createRequirementsInternal = internalMutation({
     requirements: v.array(requirements),
   },
   handler: async (ctx, args) => {
-    for (const newReq of args.requirements) {
-      if (newReq.type === "options") {
-        return await ctx.db.insert("requirements", {
+    return await Promise.all(
+      args.requirements.map((newReq) => {
+        if (newReq.type === "options") {
+          return ctx.db.insert("requirements", {
+            programId: newReq.programId,
+            isMajor: newReq.isMajor,
+            type: newReq.type,
+            courses: newReq.courses,
+            courseLevels: newReq.courseLevels,
+            creditsRequired: newReq.creditsRequired,
+          });
+        }
+        return ctx.db.insert("requirements", {
           programId: newReq.programId,
           isMajor: newReq.isMajor,
           type: newReq.type,
           courses: newReq.courses,
-          courseLevels: newReq.courseLevels,
-          creditsRequired: newReq.creditsRequired,
         });
-      } else {
-        return await ctx.db.insert("requirements", {
-          programId: newReq.programId,
-          isMajor: newReq.isMajor,
-          type: newReq.type,
-          courses: newReq.courses,
-        });
-      }
-    }
+      }),
+    );
   },
 });
 
