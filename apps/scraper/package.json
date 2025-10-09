@@ -16,13 +16,13 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
-    "hono": "^4.9.9",
-    "zod": "^4.1.11",
+    "hono": "^4.9.10",
+    "zod": "^4.1.12",
     "@dev-team-fall-25/server": "workspace:*"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
     "drizzle-kit": "^0.31.5",
-    "wrangler": "^4.41.0"
+    "wrangler": "^4.42.1"
   }
 }
