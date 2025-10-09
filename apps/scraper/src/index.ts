@@ -1,6 +1,6 @@
 import {
-  ZCreatePrerequisites,
-  ZCreateRequirements,
+  ZUpsertPrerequisites,
+  ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
@@ -127,7 +127,7 @@ export default {
                   error.type = "validation";
                   throw error;
                 }
-                const newRequirements = ZCreateRequirements.parse(
+                const newRequirements = ZUpsertRequirements.parse(
                   res.requirements.map((req) => ({
                     ...req,
                     programId: programId,
@@ -135,7 +135,7 @@ export default {
                 );
 
                 if (res.requirements.length > 0) {
-                  await convex.createRequirements(newRequirements);
+                  await convex.upsertRequirements(newRequirements);
                 }
                 break;
               }
@@ -152,7 +152,7 @@ export default {
                   throw error;
                 }
 
-                const newPrerequisites = ZCreatePrerequisites.parse(
+                const newPrerequisites = ZUpsertPrerequisites.parse(
                   res.prerequisites.map((prereq) => ({
                     ...prereq,
                     courseId: courseId,
@@ -160,7 +160,7 @@ export default {
                 );
 
                 if (res.prerequisites.length > 0) {
-                  await convex.createPrerequisites(newPrerequisites);
+                  await convex.upsertPrerequisites(newPrerequisites);
                 }
                 break;
               }

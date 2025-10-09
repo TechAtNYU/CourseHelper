@@ -1,14 +1,9 @@
 import {
-  ZCreatePrerequisites,
-  ZCreateRequirements,
-  ZDeleteCourse,
-  ZDeleteCourseOffering,
-  ZDeletePrerequisites,
-  ZDeleteProgram,
-  ZDeleteRequirements,
   ZUpsertCourse,
   ZUpsertCourseOffering,
+  ZUpsertPrerequisites,
   ZUpsertProgram,
+  ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
 import type * as z from "zod/mini";
 import { JobError } from "./queue";
@@ -60,10 +55,6 @@ export class ConvexApi {
     return result.id;
   }
 
-  async deleteCourse(data: z.infer<typeof ZDeleteCourse>) {
-    await this.request("/api/courses/delete", ZDeleteCourse, data);
-  }
-
   async upsertProgram(data: z.infer<typeof ZUpsertProgram>) {
     const result = await this.request(
       "/api/programs/upsert",
@@ -73,34 +64,22 @@ export class ConvexApi {
     return result.id;
   }
 
-  async deleteProgram(data: z.infer<typeof ZDeleteProgram>) {
-    await this.request("/api/programs/delete", ZDeleteProgram, data);
-  }
-
-  async createRequirements(data: z.infer<typeof ZCreateRequirements>) {
+  async upsertRequirements(data: z.infer<typeof ZUpsertRequirements>) {
     const result = await this.request(
-      "/api/requirements/create",
-      ZCreateRequirements,
+      "/api/requirements/upsert",
+      ZUpsertRequirements,
       data,
     );
     return result.id;
   }
 
-  async deleteRequirements(data: z.infer<typeof ZDeleteRequirements>) {
-    await this.request("/api/requirements/delete", ZDeleteRequirements, data);
-  }
-
-  async createPrerequisites(data: z.infer<typeof ZCreatePrerequisites>) {
+  async upsertPrerequisites(data: z.infer<typeof ZUpsertPrerequisites>) {
     const result = await this.request(
-      "/api/prerequisites/create",
-      ZCreatePrerequisites,
+      "/api/prerequisites/upsert",
+      ZUpsertPrerequisites,
       data,
     );
     return result.id;
-  }
-
-  async deletePrerequisites(data: z.infer<typeof ZDeletePrerequisites>) {
-    await this.request("/api/prerequisites/delete", ZDeletePrerequisites, data);
   }
 
   async upsertCourseOffering(data: z.infer<typeof ZUpsertCourseOffering>) {
@@ -110,13 +89,5 @@ export class ConvexApi {
       data,
     );
     return result.id;
-  }
-
-  async deleteCourseOffering(data: z.infer<typeof ZDeleteCourseOffering>) {
-    await this.request(
-      "/api/courseOfferings/delete",
-      ZDeleteCourseOffering,
-      data,
-    );
   }
 }
