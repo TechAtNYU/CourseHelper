@@ -4,7 +4,7 @@ import {
 } from "@dev-team-fall-25/server/convex/http";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import createDB from "./drizzle";
+import getDB from "./drizzle";
 import { errorLogs, jobs } from "./drizzle/schema";
 import { ConvexApi } from "./lib/convex";
 import { JobError, type JobMessage } from "./lib/queue";
@@ -15,7 +15,7 @@ import z from "zod";
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 app.get("/", async (c) => {
-  // const db = await createDB(c.env);
+  // const db = await getDB(c.env);
   // TODO: use hono to render a dashboard to monitor the scraping status
   return c.json({ status: "ok" });
 });
@@ -27,7 +27,7 @@ export default {
     // NOTE: the worker will not execute anything for now until the flag for toggle scrapers are set up
     return;
     // biome-ignore lint/correctness/noUnreachable: WIP
-    const db = createDB(env);
+    const db = getDB(env);
 
     // FIXME: need to handle when programsUr or coursesUrl is empty array
     const programsUrl = new URL("/programs", env.SCRAPING_BASE_URL).toString();
@@ -61,7 +61,7 @@ export default {
     env: CloudflareBindings,
     ctx: ExecutionContext,
   ) {
-    const db = createDB(env);
+    const db = getDB(env);
     const convex = new ConvexApi({
       baseUrl: env.CONVEX_SITE_URL,
       apiKey: env.CONVEX_API_KEY,

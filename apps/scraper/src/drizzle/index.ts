@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/d1";
 
-const createDB = (env: CloudflareBindings) => {
+const getDB = (env: CloudflareBindings) => {
   return drizzle(env.DB);
 };
 
-export default createDB;
+export default getDB;
