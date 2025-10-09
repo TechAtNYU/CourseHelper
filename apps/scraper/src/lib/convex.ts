@@ -1,16 +1,12 @@
 import {
-  ZCreatePrerequisite,
-  ZCreateRequirement,
-  ZDeleteCourse,
-  ZDeleteCourseOffering,
-  ZDeletePrerequisites,
-  ZDeleteProgram,
-  ZDeleteRequirements,
   ZUpsertCourse,
   ZUpsertCourseOffering,
+  ZUpsertPrerequisites,
   ZUpsertProgram,
+  ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
-import type * as z from "zod/mini";
+import * as z from "zod/mini";
+import { JobError } from "./queue";
 
 type ConvexApiConfig = {
   baseUrl: string;
@@ -29,7 +25,14 @@ export class ConvexApi {
     schema: T,
     data: z.infer<T>,
   ): Promise<{ success: boolean; id?: string }> {
-    const validated = schema.parse(data);
+    const { data: validated, success, error } = schema.safeParse(data);
+
+    if (!success) {
+      throw new JobError(
+        `Invalid data shape: \n${z.prettifyError(error)}`,
+        "validation",
+      );
+    }
 
     const response = await fetch(`${this.config.baseUrl}/${path}`, {
       method: "POST",
@@ -41,7 +44,10 @@ export class ConvexApi {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+      throw new JobError(
+        `HTTP ${response.status}: ${await response.text()}`,
+        "network",
+      );
     }
 
     return response.json();
@@ -56,10 +62,6 @@ export class ConvexApi {
     return result.id;
   }
 
-  async deleteCourse(data: z.infer<typeof ZDeleteCourse>) {
-    await this.request("/api/courses/delete", ZDeleteCourse, data);
-  }
-
   async upsertProgram(data: z.infer<typeof ZUpsertProgram>) {
     const result = await this.request(
       "/api/programs/upsert",
@@ -69,34 +71,22 @@ export class ConvexApi {
     return result.id;
   }
 
-  async deleteProgram(data: z.infer<typeof ZDeleteProgram>) {
-    await this.request("/api/programs/delete", ZDeleteProgram, data);
-  }
-
-  async createRequirement(data: z.infer<typeof ZCreateRequirement>) {
+  async upsertRequirements(data: z.infer<typeof ZUpsertRequirements>) {
     const result = await this.request(
-      "/api/requirements/create",
-      ZCreateRequirement,
+      "/api/requirements/upsert",
+      ZUpsertRequirements,
       data,
     );
     return result.id;
   }
 
-  async deleteRequirements(data: z.infer<typeof ZDeleteRequirements>) {
-    await this.request("/api/requirements/delete", ZDeleteRequirements, data);
-  }
-
-  async createPrerequisite(data: z.infer<typeof ZCreatePrerequisite>) {
+  async upsertPrerequisites(data: z.infer<typeof ZUpsertPrerequisites>) {
     const result = await this.request(
-      "/api/prerequisites/create",
-      ZCreatePrerequisite,
+      "/api/prerequisites/upsert",
+      ZUpsertPrerequisites,
       data,
     );
     return result.id;
-  }
-
-  async deletePrerequisites(data: z.infer<typeof ZDeletePrerequisites>) {
-    await this.request("/api/prerequisites/delete", ZDeletePrerequisites, data);
   }
 
   async upsertCourseOffering(data: z.infer<typeof ZUpsertCourseOffering>) {
@@ -106,13 +96,5 @@ export class ConvexApi {
       data,
     );
     return result.id;
-  }
-
-  async deleteCourseOffering(data: z.infer<typeof ZDeleteCourseOffering>) {
-    await this.request(
-      "/api/courseOfferings/delete",
-      ZDeleteCourseOffering,
-      data,
-    );
   }
 }

@@ -20,29 +20,31 @@ export const getRequirementsByProgram = protectedQuery({
   },
 });
 
-export const createRequirementInternal = internalMutation({
+export const createRequirementsInternal = internalMutation({
   args: {
-    requirement: requirements,
+    requirements: v.array(requirements),
   },
   handler: async (ctx, args) => {
-    const newReq = args.requirement;
-    if (newReq.type === "options") {
-      return await ctx.db.insert("requirements", {
-        programId: newReq.programId,
-        isMajor: newReq.isMajor,
-        type: newReq.type,
-        courses: newReq.courses,
-        courseLevels: newReq.courseLevels,
-        creditsRequired: newReq.creditsRequired,
-      });
-    } else {
-      return await ctx.db.insert("requirements", {
-        programId: newReq.programId,
-        isMajor: newReq.isMajor,
-        type: newReq.type,
-        courses: newReq.courses,
-      });
-    }
+    return await Promise.all(
+      args.requirements.map((newReq) => {
+        if (newReq.type === "options") {
+          return ctx.db.insert("requirements", {
+            programId: newReq.programId,
+            isMajor: newReq.isMajor,
+            type: newReq.type,
+            courses: newReq.courses,
+            courseLevels: newReq.courseLevels,
+            creditsRequired: newReq.creditsRequired,
+          });
+        }
+        return ctx.db.insert("requirements", {
+          programId: newReq.programId,
+          isMajor: newReq.isMajor,
+          type: newReq.type,
+          courses: newReq.courses,
+        });
+      }),
+    );
   },
 });
 
