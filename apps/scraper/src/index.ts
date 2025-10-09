@@ -23,6 +23,9 @@ export default {
   fetch: app.fetch,
 
   async scheduled(_event: ScheduledEvent, env: CloudflareBindings) {
+    // NOTE: the worker will not execute anything for now until the flag for toggle scrapers are set up
+    return;
+    // biome-ignore lint/correctness/noUnreachable: WIP
     const db = createDB(env);
 
     const programsUrl = new URL("/programs", env.SCRAPING_BASE_URL).toString();

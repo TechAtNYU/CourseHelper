@@ -3,7 +3,6 @@ import * as z from "zod/mini";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { apiAction } from "./helpers/auth";
-import { programs } from "./schemas/programs";
 
 export const ZUpsertCourse = z.object({
   program: z.string(),
