@@ -7,7 +7,7 @@ import { Hono } from "hono";
 import createDB from "./drizzle";
 import { errorLogs, jobs } from "./drizzle/schema";
 import { ConvexApi } from "./lib/convex";
-import type { JobError, JobMessage } from "./lib/queue";
+import { JobError, type JobMessage } from "./lib/queue";
 import { discoverCourses, scrapeCourse } from "./modules/courses";
 import { discoverPrograms, scrapeProgram } from "./modules/programs";
 
@@ -173,12 +173,17 @@ export default {
 
             message.ack();
           } catch (error) {
-            const jobError = error as JobError;
+            const jobError =
+              error instanceof JobError
+                ? error
+                : new JobError(
+                    error instanceof Error ? error.message : "Unknown error",
+                  );
 
             await db.insert(errorLogs).values({
               jobId: jobId,
-              errorType: jobError.type || "unknown",
-              errorMessage: jobError.message || "Unknown error",
+              errorType: jobError.type,
+              errorMessage: jobError.message,
               stackTrace: jobError.stack || null,
               timestamp: new Date(),
             });
