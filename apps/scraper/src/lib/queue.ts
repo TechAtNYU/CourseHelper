@@ -3,5 +3,5 @@ export type JobMessage = {
 };
 
 export interface JobError extends Error {
-  type: "network" | "parsing" | "validation" | "timeout";
+  type: "network" | "parsing" | "validation" | "timeout" | "unknown";
 }

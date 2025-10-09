@@ -11,6 +11,7 @@ import {
   ZUpsertProgram,
 } from "@dev-team-fall-25/server/convex/http";
 import type * as z from "zod/mini";
+import type { JobError } from "./queue";
 
 type ConvexApiConfig = {
   baseUrl: string;
@@ -41,7 +42,11 @@ export class ConvexApi {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+      const error = new Error(
+        `HTTP ${response.status}: ${await response.text()}`,
+      ) as JobError;
+      error.type = "network";
+      throw error;
     }
 
     return response.json();
