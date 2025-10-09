@@ -124,11 +124,10 @@ export default {
                 const programId = await convex.upsertProgram(res.program);
 
                 if (!programId) {
-                  const error = new Error(
+                  throw new JobError(
                     "Failed to upsert program: no ID returned",
-                  ) as JobError;
-                  error.type = "validation";
-                  throw error;
+                    "validation",
+                  );
                 }
                 const newRequirements = ZUpsertRequirements.parse(
                   res.requirements.map((req) => ({
@@ -148,11 +147,10 @@ export default {
                 const courseId = await convex.upsertCourse(res.course);
 
                 if (!courseId) {
-                  const error = new Error(
+                  throw new JobError(
                     "Failed to upsert course: no ID returned",
-                  ) as JobError;
-                  error.type = "validation";
-                  throw error;
+                    "validation",
+                  );
                 }
 
                 const newPrerequisites = ZUpsertPrerequisites.parse(
