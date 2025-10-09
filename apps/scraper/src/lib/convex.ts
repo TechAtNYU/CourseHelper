@@ -5,7 +5,7 @@ import {
   ZUpsertProgram,
   ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
-import type * as z from "zod/mini";
+import * as z from "zod/mini";
 import { JobError } from "./queue";
 
 type ConvexApiConfig = {
@@ -25,7 +25,14 @@ export class ConvexApi {
     schema: T,
     data: z.infer<T>,
   ): Promise<{ success: boolean; id?: string }> {
-    const validated = schema.parse(data);
+    const { data: validated, success, error } = schema.safeParse(data);
+
+    if (!success) {
+      throw new JobError(
+        `Invalid data shape: \n${z.prettifyError(error)}`,
+        "validation",
+      );
+    }
 
     const response = await fetch(`${this.config.baseUrl}/${path}`, {
       method: "POST",

@@ -10,6 +10,7 @@ import { ConvexApi } from "./lib/convex";
 import { JobError, type JobMessage } from "./lib/queue";
 import { discoverCourses, scrapeCourse } from "./modules/courses";
 import { discoverPrograms, scrapeProgram } from "./modules/programs";
+import z from "zod";
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
@@ -28,6 +29,7 @@ export default {
     // biome-ignore lint/correctness/noUnreachable: WIP
     const db = createDB(env);
 
+    // FIXME: need to handle when programsUr or coursesUrl is empty array
     const programsUrl = new URL("/programs", env.SCRAPING_BASE_URL).toString();
     const coursesUrl = new URL("/courses", env.SCRAPING_BASE_URL).toString();
 
@@ -129,12 +131,12 @@ export default {
                     "validation",
                   );
                 }
-                const newRequirements = ZUpsertRequirements.parse(
-                  res.requirements.map((req) => ({
-                    ...req,
-                    programId: programId,
-                  })),
-                );
+
+                // it is safe to assert the type here because the data will be validated before sending the request
+                const newRequirements = res.requirements.map((req) => ({
+                  ...req,
+                  programId: programId,
+                })) as z.infer<typeof ZUpsertRequirements>;
 
                 if (res.requirements.length > 0) {
                   await convex.upsertRequirements(newRequirements);
@@ -153,12 +155,11 @@ export default {
                   );
                 }
 
-                const newPrerequisites = ZUpsertPrerequisites.parse(
-                  res.prerequisites.map((prereq) => ({
-                    ...prereq,
-                    courseId: courseId,
-                  })),
-                );
+                // it is safe to assert the type here because the data will be validated before sending the request
+                const newPrerequisites = res.prerequisites.map((prereq) => ({
+                  ...prereq,
+                  courseId: courseId,
+                })) as z.infer<typeof ZUpsertPrerequisites>;
 
                 if (res.prerequisites.length > 0) {
                   await convex.upsertPrerequisites(newPrerequisites);
