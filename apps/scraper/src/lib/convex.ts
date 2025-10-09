@@ -1,6 +1,6 @@
 import {
-  ZCreatePrerequisite,
-  ZCreateRequirement,
+  ZCreatePrerequisites,
+  ZCreateRequirements,
   ZDeleteCourse,
   ZDeleteCourseOffering,
   ZDeletePrerequisites,
@@ -73,10 +73,10 @@ export class ConvexApi {
     await this.request("/api/programs/delete", ZDeleteProgram, data);
   }
 
-  async createRequirement(data: z.infer<typeof ZCreateRequirement>) {
+  async createRequirements(data: z.infer<typeof ZCreateRequirements>) {
     const result = await this.request(
       "/api/requirements/create",
-      ZCreateRequirement,
+      ZCreateRequirements,
       data,
     );
     return result.id;
@@ -86,10 +86,10 @@ export class ConvexApi {
     await this.request("/api/requirements/delete", ZDeleteRequirements, data);
   }
 
-  async createPrerequisite(data: z.infer<typeof ZCreatePrerequisite>) {
+  async createPrerequisites(data: z.infer<typeof ZCreatePrerequisites>) {
     const result = await this.request(
       "/api/prerequisites/create",
-      ZCreatePrerequisite,
+      ZCreatePrerequisites,
       data,
     );
     return result.id;

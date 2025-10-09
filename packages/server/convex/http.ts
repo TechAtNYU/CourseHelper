@@ -34,42 +34,44 @@ export const ZDeleteProgram = z.object({
   ),
 });
 
-export const ZCreateRequirement = z.discriminatedUnion("type", [
-  z.object({
-    programId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"programs">),
-    ),
-    isMajor: z.boolean(),
-    type: z.literal("required"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    programId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"programs">),
-    ),
-    isMajor: z.boolean(),
-    type: z.literal("alternative"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    programId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"programs">),
-    ),
-    isMajor: z.boolean(),
-    type: z.literal("options"),
-    courses: z.array(z.string()),
-    courseLevels: z.array(
-      z.object({
-        program: z.string(),
-        level: z.coerce.number(),
-      }),
-    ),
-    creditsRequired: z.number(),
-  }),
-]);
+export const ZCreateRequirements = z.array(
+  z.discriminatedUnion("type", [
+    z.object({
+      programId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"programs">),
+      ),
+      isMajor: z.boolean(),
+      type: z.literal("required"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      programId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"programs">),
+      ),
+      isMajor: z.boolean(),
+      type: z.literal("alternative"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      programId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"programs">),
+      ),
+      isMajor: z.boolean(),
+      type: z.literal("options"),
+      courses: z.array(z.string()),
+      courseLevels: z.array(
+        z.object({
+          program: z.string(),
+          level: z.coerce.number(),
+        }),
+      ),
+      creditsRequired: z.number(),
+    }),
+  ]),
+);
 
 export const ZDeleteRequirements = z.object({
   programId: z.pipe(
@@ -78,33 +80,35 @@ export const ZDeleteRequirements = z.object({
   ),
 });
 
-export const ZCreatePrerequisite = z.discriminatedUnion("type", [
-  z.object({
-    courseId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"courses">),
-    ),
-    type: z.literal("required"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    courseId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"courses">),
-    ),
-    type: z.literal("alternative"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    courseId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"courses">),
-    ),
-    type: z.literal("options"),
-    courses: z.array(z.string()),
-    creditsRequired: z.number(),
-  }),
-]);
+export const ZCreatePrerequisites = z.array(
+  z.discriminatedUnion("type", [
+    z.object({
+      courseId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"courses">),
+      ),
+      type: z.literal("required"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      courseId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"courses">),
+      ),
+      type: z.literal("alternative"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      courseId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"courses">),
+      ),
+      type: z.literal("options"),
+      courses: z.array(z.string()),
+      creditsRequired: z.number(),
+    }),
+  ]),
+);
 
 export const ZDeletePrerequisites = z.object({
   courseId: z.pipe(
@@ -210,9 +214,9 @@ http.route({
   method: "POST",
   handler: apiAction(async (ctx, body) => {
     const result = await ctx.runMutation(
-      internal.requirements.createRequirementInternal,
+      internal.requirements.createRequirementsInternal,
       {
-        requirement: body,
+        requirements: body,
       },
     );
 
@@ -220,7 +224,7 @@ http.route({
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZCreateRequirement),
+  }, ZCreateRequirements),
 });
 
 http.route({
@@ -244,9 +248,9 @@ http.route({
   method: "POST",
   handler: apiAction(async (ctx, body) => {
     const result = await ctx.runMutation(
-      internal.prerequisites.createPrerequisiteInternal,
+      internal.prerequisites.createPrerequisitesInternal,
       {
-        prereq: body,
+        prerequisites: body,
       },
     );
 
@@ -254,7 +258,7 @@ http.route({
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZCreatePrerequisite),
+  }, ZCreatePrerequisites),
 });
 
 http.route({

@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/correctness/noUnusedFunctionParameters: bypass for now */
 import type {
-  ZCreatePrerequisite,
+  ZCreatePrerequisites,
   ZUpsertProgram,
 } from "@dev-team-fall-25/server/convex/http";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
@@ -20,7 +20,7 @@ export async function scrapeCourse(
       ok: true;
       data: {
         course: z.infer<typeof ZUpsertProgram>;
-        prerequisites: z.infer<typeof ZCreatePrerequisite>;
+        prerequisites: z.infer<typeof ZCreatePrerequisites>;
       };
     }
   | {
