@@ -180,7 +180,13 @@ export function EventCalendar({
   };
 
   const handleEventSave = (event: CalendarEvent) => {
-    if (event.id) {
+    if(event.id && event.id=="preview"){
+      onEventAdd?.({
+        ...event,
+        id: "preview", 
+      });
+    }
+    else if (event.id) {
       onEventUpdate?.(event);
       // Show toast notification when an event is updated
       // toast(`Event "${event.title}" updated`, {
@@ -376,12 +382,12 @@ export function EventCalendar({
               onClick={() => {
                 // setSelectedEvent(null); // Ensure we're creating a new event
                 // setIsEventDialogOpen(true);
-                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"]);
+                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"], "emerald", false)
               }}
               onMouseEnter={() =>
-                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"])
+                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"], "emerald", true)
               }
-              onMouseLeave={() => setPreviewEvents([])}
+              onMouseLeave={() => handleEventDelete("preview")}
             >
               <PlusIcon
                 className="opacity-60 sm:-ms-1"
@@ -396,7 +402,7 @@ export function EventCalendar({
               onClick={() => {
                 // setSelectedEvent(null); // Ensure we're creating a new event
                 // setIsEventDialogOpen(true);
-                addClassToCalendar(handleEventSave, "French", ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],"rose");
+                addClassToCalendar(handleEventSave, "French", ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],"rose", false);
               }}
             >
               <PlusIcon
@@ -412,7 +418,7 @@ export function EventCalendar({
               onClick={() => {
                 // setSelectedEvent(null); // Ensure we're creating a new event
                 // setIsEventDialogOpen(true);
-                addClassToCalendar(handleEventSave, "CS", ["Monday 14 15 15 45", "Wednesday 8 0 10 0"], "sky");
+                addClassToCalendar(handleEventSave, "CS", ["Monday 14 15 15 45", "Wednesday 8 0 10 0"], "sky", false);
               }}
             >
               <PlusIcon

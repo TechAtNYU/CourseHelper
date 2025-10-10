@@ -79,9 +79,17 @@ export function addClassToCalendar(
   // startTime: Date,
   // endTime: Date,
   // location?: string, // optional
-  color: EventColor = "emerald"
+  color: EventColor = "emerald",
+  isPreview: boolean,
 ) {
   const slots: any[] = [];
+  let eventID="";
+  if (isPreview) {
+    eventID="preview"
+  } else {
+
+    // eventID=title+" "+timeSlots.concat(', ');
+  }
 
   for (const slot of timeSlots) {
     const parts = slot.split(" "); 
@@ -125,26 +133,9 @@ export function addClassToCalendar(
     slots.push({start:start, end:end})
   }
 
-  // const today = new Date();
-  // const dayOfWeek = today.getDay(); // 0 = Sunday, 3 = Wednesday
-  // const daysUntilWednesday = (3 - dayOfWeek + 7) % 7;
-  // const wednesday = new Date(today);
-  // wednesday.setDate(today.getDate() + daysUntilWednesday);
-
-  // const start = new Date(wednesday);
-  // start.setHours(9, 15, 0, 0);
-
-  // const end = new Date(wednesday);
-  // end.setHours(10, 15, 0, 0);
-
-  const eventTitle = "Basic Algorithms";
-
-  
- // This date is a Wednesday
-  // const thursday = new Date("2025-10-09");  // This date is a Thursday
-
   onSave({
-    id: "",
+    // id:"",
+    id: isPreview ? "preview" : "",
     title: title,
     description: "Lecture on basic algorithms",
     timeSlots: slots,
@@ -152,6 +143,7 @@ export function addClassToCalendar(
     location: "Room 101",
     color: color,
   });
+
 }
 
 interface EventDialogProps {
@@ -296,7 +288,6 @@ export function EventDialog({
     });
   };
 
-  
 
   const handleDelete = () => {
     if (event?.id) {

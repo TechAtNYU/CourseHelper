@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { CalendarEvent } from "./types";
 import { getBorderRadiusClasses, getEventColorClasses } from ".";
 
+
 // Using date-fns format with custom formatting:
 // 'h' - hours (1-12)
 // 'a' - am/pm
