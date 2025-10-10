@@ -70,6 +70,12 @@ export function EventCalendar({
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null,
   );
+  const [previewEvents, setPreviewEvents] = useState<CalendarEvent[]>([]);
+  
+  const mergedEvents = useMemo(
+    () => [...events, ...previewEvents],
+    [events, previewEvents]
+  );
 
   // Add keyboard shortcuts for view switching
   useEffect(() => {
@@ -372,6 +378,10 @@ export function EventCalendar({
                 // setIsEventDialogOpen(true);
                 addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"]);
               }}
+              onMouseEnter={() =>
+                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"])
+              }
+              onMouseLeave={() => setPreviewEvents([])}
             >
               <PlusIcon
                 className="opacity-60 sm:-ms-1"
