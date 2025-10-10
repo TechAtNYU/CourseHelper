@@ -83,6 +83,7 @@ interface EventItemProps {
   event: CalendarEvent;
   view: "month" | "week" | "day" | "agenda";
   isDragging?: boolean;
+  timeSlotIndex?: number;
   onClick?: (e: React.MouseEvent) => void;
   showTime?: boolean;
   currentTime?: Date; // For updating time during drag
@@ -111,6 +112,7 @@ export function EventItem({
   dndAttributes,
   onMouseDown,
   onTouchStart,
+  timeSlotIndex,
 }: EventItemProps) {
   const eventColor = event.color;
 
@@ -133,21 +135,74 @@ export function EventItem({
   //   return differenceInMinutes(displayEnd, displayStart);
   // }, [displayStart, displayEnd]);
   // Calculate event duration for the first time slot (example)
+  // const displayStart = useMemo(() => {
+  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
+  //   return currentTime || new Date(event.timeSlots[0].start);
+  // }, [currentTime, event.timeSlots]);
+
+  // const displayEnd = useMemo(() => {
+  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
+  //   return currentTime
+  //     ? new Date(
+  //         new Date(currentTime).getTime() +
+  //           (new Date(event.timeSlots[0].end).getTime() -
+  //             new Date(event.timeSlots[0].start).getTime())
+  //       )
+  //     : new Date(event.timeSlots[0].end);
+  // }, [currentTime, event.timeSlots]);
+
+  // const displayStart = useMemo(() => {
+  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
+  //   const index = timeSlotIndex ?? 1; // default to 0
+  //   return currentTime || new Date(event.timeSlots[index].start);
+  // }, [currentTime, event.timeSlots, timeSlotIndex]);
+
+  // const displayEnd = useMemo(() => {
+  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
+  //   const index = timeSlotIndex ?? 1;
+  //   return currentTime
+  //     ? new Date(
+  //         new Date(currentTime).getTime() +
+  //           (new Date(event.timeSlots[index].end).getTime() -
+  //             new Date(event.timeSlots[index].start).getTime())
+  //       )
+  //     : new Date(event.timeSlots[index].end);
+  // }, [currentTime, event.timeSlots, timeSlotIndex]);
+
+  // const displayStart = useMemo(() => {
+  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
+  //   const index = timeSlotIndex != null && timeSlotIndex < event.timeSlots.length ? timeSlotIndex : 1;
+  //   return new Date(event.timeSlots[index].start);
+  // }, [event.timeSlots, timeSlotIndex]);
+
+  // const displayEnd = useMemo(() => {
+  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
+  //   const index = timeSlotIndex != null && timeSlotIndex < event.timeSlots.length ? timeSlotIndex : 1;
+  //   return new Date(event.timeSlots[index].end);
+  // }, [event.timeSlots, timeSlotIndex]);
+
   const displayStart = useMemo(() => {
     if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-    return currentTime || new Date(event.timeSlots[0].start);
-  }, [currentTime, event.timeSlots]);
+    const index =
+      timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
+        ? timeSlotIndex
+        : 1; // default to first slot
+
+    console.log({ timeSlotIndex, timeSlotsLength: event.timeSlots.length });
+    return new Date(event.timeSlots[index].start);
+  }, [event.timeSlots, timeSlotIndex]);
 
   const displayEnd = useMemo(() => {
+    console.log(event);
     if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-    return currentTime
-      ? new Date(
-          new Date(currentTime).getTime() +
-            (new Date(event.timeSlots[0].end).getTime() -
-              new Date(event.timeSlots[0].start).getTime())
-        )
-      : new Date(event.timeSlots[0].end);
-  }, [currentTime, event.timeSlots]);
+    const index =
+      timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
+        ? timeSlotIndex
+        : 1; // default to first slot
+    
+    return new Date(event.timeSlots[index].end);
+  }, [event.timeSlots, timeSlotIndex]);
+
 
   // Calculate duration in minutes
   const durationMinutes = useMemo(() => {

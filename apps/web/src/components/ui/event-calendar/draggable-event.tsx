@@ -21,6 +21,7 @@ interface DraggableEventProps {
   isLastDay?: boolean;
   "aria-hidden"?: boolean | "true" | "false";
   draggable?: boolean;
+  timeSlotIndex: number;
 }
 
 export function DraggableEvent({
@@ -35,6 +36,7 @@ export function DraggableEvent({
   isLastDay = true,
   "aria-hidden": ariaHidden,
   draggable = false,
+  timeSlotIndex,
 }: DraggableEventProps) {
   if (!draggable) {
     return (
@@ -47,6 +49,7 @@ export function DraggableEvent({
           isLastDay={isLastDay}
           onClick={onClick}
           aria-hidden={ariaHidden}
+          timeSlotIndex={timeSlotIndex}
         />
       </div>
     );

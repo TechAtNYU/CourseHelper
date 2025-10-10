@@ -37,6 +37,7 @@ interface PositionedEvent {
   left: number;
   width: number;
   zIndex: number;
+  timeSlotIndex: number;
 }
 
 export function WeekView({
@@ -264,16 +265,75 @@ export function WeekView({
       const dayStart = startOfDay(day);
       const columns: { event: CalendarEvent; end: Date }[][] = [];
 
+      // sortedEvents.forEach(({ event, slot }) => {
+      //   const eventStart = new Date(slot.start);
+      //   const eventEnd = new Date(slot.end);
+
+      //   const adjustedStart = isSameDay(day, eventStart)
+      //     ? eventStart
+      //     : dayStart;
+      //   const adjustedEnd = isSameDay(day, eventEnd)
+      //     ? eventEnd
+      //     : addHours(dayStart, 24);
+
+      //   const startHour = getHours(adjustedStart) + getMinutes(adjustedStart) / 60;
+      //   const endHour = getHours(adjustedEnd) + getMinutes(adjustedEnd) / 60;
+
+      //   const top = (startHour - StartHour) * WeekCellsHeight;
+      //   const height = (endHour - startHour) * WeekCellsHeight;
+
+      //   // Find column
+      //   let columnIndex = 0;
+      //   let placed = false;
+
+      //   while (!placed) {
+      //     const col = columns[columnIndex] || [];
+      //     if (col.length === 0) {
+      //       columns[columnIndex] = col;
+      //       placed = true;
+      //     } else {
+      //       const overlaps = col.some((c) =>
+      //         areIntervalsOverlapping(
+      //           { start: adjustedStart, end: adjustedEnd },
+      //           {
+      //             start: new Date(c.event.timeSlots[0].start),
+      //             end: new Date(c.event.timeSlots[0].end),
+      //           }
+      //         )
+      //       );
+      //       if (!overlaps) {
+      //         placed = true;
+      //       } else {
+      //         columnIndex++;
+      //       }
+      //     }
+      //   }
+
+      //   const currentColumn = columns[columnIndex] || [];
+      //   columns[columnIndex] = currentColumn;
+      //   currentColumn.push({ event, end: adjustedEnd });
+
+      //   const width = columnIndex === 0 ? 1 : 0.9;
+      //   const left = columnIndex === 0 ? 0 : columnIndex * 0.1;
+
+      //   positionedEvents.push({
+      //     event,
+      //     top,
+      //     height,
+      //     left,
+      //     width,
+      //     zIndex: 10 + columnIndex,
+      //     timeSlotIndex: slotIndex,
+      //     // timeSlotIndex: 1,
+      //     // timeSlotIndex: event.timeSlots.indexOf(slot),
+      //   });
+      // });
       sortedEvents.forEach(({ event, slot }) => {
         const eventStart = new Date(slot.start);
         const eventEnd = new Date(slot.end);
 
-        const adjustedStart = isSameDay(day, eventStart)
-          ? eventStart
-          : dayStart;
-        const adjustedEnd = isSameDay(day, eventEnd)
-          ? eventEnd
-          : addHours(dayStart, 24);
+        const adjustedStart = isSameDay(day, eventStart) ? eventStart : dayStart;
+        const adjustedEnd = isSameDay(day, eventEnd) ? eventEnd : addHours(dayStart, 24);
 
         const startHour = getHours(adjustedStart) + getMinutes(adjustedStart) / 60;
         const endHour = getHours(adjustedEnd) + getMinutes(adjustedEnd) / 60;
@@ -281,10 +341,9 @@ export function WeekView({
         const top = (startHour - StartHour) * WeekCellsHeight;
         const height = (endHour - startHour) * WeekCellsHeight;
 
-        // Find column
+        // Find column logic...
         let columnIndex = 0;
         let placed = false;
-
         while (!placed) {
           const col = columns[columnIndex] || [];
           if (col.length === 0) {
@@ -312,18 +371,21 @@ export function WeekView({
         columns[columnIndex] = currentColumn;
         currentColumn.push({ event, end: adjustedEnd });
 
-        const width = columnIndex === 0 ? 1 : 0.9;
-        const left = columnIndex === 0 ? 0 : columnIndex * 0.1;
+        // ✅ Define slotIndex here
+        const slotIndex = event.timeSlots.indexOf(slot);
+        console.log("SLOT: " + slotIndex)
 
         positionedEvents.push({
           event,
           top,
           height,
-          left,
-          width,
+          left: columnIndex === 0 ? 0 : columnIndex * 0.1,
+          width: columnIndex === 0 ? 1 : 0.9,
           zIndex: 10 + columnIndex,
+          timeSlotIndex: slotIndex, // use correct slot
         });
       });
+      //  console.log("EVENTs 0: " + positionedEvents[0].timeSlotIndex)
 
       return positionedEvents;
     });
@@ -451,6 +513,7 @@ export function WeekView({
           >
             {/* Positioned events */}
             {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
+              
               <div
                 key={positionedEvent.event.id}
                 className="absolute z-10 px-0.5"
@@ -466,6 +529,7 @@ export function WeekView({
                 <div className="size-full">
                   <DraggableEvent
                     event={positionedEvent.event}
+                    timeSlotIndex={positionedEvent.timeSlotIndex}
                     view="week"
                     onClick={(e) => handleEventClick(positionedEvent.event, e)}
                     showTime
