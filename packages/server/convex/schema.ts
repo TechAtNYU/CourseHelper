@@ -1,4 +1,5 @@
 import { defineSchema, defineTable } from "convex/server";
+import { appConfigs } from "./schemas/appConfigs";
 import {
   courseOfferings,
   userCourseOfferings,
@@ -8,6 +9,7 @@ import { programs, requirements } from "./schemas/programs";
 import { students } from "./schemas/students";
 
 export default defineSchema({
+  appConfigs: defineTable(appConfigs).index("by_key", ["key"]),
   programs: defineTable(programs).index("by_program_name", ["name"]),
   requirements: defineTable(requirements).index("by_program", ["programId"]),
   courses: defineTable(courses)
