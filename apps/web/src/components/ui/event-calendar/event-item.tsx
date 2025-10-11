@@ -60,7 +60,7 @@ function EventWrapper({
   // const isEventInPast = isPast(displayEnd);
 
   return (
-    <button
+    <div
       className={cn(
         "focus-visible:border-ring focus-visible:ring-ring/50 flex size-full overflow-hidden px-1 text-left font-medium backdrop-blur-md transition outline-none select-none focus-visible:ring-[3px] data-dragging:cursor-grabbing data-dragging:shadow-lg data-past-event:line-through sm:px-2",
         getEventColorClasses(event.color),
@@ -69,14 +69,14 @@ function EventWrapper({
       )}
       data-dragging={isDragging || undefined}
       data-past-event={isEventInPast || undefined}
-      onClick={onClick}
+      // onClick={onClick}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
       {...dndListeners}
       {...dndAttributes}
     >
       {children}
-    </button>
+    </div>
   );
 }
 
@@ -86,6 +86,7 @@ interface EventItemProps {
   isDragging?: boolean;
   timeSlotIndex?: number;
   onClick?: (e: React.MouseEvent) => void;
+  onInfoClick?: (event: CalendarEvent) => void;
   showTime?: boolean;
   currentTime?: Date; // For updating time during drag
   isFirstDay?: boolean;
@@ -170,8 +171,8 @@ export function EventItem({
       isDragging={isDragging}
       onClick={onClick}
       className={cn(
-        "py-1",
-        durationMinutes < 45 ? "items-center" : "flex-col",
+        "py-1 flex flex-col h-full group", // "group" is important for hover targeting
+        durationMinutes < 45 ? "items-center" : "items-start",
         view === "week" ? "text-[10px] sm:text-xs" : "text-xs",
         className,
       )}
@@ -198,6 +199,30 @@ export function EventItem({
               {getEventTime()}
             </div>
           )}
+
+          {/* Buttons container pushed to bottom and hidden by default */}
+          <div className="mt-auto flex justify-center gap-1  opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              className="px-2 py-1 text-xs bg-blue-500 text-white rounded"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick?.(e);
+                // onInfoClick?.(event);
+                console.log("Info clicked");
+              }}
+            >
+              Info
+            </button>
+            <button
+              className="px-2 py-1 text-xs bg-red-500 text-white rounded"
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Delete clicked");
+              }}
+            >
+              Delete
+            </button>
+          </div>
         </>
       )}
     </EventWrapper>
