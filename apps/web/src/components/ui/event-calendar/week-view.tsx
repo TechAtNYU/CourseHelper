@@ -28,6 +28,7 @@ interface WeekViewProps {
   events: CalendarEvent[];
   onEventSelect: (event: CalendarEvent) => void;
   onEventCreate: (startTime: Date) => void;
+  onEventDelete?: (eventId: string) => void;
 }
 
 interface PositionedEvent {
@@ -45,6 +46,7 @@ export function WeekView({
   events,
   onEventSelect,
   onEventCreate,
+  onEventDelete
 }: WeekViewProps) {
 
   // const [previewEvents, setPreviewEvents] = useState<CalendarEvent[]>([]);
@@ -328,7 +330,7 @@ export function WeekView({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="size-full">
-                  <DraggableEvent
+                  {/* <DraggableEvent
                     event={positionedEvent.event}
                     timeSlotIndex={positionedEvent.timeSlotIndex}
                     view="week"
@@ -336,6 +338,16 @@ export function WeekView({
                     showTime
                     height={positionedEvent.height}
                     draggable={false}
+                  /> */}
+                  <EventItem
+                    event={positionedEvent.event}
+                    timeSlotIndex={positionedEvent.timeSlotIndex}
+                    view="week"
+                    onClick={(e) => handleEventClick(positionedEvent.event, e)}
+                    showTime
+                    onDelete={onEventDelete}
+                    // height={positionedEvent.height}
+                    // draggable={false}
                   />
                 </div>
               </div>

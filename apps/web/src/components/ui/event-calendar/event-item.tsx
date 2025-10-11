@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { CalendarEvent } from "./types";
 import { getBorderRadiusClasses, getEventColorClasses } from ".";
+// import handleEventDelete from './event-calendar';
 
 
 // Using date-fns format with custom formatting:
@@ -87,6 +88,7 @@ interface EventItemProps {
   timeSlotIndex?: number;
   onClick?: (e: React.MouseEvent) => void;
   onInfoClick?: (event: CalendarEvent) => void;
+  onDelete?: (eventId: string) => void;
   showTime?: boolean;
   currentTime?: Date; // For updating time during drag
   isFirstDay?: boolean;
@@ -104,6 +106,7 @@ export function EventItem({
   view,
   isDragging,
   onClick,
+  onDelete,
   showTime,
   currentTime,
   isFirstDay = true,
@@ -218,6 +221,7 @@ export function EventItem({
               onClick={(e) => {
                 e.stopPropagation();
                 console.log("Delete clicked");
+                onDelete?.(event.id);
               }}
             >
               Delete

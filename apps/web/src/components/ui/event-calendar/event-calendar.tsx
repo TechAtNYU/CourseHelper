@@ -332,6 +332,7 @@ export function EventCalendar({
               events={events}
               onEventSelect={handleEventSelect}
               onEventCreate={handleEventCreate}
+              onEventDelete={handleEventDelete}
             />
           }
           
