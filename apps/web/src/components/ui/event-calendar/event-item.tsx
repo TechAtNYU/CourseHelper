@@ -117,77 +117,12 @@ export function EventItem({
 }: EventItemProps) {
   const eventColor = event.color;
 
-  // Use the provided currentTime (for dragging) or the event's actual time
-  // const displayStart = useMemo(() => {
-  //   return currentTime || new Date(event.start);
-  // }, [currentTime, event.start]);
-
-  // const displayEnd = useMemo(() => {
-  //   return currentTime
-  //     ? new Date(
-  //         new Date(currentTime).getTime() +
-  //           (new Date(event.end).getTime() - new Date(event.start).getTime()),
-  //       )
-  //     : new Date(event.end);
-  // }, [currentTime, event.start, event.end]);
-
-  // // Calculate event duration in minutes
-  // const durationMinutes = useMemo(() => {
-  //   return differenceInMinutes(displayEnd, displayStart);
-  // }, [displayStart, displayEnd]);
-  // Calculate event duration for the first time slot (example)
-  // const displayStart = useMemo(() => {
-  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-  //   return currentTime || new Date(event.timeSlots[0].start);
-  // }, [currentTime, event.timeSlots]);
-
-  // const displayEnd = useMemo(() => {
-  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-  //   return currentTime
-  //     ? new Date(
-  //         new Date(currentTime).getTime() +
-  //           (new Date(event.timeSlots[0].end).getTime() -
-  //             new Date(event.timeSlots[0].start).getTime())
-  //       )
-  //     : new Date(event.timeSlots[0].end);
-  // }, [currentTime, event.timeSlots]);
-
-  // const displayStart = useMemo(() => {
-  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-  //   const index = timeSlotIndex ?? 1; // default to 0
-  //   return currentTime || new Date(event.timeSlots[index].start);
-  // }, [currentTime, event.timeSlots, timeSlotIndex]);
-
-  // const displayEnd = useMemo(() => {
-  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-  //   const index = timeSlotIndex ?? 1;
-  //   return currentTime
-  //     ? new Date(
-  //         new Date(currentTime).getTime() +
-  //           (new Date(event.timeSlots[index].end).getTime() -
-  //             new Date(event.timeSlots[index].start).getTime())
-  //       )
-  //     : new Date(event.timeSlots[index].end);
-  // }, [currentTime, event.timeSlots, timeSlotIndex]);
-
-  // const displayStart = useMemo(() => {
-  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-  //   const index = timeSlotIndex != null && timeSlotIndex < event.timeSlots.length ? timeSlotIndex : 1;
-  //   return new Date(event.timeSlots[index].start);
-  // }, [event.timeSlots, timeSlotIndex]);
-
-  // const displayEnd = useMemo(() => {
-  //   if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
-  //   const index = timeSlotIndex != null && timeSlotIndex < event.timeSlots.length ? timeSlotIndex : 1;
-  //   return new Date(event.timeSlots[index].end);
-  // }, [event.timeSlots, timeSlotIndex]);
-
   const displayStart = useMemo(() => {
     if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
     const index =
       timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
         ? timeSlotIndex
-        : 1; // default to first slot
+        : 0; // default to first slot
 
     console.log({ timeSlotIndex, timeSlotsLength: event.timeSlots.length });
     return new Date(event.timeSlots[index].start);
@@ -199,7 +134,7 @@ export function EventItem({
     const index =
       timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
         ? timeSlotIndex
-        : 1; // default to first slot
+        : 0; // default to first slot
     
     return new Date(event.timeSlots[index].end);
   }, [event.timeSlots, timeSlotIndex]);
@@ -250,49 +185,6 @@ export function EventItem({
             )}
             {event.title}
           </span>
-        )}
-      </EventWrapper>
-    );
-  }
-
-  if (view === "week" || view === "day") {
-    return (
-      <EventWrapper
-        event={event}
-        isFirstDay={isFirstDay}
-        isLastDay={isLastDay}
-        isDragging={isDragging}
-        onClick={onClick}
-        className={cn(
-          "py-1",
-          durationMinutes < 45 ? "items-center" : "flex-col",
-          view === "week" ? "text-[10px] sm:text-xs" : "text-xs",
-          className,
-        )}
-        currentTime={currentTime}
-        dndListeners={dndListeners}
-        dndAttributes={dndAttributes}
-        onMouseDown={onMouseDown}
-        onTouchStart={onTouchStart}
-      >
-        {durationMinutes < 45 ? (
-          <div className="truncate">
-            {event.title}{" "}
-            {showTime && (
-              <span className="opacity-70">
-                {formatTimeWithOptionalMinutes(displayStart)}
-              </span>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="truncate font-medium">{event.title}</div>
-            {showTime && (
-              <div className="truncate font-normal opacity-70 sm:text-[11px]">
-                {getEventTime()}
-              </div>
-            )}
-          </>
         )}
       </EventWrapper>
     );

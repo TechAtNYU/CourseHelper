@@ -33,9 +33,7 @@ import {
   AgendaView,
   addHoursToDate,
   CalendarDndProvider,
-  DayView,
   EventDialog,
-  // MonthView,
   WeekView,
 } from ".";
 import {
@@ -126,7 +124,7 @@ export function EventCalendar({
     },
     {
       id: "french-tth",
-      title: "French",
+      title: "Math",
       color: "rose",
       times: ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],
       selected: false,
@@ -204,6 +202,7 @@ export function EventCalendar({
     setSelectedEvent(null);
   };
 
+  // TODO: fix so that titles are unique to the sections!!! Right now there is a bug 
   const handleEventDelete = (eventId: string) => {
     const deletedEvent = events.find((e) => e.id === eventId);
     onEventDelete?.(eventId);
@@ -319,37 +318,14 @@ export function EventCalendar({
         </div>
 
         <div className="flex flex-1 flex-col">
-          {/* {view === "month" && (
-            <MonthView
+          {<WeekView
               currentDate={currentDate}
               events={events}
               onEventSelect={handleEventSelect}
               onEventCreate={handleEventCreate}
             />
-          )} */}
-          {view === "week" && (
-            <WeekView
-              currentDate={currentDate}
-              events={events}
-              onEventSelect={handleEventSelect}
-              onEventCreate={handleEventCreate}
-            />
-          )}
-          {view === "day" && (
-            <DayView
-              currentDate={currentDate}
-              events={events}
-              onEventSelect={handleEventSelect}
-              onEventCreate={handleEventCreate}
-            />
-          )}
-          {view === "agenda" && (
-            <AgendaView
-              currentDate={currentDate}
-              events={events}
-              onEventSelect={handleEventSelect}
-            />
-          )}
+          }
+          
         </div>
 
         <EventDialog
