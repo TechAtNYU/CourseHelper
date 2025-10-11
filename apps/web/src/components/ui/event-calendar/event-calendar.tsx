@@ -56,6 +56,14 @@ export interface EventCalendarProps {
   initialView?: CalendarView;
 }
 
+interface Class {
+  id: string; // unique identifier
+  title: string;
+  color: string;
+  times: string[]; // e.g. ["Monday 9 15 11 15"]
+  selected: boolean;
+}
+
 export function EventCalendar({
   events = [],
   onEventAdd,
@@ -70,13 +78,7 @@ export function EventCalendar({
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null,
   );
-  const [previewEvents, setPreviewEvents] = useState<CalendarEvent[]>([]);
   
-  const mergedEvents = useMemo(
-    () => [...events, ...previewEvents],
-    [events, previewEvents]
-  );
-
   // Add keyboard shortcuts for view switching
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -114,35 +116,29 @@ export function EventCalendar({
     };
   }, [isEventDialogOpen]);
 
-  const handlePrevious = () => {
-    if (view === "month") {
-      setCurrentDate(subMonths(currentDate, 1));
-    } else if (view === "week") {
-      setCurrentDate(subWeeks(currentDate, 1));
-    } else if (view === "day") {
-      setCurrentDate(addDays(currentDate, -1));
-    } else if (view === "agenda") {
-      // For agenda view, go back 30 days (a full month)
-      setCurrentDate(addDays(currentDate, -AgendaDaysToShow));
-    }
-  };
-
-  const handleNext = () => {
-    if (view === "month") {
-      setCurrentDate(addMonths(currentDate, 1));
-    } else if (view === "week") {
-      setCurrentDate(addWeeks(currentDate, 1));
-    } else if (view === "day") {
-      setCurrentDate(addDays(currentDate, 1));
-    } else if (view === "agenda") {
-      // For agenda view, go forward 30 days (a full month)
-      setCurrentDate(addDays(currentDate, AgendaDaysToShow));
-    }
-  };
-
-  const handleToday = () => {
-    setCurrentDate(new Date());
-  };
+  const [classes, setClassesState] = useState<Class[]>([
+    {
+      id: "math-mt",
+      title: "Math",
+      color: "emerald",
+      times: ["Monday 9 15 11 15", "Tuesday 8 0 10 0"],
+      selected: false,
+    },
+    {
+      id: "french-tth",
+      title: "French",
+      color: "rose",
+      times: ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],
+      selected: false,
+    },
+    {
+      id: "cs-mw",
+      title: "CS",
+      color: "sky",
+      times: ["Monday 14 15 15 45", "Wednesday 8 0 10 0"],
+      selected: false,
+    },
+  ]);
 
   const handleEventSelect = (event: CalendarEvent) => {
     console.log("Event selected:", event); // Debug log
@@ -214,12 +210,15 @@ export function EventCalendar({
     setIsEventDialogOpen(false);
     setSelectedEvent(null);
 
-    // Show toast notification when an event is deleted
-    if (deletedEvent) {
-      // toast(`Event "${deletedEvent.title}" deleted`, {
-      //   description: format(new Date(deletedEvent.start), "MMM d, yyyy"),
-      //   position: "bottom-left",
-      // });
+    // If the deleted event is a class (not a user-created event)
+    if (deletedEvent?.id !== "preview") {
+      setClassesState((prev) =>
+        prev.map((cls) =>
+          cls.title === deletedEvent?.title
+            ? { ...cls, selected: false } // re-enable button
+            : cls
+        )
+      );
     }
   };
 
@@ -232,46 +231,6 @@ export function EventCalendar({
     //   position: "bottom-left",
     // });
   };
-
-  // const viewTitle = useMemo(() => {
-  //   if (view === "month") {
-  //     return format(currentDate, "MMMM yyyy");
-  //   } else if (view === "week") {
-  //     const start = startOfWeek(currentDate, { weekStartsOn: 0 });
-  //     const end = endOfWeek(currentDate, { weekStartsOn: 0 });
-  //     if (isSameMonth(start, end)) {
-  //       return format(start, "MMMM yyyy"); // returns like "October 2025" (header)
-  //     } else {
-  //       return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
-  //     }
-  //   } else if (view === "day") {
-  //     return (
-  //       <>
-  //         <span className="min-[480px]:hidden" aria-hidden="true">
-  //           {format(currentDate, "MMM d, yyyy")}
-  //         </span>
-  //         <span className="max-[479px]:hidden min-md:hidden" aria-hidden="true">
-  //           {format(currentDate, "MMMM d, yyyy")}
-  //         </span>
-  //         <span className="max-md:hidden">
-  //           {format(currentDate, "EEE MMMM d, yyyy")}
-  //         </span>
-  //       </>
-  //     );
-  //   } else if (view === "agenda") {
-  //     // Show the month range for agenda view
-  //     const start = currentDate;
-  //     const end = addDays(currentDate, AgendaDaysToShow - 1);
-
-  //     if (isSameMonth(start, end)) {
-  //       return format(start, "MMMM yyyy");
-  //     } else {
-  //       return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
-  //     }
-  //   } else {
-  //     return format(currentDate, "MMMM yyyy");
-  //   }
-  // }, [currentDate, view]);
 
   return (
     <div
@@ -292,74 +251,11 @@ export function EventCalendar({
           )}
         >
           <div className="flex items-center gap-1 sm:gap-4">
-            {/* <Button
-              variant="outline"
-              className="max-[479px]:aspect-square max-[479px]:p-0!"
-              onClick={handleToday}
-            >
-              <RiCalendarCheckLine
-                className="min-[480px]:hidden"
-                size={16}
-                aria-hidden="true"
-              />
-              <span className="max-[479px]:sr-only">Today</span>
-            </Button> */}
-            {/* <div className="flex items-center sm:gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handlePrevious}
-                aria-label="Previous"
-              >
-                <ChevronLeftIcon size={16} aria-hidden="true" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleNext}
-                aria-label="Next"
-              >
-                <ChevronRightIcon size={16} aria-hidden="true" />
-              </Button>
-            </div> */}
             <h2 className="text-sm font-semibold sm:text-lg md:text-xl">
               Spring 2026
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-1.5 max-[479px]:h-8">
-                  <span>
-                    <span className="min-[480px]:hidden" aria-hidden="true">
-                      {view.charAt(0).toUpperCase()}
-                    </span>
-                    <span className="max-[479px]:sr-only">
-                      {view.charAt(0).toUpperCase() + view.slice(1)}
-                    </span>
-                  </span>
-                  <ChevronDownIcon
-                    className="-me-1 opacity-60"
-                    size={16}
-                    aria-hidden="true"
-                  />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-32">
-                <DropdownMenuItem onClick={() => setView("month")}>
-                  Month <DropdownMenuShortcut>M</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setView("week")}>
-                  Week <DropdownMenuShortcut>W</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setView("day")}>
-                  Day <DropdownMenuShortcut>D</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setView("agenda")}>
-                  Agenda <DropdownMenuShortcut>A</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
             <Button
               className="max-[479px]:aspect-square max-[479px]:p-0!"
               size="sm"
@@ -376,58 +272,49 @@ export function EventCalendar({
               <span className="max-sm:sr-only">New event</span>
             </Button>
 
-             <Button
-              className="max-[479px]:aspect-square max-[479px]:p-0!"
-              size="sm"
-              onClick={() => {
-                // setSelectedEvent(null); // Ensure we're creating a new event
-                // setIsEventDialogOpen(true);
-                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"], "emerald", false)
-              }}
-              onMouseEnter={() =>
-                addClassToCalendar(handleEventSave, "Math", ["Monday 9 15 11 15", "Tuesday 8 0 10 0"], "emerald", true)
-              }
-              onMouseLeave={() => handleEventDelete("preview")}
-            >
-              <PlusIcon
-                className="opacity-60 sm:-ms-1"
-                size={16}
-                aria-hidden="true"
-              />
-              <span className="max-sm:sr-only">Math M/T</span>
-            </Button>
-            <Button
-              className="max-[479px]:aspect-square max-[479px]:p-0!"
-              size="sm"
-              onClick={() => {
-                // setSelectedEvent(null); // Ensure we're creating a new event
-                // setIsEventDialogOpen(true);
-                addClassToCalendar(handleEventSave, "French", ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],"rose", false);
-              }}
-            >
-              <PlusIcon
-                className="opacity-60 sm:-ms-1"
-                size={16}
-                aria-hidden="true"
-              />
-              <span className="max-sm:sr-only">French T/Th</span>
-            </Button>
-            <Button
-              className="max-[479px]:aspect-square max-[479px]:p-0!"
-              size="sm"
-              onClick={() => {
-                // setSelectedEvent(null); // Ensure we're creating a new event
-                // setIsEventDialogOpen(true);
-                addClassToCalendar(handleEventSave, "CS", ["Monday 14 15 15 45", "Wednesday 8 0 10 0"], "sky", false);
-              }}
-            >
-              <PlusIcon
-                className="opacity-60 sm:-ms-1"
-                size={16}
-                aria-hidden="true"
-              />
-              <span className="max-sm:sr-only">CS M/W</span>
-            </Button>
+             <div className="flex items-center gap-2">
+              {classes.map((cls) => {
+
+                return (
+                  <Button
+                    key={cls.id}
+                    className="max-[479px]:aspect-square max-[479px]:p-0!"
+                    size="sm"
+                    disabled={cls.selected} 
+                    onClick={() => 
+                      {
+                        addClassToCalendar(handleEventSave, cls.title, cls.times, "emerald", false);
+                        setClassesState(prev =>
+                          prev.map(c =>
+                            c.id === cls.id ? { ...c, selected: true } : c
+                          )
+                        );
+                      }
+                    }
+                    onMouseEnter={() => 
+                      {
+                        if (!cls.selected) {
+                          addClassToCalendar(handleEventSave, cls.title, cls.times, "sky", true);
+                        }
+                      }
+                    }
+                    onMouseLeave={() => 
+                      {
+                        handleEventDelete("preview")
+                      }
+                    }
+                  >
+                    <PlusIcon
+                      className="opacity-60 sm:-ms-1"
+                      size={16}
+                      aria-hidden="true"
+                    />
+                    <span className="max-sm:sr-only">{cls.title}</span>
+                  </Button>
+                );
+              })}
+            </div>
+
           </div>
         </div>
 
