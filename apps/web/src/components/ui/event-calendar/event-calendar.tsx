@@ -42,7 +42,7 @@ import {
   EventHeight,
   WeekCellsHeight,
 } from "./constants";
-import type { CalendarEvent, CalendarView } from "./types";
+import type { CalendarEvent, CalendarView, EventColor } from "./types";
 import {addClassToCalendar,addBasicAlgorithms} from './event-dialog';
 
 export interface EventCalendarProps {
@@ -76,6 +76,30 @@ export function EventCalendar({
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null,
   );
+
+  const colors: EventColor[] = ["sky", "amber", "violet", "rose", "emerald", "orange"];
+
+  const [currColors, setCurrColors] = useState<EventColor[]>([]);
+
+  const pickColor = (): EventColor => {
+    // If all colors have been used, just pick any random one
+    if (currColors.length === colors.length) {
+      const randomIndex = Math.floor(Math.random() * colors.length);
+      return colors[randomIndex];
+    }
+
+    // Pick a color not already in currColors
+    let color: EventColor;
+    do {
+      const randomIndex = Math.floor(Math.random() * colors.length);
+      color = colors[randomIndex];
+    } while (currColors.includes(color));
+
+    // Update state
+    setCurrColors(prev => [...prev, color]);
+
+    return color;
+  };
   
   // Add keyboard shortcuts for view switching
   useEffect(() => {
@@ -118,21 +142,21 @@ export function EventCalendar({
     {
       id: "math-mt",
       title: "Math",
-      color: "emerald",
+      color: pickColor(),
       times: ["Monday 9 15 11 15", "Tuesday 8 0 10 0"],
       selected: false,
     },
     {
       id: "french-tth",
       title: "Math",
-      color: "rose",
+      color: pickColor(),
       times: ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],
       selected: false,
     },
     {
       id: "cs-mw",
       title: "CS",
-      color: "sky",
+      color: pickColor(),
       times: ["Monday 14 15 15 45", "Wednesday 8 0 10 0"],
       selected: false,
     },
@@ -282,7 +306,7 @@ export function EventCalendar({
                     disabled={cls.selected} 
                     onClick={() => 
                       {
-                        addClassToCalendar(handleEventSave, cls.title, cls.times, "emerald", false);
+                        addClassToCalendar(handleEventSave, cls.title, cls.times, cls.color, false);
                         setClassesState(prev =>
                           prev.map(c =>
                             c.id === cls.id ? { ...c, selected: true } : c
@@ -293,7 +317,7 @@ export function EventCalendar({
                     onMouseEnter={() => 
                       {
                         if (!cls.selected) {
-                          addClassToCalendar(handleEventSave, cls.title, cls.times, "sky", true);
+                          addClassToCalendar(handleEventSave, cls.title, cls.times, cls.color, true);
                         }
                       }
                     }
