@@ -122,7 +122,7 @@ export function EventItem({
     const index =
       timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
         ? timeSlotIndex
-        : 0; // default to first slot
+        : 1; // default to first slot
 
     console.log({ timeSlotIndex, timeSlotsLength: event.timeSlots.length });
     return new Date(event.timeSlots[index].start);
@@ -134,7 +134,7 @@ export function EventItem({
     const index =
       timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
         ? timeSlotIndex
-        : 0; // default to first slot
+        : 1; // default to first slot
     
     return new Date(event.timeSlots[index].end);
   }, [event.timeSlots, timeSlotIndex]);
@@ -185,6 +185,49 @@ export function EventItem({
             )}
             {event.title}
           </span>
+        )}
+      </EventWrapper>
+    );
+  }
+
+  if (view === "week" || view === "day") {
+    return (
+      <EventWrapper
+        event={event}
+        isFirstDay={isFirstDay}
+        isLastDay={isLastDay}
+        isDragging={isDragging}
+        onClick={onClick}
+        className={cn(
+          "py-1",
+          durationMinutes < 45 ? "items-center" : "flex-col",
+          view === "week" ? "text-[10px] sm:text-xs" : "text-xs",
+          className,
+        )}
+        currentTime={currentTime}
+        dndListeners={dndListeners}
+        dndAttributes={dndAttributes}
+        onMouseDown={onMouseDown}
+        onTouchStart={onTouchStart}
+      >
+        {durationMinutes < 45 ? (
+          <div className="truncate">
+            {event.title}{" "}
+            {showTime && (
+              <span className="opacity-70">
+                {formatTimeWithOptionalMinutes(displayStart)}
+              </span>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="truncate font-medium">{event.title}</div>
+            {showTime && (
+              <div className="truncate font-normal opacity-70 sm:text-[11px]">
+                {getEventTime()}
+              </div>
+            )}
+          </>
         )}
       </EventWrapper>
     );
