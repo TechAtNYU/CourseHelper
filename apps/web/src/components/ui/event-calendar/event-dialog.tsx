@@ -338,6 +338,43 @@ export function EventDialog({
       bgClass: "bg-orange-400 data-[state=checked]:bg-orange-400",
       borderClass: "border-orange-400 data-[state=checked]:border-orange-400",
     },
+    {
+      value: "teal",
+      label: "Teal",
+      bgClass: "bg-teal-400 data-[state=checked]:bg-teal-400",
+      borderClass: "border-teal-400 data-[state=checked]:border-teal-400",
+    },
+    {
+      value: "lime",
+      label: "Lime",
+      bgClass: "bg-lime-400 data-[state=checked]:bg-lime-400",
+      borderClass: "border-lime-400 data-[state=checked]:border-lime-400",
+    },
+    {
+      value: "cyan",
+      label: "Cyan",
+      bgClass: "bg-cyan-400 data-[state=checked]:bg-cyan-400",
+      borderClass: "border-cyan-400 data-[state=checked]:border-cyan-400",
+    },
+    {
+      value: "fuchsia",
+      label: "Fuchsia",
+      bgClass: "bg-fuchsia-400 data-[state=checked]:bg-fuchsia-400",
+      borderClass: "border-fuchsia-400 data-[state=checked]:border-fuchsia-400",
+    },
+    {
+      value: "indigo",
+      label: "Indigo",
+      bgClass: "bg-indigo-400 data-[state=checked]:bg-indigo-400",
+      borderClass: "border-indigo-400 data-[state=checked]:border-indigo-400",
+    },
+    {
+      value: "pink",
+      label: "Pink",
+      bgClass: "bg-pink-400 data-[state=checked]:bg-pink-400",
+      borderClass: "border-pink-400 data-[state=checked]:border-pink-400",
+    },
+
   ];
 
   return (

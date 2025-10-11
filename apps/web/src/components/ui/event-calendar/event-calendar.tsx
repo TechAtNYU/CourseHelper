@@ -77,28 +77,13 @@ export function EventCalendar({
     null,
   );
 
-  const colors: EventColor[] = ["sky", "amber", "violet", "rose", "emerald", "orange"];
+  
 
-  const [currColors, setCurrColors] = useState<EventColor[]>([]);
+  const allColors: EventColor[] = ["sky", "amber", "violet", "rose", "emerald", "orange", "teal", "lime", "indigo", "fuchsia", "pink", "cyan"];
 
   const pickColor = (): EventColor => {
-    // If all colors have been used, just pick any random one
-    if (currColors.length === colors.length) {
-      const randomIndex = Math.floor(Math.random() * colors.length);
-      return colors[randomIndex];
-    }
-
-    // Pick a color not already in currColors
-    let color: EventColor;
-    do {
-      const randomIndex = Math.floor(Math.random() * colors.length);
-      color = colors[randomIndex];
-    } while (currColors.includes(color));
-
-    // Update state
-    setCurrColors(prev => [...prev, color]);
-
-    return color;
+    const randomIndex = Math.floor(Math.random() * allColors.length);
+    return allColors[randomIndex];
   };
   
   // Add keyboard shortcuts for view switching
@@ -142,7 +127,7 @@ export function EventCalendar({
     {
       id: "math-mt",
       title: "Math",
-      color: pickColor(),
+      color: "pink",
       times: ["Monday 9 15 11 15", "Tuesday 8 0 10 0"],
       selected: false,
     },
@@ -306,7 +291,7 @@ export function EventCalendar({
                     disabled={cls.selected} 
                     onClick={() => 
                       {
-                        addClassToCalendar(handleEventSave, cls.title, cls.times, cls.color, false);
+                        addClassToCalendar(handleEventSave, cls.title, cls.times, cls.color as EventColor, false);
                         setClassesState(prev =>
                           prev.map(c =>
                             c.id === cls.id ? { ...c, selected: true } : c
@@ -317,7 +302,7 @@ export function EventCalendar({
                     onMouseEnter={() => 
                       {
                         if (!cls.selected) {
-                          addClassToCalendar(handleEventSave, cls.title, cls.times, cls.color, true);
+                          addClassToCalendar(handleEventSave, cls.title, cls.times, cls.color as EventColor, true);
                         }
                       }
                     }
