@@ -1,5 +1,6 @@
 import {
   ZGetAppConfig,
+  ZSetAppConfig,
   ZUpsertCourse,
   ZUpsertCourseOffering,
   ZUpsertPrerequisites,
@@ -100,7 +101,18 @@ export class ConvexApi {
   async getAppConfig(data: z.infer<typeof ZGetAppConfig>) {
     const result = await this.request<
       FunctionReturnType<typeof internal.appConfigs.getAppConfigInternal>
-    >("api/appConfigs/get", z.object({ key: z.string() }), data);
+    >("api/appConfigs/get", ZGetAppConfig, data);
+    return result;
+  }
+
+  async setAppConfig(data: z.infer<typeof ZSetAppConfig>) {
+    const result = await this.request<
+      FunctionReturnType<typeof internal.appConfigs.setAppConfigInternal>
+    >(
+      "api/appConfigs/set",
+      z.object({ key: z.string(), value: z.string() }),
+      data,
+    );
     return result;
   }
 }

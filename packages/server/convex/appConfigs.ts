@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalQuery } from "./_generated/server";
+import { internalMutation, internalQuery } from "./_generated/server";
 import { protectedAdminMutation, protectedQuery } from "./helpers/auth";
 
 export const getAppConfig = protectedQuery({
@@ -63,5 +63,28 @@ export const removeAppConfig = protectedAdminMutation({
     }
 
     return false;
+  },
+});
+
+export const setAppConfigInternal = internalMutation({
+  args: {
+    key: v.string(),
+    value: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("appConfigs")
+      .withIndex("by_key", (q) => q.eq("key", args.key))
+      .first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, { value: args.value });
+      return existing._id;
+    }
+
+    return await ctx.db.insert("appConfigs", {
+      key: args.key,
+      value: args.value,
+    });
   },
 });

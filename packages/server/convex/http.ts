@@ -116,6 +116,7 @@ export const ZUpsertCourseOffering = z.object({
 });
 
 export const ZGetAppConfig = z.object({ key: AppConfigKey });
+export const ZSetAppConfig = z.object({ key: AppConfigKey, value: z.string() });
 
 const http = httpRouter();
 
@@ -247,6 +248,22 @@ http.route({
       headers: { "Content-Type": "application/json" },
     });
   }, ZGetAppConfig),
+});
+
+http.route({
+  path: "/api/appConfigs/set",
+  method: "POST",
+  handler: apiAction(async (ctx, body) => {
+    const result = await ctx.runMutation(
+      internal.appConfigs.setAppConfigInternal,
+      body,
+    );
+
+    return new Response(JSON.stringify({ success: true, id: result }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }, ZSetAppConfig),
 });
 
 export default http;
