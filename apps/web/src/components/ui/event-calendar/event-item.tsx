@@ -132,6 +132,15 @@ export function EventItem({
     return new Date(event.timeSlots[index].start);
   }, [event.timeSlots, timeSlotIndex]);
 
+  // Helper function to remove the course code prefix
+  function getDisplayTitle(title: string) {
+    // Assume prefix is everything before the last space, then last part is the course name
+    const parts = title.split(" ");
+    // Remove first 2 or 3 parts for code (CS-UH 1002), then join the rest
+    // Adjust slice depending on your format
+    return parts.slice(2).join(" ");
+  }
+
   const displayEnd = useMemo(() => {
     console.log(event);
     if (!event.timeSlots || event.timeSlots.length === 0) return undefined;
@@ -187,7 +196,7 @@ export function EventItem({
     >
       {durationMinutes < 45 ? (
         <div className="truncate">
-          {event.title}{" "}
+          {getDisplayTitle(event.title)}{" "}
           {showTime && displayStart && (
             <span className="opacity-70">
               {formatTimeWithOptionalMinutes(displayStart)}
@@ -196,7 +205,10 @@ export function EventItem({
         </div>
       ) : (
         <>
-          <div className="truncate font-medium">{event.title}</div>
+        <div className="font-medium overflow-hidden text-ellipsis line-clamp-3" title={getDisplayTitle(event.title)}>
+            {getDisplayTitle(event.title)}
+          </div>
+          {/* <div className="font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-[115px]">{getDisplayTitle(event.title)}</div> */}
           {showTime && (
             <div className="truncate font-normal opacity-70 sm:text-[11px]">
               {getEventTime()}

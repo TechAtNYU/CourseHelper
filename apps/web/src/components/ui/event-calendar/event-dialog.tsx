@@ -79,6 +79,7 @@ export function addClassToCalendar(
   timeSlots: string[], // format: ["Wednesday 9 15 10 15"]
   color: EventColor = "emerald",
   isPreview: boolean,
+  description: string,
 ) {
   const slots: { start: Date; end: Date }[] = [];
   const eventID = isPreview ? "preview" : "";
@@ -124,7 +125,7 @@ export function addClassToCalendar(
   onSave({
     id: eventID,
     title,
-    description: "Lecture on basic algorithms",
+    description: description,
     timeSlots: slots,
     allDay: false,
     location: "Room 101",
