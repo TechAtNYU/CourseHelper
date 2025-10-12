@@ -126,7 +126,7 @@ export function EventItem({
     const index =
       timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
         ? timeSlotIndex
-        : 1; // default to first slot
+        : 0; // default to first slot
 
     console.log({ timeSlotIndex, timeSlotsLength: event.timeSlots.length });
     return new Date(event.timeSlots[index].start);
@@ -138,7 +138,7 @@ export function EventItem({
     const index =
       timeSlotIndex != null && timeSlotIndex < event.timeSlots.length
         ? timeSlotIndex
-        : 1; // default to first slot
+        : 0; // default to first slot
     
     return new Date(event.timeSlots[index].end);
   }, [event.timeSlots, timeSlotIndex]);

@@ -71,80 +71,67 @@ export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
   });
 }
 
+import { startOfWeek, addDays } from "date-fns";
+
 export function addClassToCalendar(
   onSave: (event: CalendarEvent) => void,
   title: string,
   timeSlots: string[], // format: ["Wednesday 9 15 10 15"]
-  // daysOfWeek: string[],
-  // startTime: Date,
-  // endTime: Date,
-  // location?: string, // optional
   color: EventColor = "emerald",
   isPreview: boolean,
 ) {
-  const slots: any[] = [];
-  let eventID="";
-  if (isPreview) {
-    eventID="preview"
-  } else {
+  const slots: { start: Date; end: Date }[] = [];
+  const eventID = isPreview ? "preview" : "";
 
-    // eventID=title+" "+timeSlots.concat(', ');
-  }
+  // Map weekday names to 0-6 offset from start of week (Monday = 0)
+  const weekdayMap: Record<string, number> = {
+    Monday: 0,
+    Tuesday: 1,
+    Wednesday: 2,
+    Thursday: 3,
+    Friday: 4,
+    Saturday: 5,
+    Sunday: 6,
+  };
+
+  // Get the start of the current week (Monday)
+  const startOfCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 1 }); // Monday = 0
 
   for (const slot of timeSlots) {
-    const parts = slot.split(" "); 
+    const parts = slot.split(" ");
     const day = parts[0];
     const startHour = Number(parts[1]);
     const startMinute = Number(parts[2]);
     const endHour = Number(parts[3]);
     const endMinute = Number(parts[4]);
-    let date: Date;
 
-    switch (day) {
-      case "Monday":
-        date = new Date("2025-10-06");
-        break;
-      case "Tuesday":
-        date = new Date("2025-10-07");
-        break;
-      case "Wednesday":
-        date = new Date("2025-10-08");
-        break;
-      case "Thursday":
-        date = new Date("2025-10-09");
-        break;
-      case "Friday":
-        date = new Date("2025-10-10");
-        break;
-      case "Saturday":
-        date = new Date("2025-10-11");
-        break;
-      case "Sunday":
-        date = new Date("2025-10-12");
-        break;
-      default:
-        throw new Error(`Invalid day: ${day}`);
+    const dayOffset = weekdayMap[day];
+    if (dayOffset === undefined) {
+      throw new Error(`Invalid day: ${day}`);
     }
+
+    const date = addDays(startOfCurrentWeek, dayOffset);
 
     const start = new Date(date);
     start.setHours(startHour, startMinute, 0, 0);
+
     const end = new Date(date);
     end.setHours(endHour, endMinute, 0, 0);
-    slots.push({start:start, end:end})
+
+    slots.push({ start, end });
   }
 
   onSave({
-    // id:"",
-    id: isPreview ? "preview" : "",
-    title: title,
+    id: eventID,
+    title,
     description: "Lecture on basic algorithms",
     timeSlots: slots,
     allDay: false,
     location: "Room 101",
-    color: color,
+    color,
   });
-
 }
+
 
 interface EventDialogProps {
   event: CalendarEvent | null;
@@ -405,74 +392,6 @@ export function EventDialog({
             
           </div>
 
-          <div className="flex gap-4">
-            <div className="flex-1 *:not-first:mt-1.5">
-              <Label htmlFor="start-date">Start Date</Label>
-              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="start-date"
-                    variant={"outline"}
-                    className={cn(
-                      "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
-                      !startDate && "text-muted-foreground",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "truncate",
-                        !startDate && "text-muted-foreground",
-                      )}
-                    >
-                      {startDate ? format(startDate, "PPP") : "Pick a date"}
-                    </span>
-                    <RiCalendarLine
-                      size={16}
-                      className="text-muted-foreground/80 shrink-0"
-                      aria-hidden="true"
-                    />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    defaultMonth={startDate}
-                    onSelect={(date) => {
-                      if (date) {
-                        setStartDate(date);
-                        // If end date is before the new start date, update it to match the start date
-                        if (isBefore(endDate, date)) {
-                          setEndDate(date);
-                        }
-                        setError(null);
-                        setStartDateOpen(false);
-                      }
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {!allDay && (
-              <div className="min-w-28 *:not-first:mt-1.5">
-                <Label htmlFor="start-time">Start Time</Label>
-                <Select value={startTime} onValueChange={setStartTime}>
-                  <SelectTrigger id="start-time">
-                    <SelectValue placeholder="Select time" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {timeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-
           <div className="*:not-first:mt-1.5">
           <Label>Time Slots</Label>
           {event?.timeSlots?.length ? (
@@ -487,81 +406,6 @@ export function EventDialog({
             <p className="text-sm text-gray-700">No time slots</p>
           )}
         </div>
-
-          <div className="flex gap-4">
-            <div className="flex-1 *:not-first:mt-1.5">
-              <Label htmlFor="end-date">End Date</Label>
-              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="end-date"
-                    variant={"outline"}
-                    className={cn(
-                      "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
-                      !endDate && "text-muted-foreground",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "truncate",
-                        !endDate && "text-muted-foreground",
-                      )}
-                    >
-                      {endDate ? format(endDate, "PPP") : "Pick a date"}
-                    </span>
-                    <RiCalendarLine
-                      size={16}
-                      className="text-muted-foreground/80 shrink-0"
-                      aria-hidden="true"
-                    />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={endDate}
-                    defaultMonth={endDate}
-                    disabled={{ before: startDate }}
-                    onSelect={(date) => {
-                      if (date) {
-                        setEndDate(date);
-                        setError(null);
-                        setEndDateOpen(false);
-                      }
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            
-            {!allDay && (
-              <div className="min-w-28 *:not-first:mt-1.5">
-                <Label htmlFor="end-time">End Time</Label>
-                {/* <p className="text-sm text-gray-700">
-                  {event?.timeSlots[0]
-                    ? event.timeSlots[0].toLocaleString()
-                    : "No time slot"}
-                </p> */}
-
-                 {/* <p className="text-sm text-gray-700">
-                  {endTime}
-                </p> */}
-                
-                <Select value={endTime} onValueChange={setEndTime}>
-                  <SelectTrigger id="end-time">
-                    <SelectValue placeholder="Select time" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {timeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
 
           <div className="*:not-first:mt-1.5">
             <Label htmlFor="location">Location</Label>

@@ -133,7 +133,7 @@ export function EventCalendar({
     },
     {
       id: "french-tth",
-      title: "Math",
+      title: "French",
       color: pickColor(),
       times: ["Tuesday 14 15 16 15", "Thursday 14 15 16 15"],
       selected: false,
