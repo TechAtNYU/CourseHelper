@@ -24,35 +24,85 @@ export default {
   fetch: app.fetch,
 
   async scheduled(_event: ScheduledEvent, env: CloudflareBindings) {
-    // NOTE: the worker will not execute anything for now until the flag for toggle scrapers are set up
-    return;
-    // biome-ignore lint/correctness/noUnreachable: WIP
     const db = getDB(env);
+    const convex = new ConvexApi({
+      baseUrl: env.CONVEX_SITE_URL,
+      apiKey: env.CONVEX_API_KEY,
+    });
 
-    // FIXME: need to handle when programsUr or coursesUrl is empty array
-    const programsUrl = new URL("/programs", env.SCRAPING_BASE_URL).toString();
-    const coursesUrl = new URL("/courses", env.SCRAPING_BASE_URL).toString();
+    const cache = caches.default;
+    const cacheKey = `${env.CONVEX_SITE_URL}/app-configs`;
 
-    const [[programsJob], [coursesJob]] = await Promise.all([
-      db
-        .insert(jobs)
-        .values({
-          url: programsUrl,
-          jobType: "discover-programs",
-        })
-        .returning(),
-      db
-        .insert(jobs)
-        .values({
-          url: coursesUrl,
-          jobType: "discover-courses",
-        })
-        .returning(),
-    ]);
+    let isMajorsEnabled = false;
+    let isCoursesEnabled = false;
+
+    // Check to see if app configs are cached
+    const cached = await cache.match(cacheKey);
+    if (cached) {
+      const cachedData = (await cached.json()) as {
+        is_scraping_majors: string | null;
+        is_scraping_courses: string | null;
+      };
+      isMajorsEnabled = cachedData.is_scraping_majors === "true";
+      isCoursesEnabled = cachedData.is_scraping_courses === "true";
+    } else {
+      const [majorsConfig, coursesConfig] = await Promise.all([
+        convex.getAppConfig({ key: "is_scraping_majors" }),
+        convex.getAppConfig({ key: "is_scraping_courses" }),
+      ]);
+
+      isMajorsEnabled = majorsConfig === "true";
+      isCoursesEnabled = coursesConfig === "true";
+
+      await cache.put(
+        cacheKey,
+        new Response(
+          JSON.stringify({
+            is_scraping_majors: majorsConfig,
+            is_scraping_courses: coursesConfig,
+          }),
+          {
+            headers: { "Cache-Control": "max-age=3600" },
+          },
+        ),
+      );
+    }
+
+    const jobsToCreate: Array<{
+      url: string;
+      jobType: "discover-programs" | "discover-courses";
+    }> = [];
+    const flagsToDisable: string[] = [];
+
+    // add major discovery job to the queue
+    if (isMajorsEnabled) {
+      const programsUrl = new URL(
+        "/programs",
+        env.SCRAPING_BASE_URL,
+      ).toString();
+      jobsToCreate.push({ url: programsUrl, jobType: "discover-programs" });
+      flagsToDisable.push("is_scraping_majors");
+    }
+
+    // add course discovery job to the queue
+    if (isCoursesEnabled) {
+      const coursesUrl = new URL("/courses", env.SCRAPING_BASE_URL).toString();
+      jobsToCreate.push({ url: coursesUrl, jobType: "discover-courses" });
+      flagsToDisable.push("is_scraping_courses");
+    }
+
+    if (jobsToCreate.length === 0) {
+      return;
+    }
+
+    const createdJobs = await db.insert(jobs).values(jobsToCreate).returning();
 
     await Promise.all([
-      env.SCRAPING_QUEUE.send({ jobId: programsJob.id }),
-      env.SCRAPING_QUEUE.send({ jobId: coursesJob.id }),
+      ...createdJobs.map((job) => env.SCRAPING_QUEUE.send({ jobId: job.id })),
+      ...flagsToDisable.map((flag) =>
+        convex.setAppConfig({ key: flag, value: "false" }),
+      ),
+      cache.delete(cacheKey),
     ]);
   },
 
