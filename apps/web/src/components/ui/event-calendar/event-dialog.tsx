@@ -381,7 +381,7 @@ export function EventDialog({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{event?.id ? "Edit Event" : "Create Event"}</DialogTitle>
+          <DialogTitle>{event?.id ? "Class Details" : "Create Event"}</DialogTitle>
           <DialogDescription className="sr-only">
             {event?.id
               ? "Edit the details of this event"
@@ -396,21 +396,13 @@ export function EventDialog({
         <div className="grid gap-4 py-4">
           <div className="*:not-first:mt-1.5">
             <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+            <p className="text-sm text-gray-700">{event?.title}</p>
           </div>
 
           <div className="*:not-first:mt-1.5">
             <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
+            <p className="text-sm text-gray-700">{event?.description}</p>
+            
           </div>
 
           <div className="flex gap-4">
@@ -481,6 +473,21 @@ export function EventDialog({
             )}
           </div>
 
+          <div className="*:not-first:mt-1.5">
+          <Label>Time Slots</Label>
+          {event?.timeSlots?.length ? (
+            <ul className="text-sm text-gray-700 space-y-1">
+              {event.timeSlots.map((slot, index) => (
+                <li key={index}>
+                  {format(slot.start, "EEEE")}: {format(slot.start, "h:mm a")} - {format(slot.end, "h:mm a")}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-700">No time slots</p>
+          )}
+        </div>
+
           <div className="flex gap-4">
             <div className="flex-1 *:not-first:mt-1.5">
               <Label htmlFor="end-date">End Date</Label>
@@ -526,10 +533,20 @@ export function EventDialog({
                 </PopoverContent>
               </Popover>
             </div>
-
+            
             {!allDay && (
               <div className="min-w-28 *:not-first:mt-1.5">
                 <Label htmlFor="end-time">End Time</Label>
+                {/* <p className="text-sm text-gray-700">
+                  {event?.timeSlots[0]
+                    ? event.timeSlots[0].toLocaleString()
+                    : "No time slot"}
+                </p> */}
+
+                 {/* <p className="text-sm text-gray-700">
+                  {endTime}
+                </p> */}
+                
                 <Select value={endTime} onValueChange={setEndTime}>
                   <SelectTrigger id="end-time">
                     <SelectValue placeholder="Select time" />
@@ -546,24 +563,12 @@ export function EventDialog({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="all-day"
-              checked={allDay}
-              onCheckedChange={(checked) => setAllDay(checked === true)}
-            />
-            <Label htmlFor="all-day">All day</Label>
-          </div>
-
           <div className="*:not-first:mt-1.5">
             <Label htmlFor="location">Location</Label>
-            <Input
-              id="location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
+            <p className="text-sm text-gray-700">{event?.location}</p>
+            
           </div>
-          <fieldset className="space-y-4">
+          {/* <fieldset className="space-y-4">
             <legend className="text-foreground text-sm leading-none font-medium">
               Etiquette
             </legend>
@@ -587,7 +592,7 @@ export function EventDialog({
                 />
               ))}
             </RadioGroup>
-          </fieldset>
+          </fieldset> */}
         </div>
         <DialogFooter className="flex-row sm:justify-between">
           {event?.id && (
@@ -600,12 +605,7 @@ export function EventDialog({
               <RiDeleteBinLine size={16} aria-hidden="true" />
             </Button>
           )}
-          <div className="flex flex-1 justify-end gap-2">
-            <Button variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button onClick={handleSave}>Save</Button>
-          </div>
+          
         </DialogFooter>
       </DialogContent>
     </Dialog>

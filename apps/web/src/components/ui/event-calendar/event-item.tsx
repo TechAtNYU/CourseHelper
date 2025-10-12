@@ -204,7 +204,6 @@ export function EventItem({
           )}
 
           {/* Buttons container pushed to bottom and hidden by default */}
-          {/* <div className="w-full flex justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"></div> */}
           <div className="w-full flex justify-center gap-1 mt-auto opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               className="px-2 py-1 text-xs bg-blue-500 text-white rounded"
