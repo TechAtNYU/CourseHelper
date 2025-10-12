@@ -14,6 +14,14 @@ export const getAppConfig = protectedQuery({
   },
 });
 
+export const getAllAppConfigs = protectedQuery({
+  args: {},
+  handler: async (ctx) => {
+    const configs = await ctx.db.query("appConfigs").collect();
+    return configs;
+  },
+});
+
 export const getAppConfigInternal = internalQuery({
   args: { key: v.string() },
   handler: async (ctx, args) => {

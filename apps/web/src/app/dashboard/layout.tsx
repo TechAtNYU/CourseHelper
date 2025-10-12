@@ -26,6 +26,7 @@ export default async function Layout({
           email: user?.primaryEmailAddress?.emailAddress || "",
           avatar: user?.imageUrl || "",
           initial: `${user?.firstName?.[0]}${user?.lastName?.[0]}` || "UU",
+          isAdmin: Boolean(user?.publicMetadata?.is_admin),
         }}
       />
       <SidebarInset>{children}</SidebarInset>

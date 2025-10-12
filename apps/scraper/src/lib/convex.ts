@@ -1,6 +1,7 @@
+import type { internal } from "@dev-team-fall-25/server/convex/_generated/api";
 import {
   ZGetAppConfig,
-  ZSetAppConfig,
+  type ZSetAppConfig,
   ZUpsertCourse,
   ZUpsertCourseOffering,
   ZUpsertPrerequisites,
@@ -8,7 +9,6 @@ import {
   ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
 import type { FunctionReturnType } from "convex/server";
-import type { internal } from "@dev-team-fall-25/server/convex/_generated/api";
 import * as z from "zod/mini";
 import { JobError } from "./queue";
 

@@ -34,7 +34,7 @@ export async function requireAdmin({
 }) {
   const identity = await auth({ ctx });
 
-  const isAdmin = identity.isAdmin;
+  const isAdmin = identity.is_admin;
 
   if (!isAdmin) {
     throw new Error("Unauthorized: Admin access required");

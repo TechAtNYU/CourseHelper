@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import * as z from "zod/mini";
 
-const appConfig = [
+const appConfigOptions = [
   "school_term",
   "school_year",
   "is_scraping_majors",
@@ -9,7 +9,7 @@ const appConfig = [
 ] as const;
 
 const AppConfigKey = z.string() as z.ZodMiniType<
-  (typeof appConfig)[number] | (string & {})
+  (typeof appConfigOptions)[number] | (string & {})
 >;
 
 const appConfigs = {
@@ -17,4 +17,4 @@ const appConfigs = {
   value: v.string(),
 };
 
-export { appConfigs, AppConfigKey };
+export { appConfigs, appConfigOptions, AppConfigKey };
