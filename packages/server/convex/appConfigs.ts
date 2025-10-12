@@ -1,7 +1,20 @@
 import { v } from "convex/values";
+import { internalQuery } from "./_generated/server";
 import { protectedAdminMutation, protectedQuery } from "./helpers/auth";
 
 export const getAppConfig = protectedQuery({
+  args: { key: v.string() },
+  handler: async (ctx, args) => {
+    const config = await ctx.db
+      .query("appConfigs")
+      .withIndex("by_key", (q) => q.eq("key", args.key))
+      .first();
+
+    return config?.value ?? null;
+  },
+});
+
+export const getAppConfigInternal = internalQuery({
   args: { key: v.string() },
   handler: async (ctx, args) => {
     const config = await ctx.db

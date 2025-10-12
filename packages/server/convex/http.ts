@@ -3,6 +3,7 @@ import * as z from "zod/mini";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { apiAction } from "./helpers/auth";
+import { AppConfigKey } from "./schemas/appConfigs";
 
 export const ZUpsertCourse = z.object({
   program: z.string(),
@@ -113,6 +114,8 @@ export const ZUpsertCourseOffering = z.object({
   status: z.enum(["open", "closed", "waitlist"]),
   waitlistNum: z.number(),
 });
+
+export const ZGetAppConfig = z.object({ key: AppConfigKey });
 
 const http = httpRouter();
 
@@ -228,6 +231,22 @@ http.route({
       headers: { "Content-Type": "application/json" },
     });
   }, ZUpsertCourseOffering),
+});
+
+http.route({
+  path: "/api/appConfigs/get",
+  method: "POST",
+  handler: apiAction(async (ctx, body) => {
+    const result = await ctx.runQuery(
+      internal.appConfigs.getAppConfigInternal,
+      body,
+    );
+
+    return new Response(JSON.stringify({ value: result }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }, ZGetAppConfig),
 });
 
 export default http;
