@@ -99,6 +99,7 @@ export default {
     }
 
     if (jobsToCreate.length === 0) {
+      console.log("No scraping jobs enabled, skipping");
       return;
     }
 
@@ -111,6 +112,10 @@ export default {
       ),
       cache.delete(cacheKey),
     ]);
+
+    console.log(
+      `Created ${createdJobs.length} jobs [${createdJobs.map((j) => j.jobType).join(", ")}], disabled flags: ${flagsToDisable.join(", ")}`,
+    );
   },
 
   async queue(
