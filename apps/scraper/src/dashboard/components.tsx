@@ -833,6 +833,6 @@ function RefreshScript() {
       }
     }
   `;
-
+  // biome-ignore lint/security/noDangerouslySetInnerHtml: + Server-side rendered static content
   return <script dangerouslySetInnerHTML={{ __html: scriptContent }} />;
 }
