@@ -1,6 +1,6 @@
 import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
 import { config } from "dotenv";
+import { drizzle } from "drizzle-orm/libsql";
 import { errorLogs, jobs } from "../src/drizzle/schema";
 
 config({ path: "../.db.env" });
