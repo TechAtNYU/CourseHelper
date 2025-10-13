@@ -27,6 +27,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
     "@libsql/client": "^0.15.15",
+    "convex": "^1.27.5",
     "drizzle-kit": "^0.31.5",
     "wrangler": "^4.42.1"
   }
