@@ -2,6 +2,7 @@ import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import { errorLogs, jobs } from "../drizzle/schema";
 
+// GENERATED SEED DATA
 // Connect to local D1 database (same location as wrangler)
 const client = createClient({
   url: "file:.wrangler/state/v3/d1/miniflare-D1DatabaseObject/375a4651d06c046d8ffdc237c06c7167f5c9a9197f195868ac20afdc84593bba.sqlite",
@@ -12,11 +13,11 @@ const db = drizzle(client);
 async function seed() {
   console.log("🌱 Seeding database with fake data...");
 
-  // Insert fake jobs - 100 jobs total
+  // Insert fake jobs - 101 jobs total
   const fakeJobs = await db
     .insert(jobs)
     .values([
-      // Discovery jobs (3 total)
+      // Discovery jobs (4 total)
       {
         url: "https://bulletins.nyu.edu/programs/",
         jobType: "discover-programs",
@@ -32,6 +33,14 @@ async function seed() {
         createdAt: new Date("2025-01-10T08:01:00Z"),
         startedAt: new Date("2025-01-10T08:01:02Z"),
         completedAt: new Date("2025-01-10T08:03:30Z"),
+      },
+      {
+        url: "https://bulletins.nyu.edu/courses/all/",
+        jobType: "discover-courses",
+        status: "failed",
+        createdAt: new Date("2025-01-10T08:02:00Z"),
+        startedAt: new Date("2025-01-10T08:02:01Z"),
+        completedAt: null,
       },
       {
         url: "https://bulletins.nyu.edu/programs/graduate/",
@@ -844,11 +853,32 @@ async function seed() {
 
   console.log(`✅ Created ${fakeJobs.length} fake jobs`);
 
-  // Insert fake errors - 50 errors for failed jobs
+  // Insert fake errors - errors for failed jobs
   const errorLogEntries = [
-    // Errors for discover-programs graduate (index 2) - 2 errors
+    // Errors for discover-courses all (index 2) - 2 errors
     {
       jobId: fakeJobs[2].id,
+      errorType: "parsing" as const,
+      errorMessage: "Unable to parse course listing page structure",
+      stackTrace: `Error: Course list container not found
+    at parseCourseList (parser.ts:12:8)
+    at discoverCourses (modules/discovery.ts:34:15)
+    at processJob (queue.ts:89:12)`,
+      timestamp: new Date("2025-01-10T08:02:15Z"),
+    },
+    {
+      jobId: fakeJobs[2].id,
+      errorType: "network" as const,
+      errorMessage: "HTTP 404: Page not found",
+      stackTrace: `Error: HTTP 404
+    at fetch (scraper.ts:145:11)
+    at discoverCourses (modules/discovery.ts:28:9)`,
+      timestamp: new Date("2025-01-10T08:02:08Z"),
+    },
+
+    // Errors for discover-programs graduate (index 3) - 2 errors
+    {
+      jobId: fakeJobs[3].id,
       errorType: "network" as const,
       errorMessage: "Failed to fetch: Connection timeout after 30s",
       stackTrace: `Error: Connection timeout
@@ -858,7 +888,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T08:05:26Z"),
     },
     {
-      jobId: fakeJobs[2].id,
+      jobId: fakeJobs[3].id,
       errorType: "timeout" as const,
       errorMessage: "Operation timed out after 60 seconds",
       stackTrace: `Error: Timeout
@@ -867,9 +897,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T08:06:01Z"),
     },
 
-    // Errors for csci-ua-202 (index 7) - 3 errors
+    // Errors for csci-ua-202 (index 8) - 3 errors
     {
-      jobId: fakeJobs[7].id,
+      jobId: fakeJobs[8].id,
       errorType: "parsing" as const,
       errorMessage:
         "Could not parse prerequisites section - invalid HTML structure",
@@ -880,14 +910,14 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:04:16Z"),
     },
     {
-      jobId: fakeJobs[7].id,
+      jobId: fakeJobs[8].id,
       errorType: "validation" as const,
       errorMessage: "Missing required field: course_code",
       stackTrace: null,
       timestamp: new Date("2025-01-10T09:04:21Z"),
     },
     {
-      jobId: fakeJobs[7].id,
+      jobId: fakeJobs[8].id,
       errorType: "network" as const,
       errorMessage: "Failed to fetch course prerequisites",
       stackTrace: `Error: HTTP 500
@@ -896,9 +926,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:04:10Z"),
     },
 
-    // Errors for csci-ua-370 (index 12) - 2 errors
+    // Errors for csci-ua-370 (index 13) - 2 errors
     {
-      jobId: fakeJobs[12].id,
+      jobId: fakeJobs[13].id,
       errorType: "parsing" as const,
       errorMessage: "Unable to parse course description",
       stackTrace: `Error: querySelector failed
@@ -907,7 +937,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:08:15Z"),
     },
     {
-      jobId: fakeJobs[12].id,
+      jobId: fakeJobs[13].id,
       errorType: "timeout" as const,
       errorMessage: "Page load timeout",
       stackTrace: `Error: Timeout exceeded
@@ -915,9 +945,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:08:45Z"),
     },
 
-    // Errors for csci-ua-453 (index 14) - 2 errors
+    // Errors for csci-ua-453 (index 15) - 2 errors
     {
-      jobId: fakeJobs[14].id,
+      jobId: fakeJobs[15].id,
       errorType: "network" as const,
       errorMessage: "Connection refused by host",
       stackTrace: `Error: ECONNREFUSED
@@ -925,16 +955,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:11:08Z"),
     },
     {
-      jobId: fakeJobs[14].id,
+      jobId: fakeJobs[15].id,
       errorType: "unknown" as const,
       errorMessage: "Unexpected error in course scraper",
       stackTrace: null,
       timestamp: new Date("2025-01-10T09:11:22Z"),
     },
 
-    // Errors for dsga-1004 (index 19) - 3 errors
+    // Errors for dsga-1004 (index 20) - 3 errors
     {
-      jobId: fakeJobs[19].id,
+      jobId: fakeJobs[20].id,
       errorType: "network" as const,
       errorMessage: "Failed to fetch: ECONNRESET - Connection reset by peer",
       stackTrace: `Error: ECONNRESET
@@ -943,7 +973,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:23:25Z"),
     },
     {
-      jobId: fakeJobs[19].id,
+      jobId: fakeJobs[20].id,
       errorType: "parsing" as const,
       errorMessage: "Failed to extract course code from page title",
       stackTrace: `Error: Cannot read property 'textContent' of null
@@ -952,16 +982,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:23:08Z"),
     },
     {
-      jobId: fakeJobs[19].id,
+      jobId: fakeJobs[20].id,
       errorType: "validation" as const,
       errorMessage: "Course title is empty",
       stackTrace: null,
       timestamp: new Date("2025-01-10T09:23:30Z"),
     },
 
-    // Errors for dsga-1007 (index 22) - 2 errors
+    // Errors for dsga-1007 (index 23) - 2 errors
     {
-      jobId: fakeJobs[22].id,
+      jobId: fakeJobs[23].id,
       errorType: "parsing" as const,
       errorMessage: "Invalid HTML structure in prerequisites section",
       stackTrace: `Error: Parse error
@@ -970,7 +1000,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:26:12Z"),
     },
     {
-      jobId: fakeJobs[22].id,
+      jobId: fakeJobs[23].id,
       errorType: "network" as const,
       errorMessage: "HTTP 503: Service unavailable",
       stackTrace: `Error: HTTP 503
@@ -978,16 +1008,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:26:05Z"),
     },
 
-    // Errors for math-ua-140 (index 28) - 3 errors
+    // Errors for math-ua-140 (index 29) - 3 errors
     {
-      jobId: fakeJobs[28].id,
+      jobId: fakeJobs[29].id,
       errorType: "validation" as const,
       errorMessage: "Invalid credits value: expected number, got string",
       stackTrace: null,
       timestamp: new Date("2025-01-10T09:38:18Z"),
     },
     {
-      jobId: fakeJobs[28].id,
+      jobId: fakeJobs[29].id,
       errorType: "parsing" as const,
       errorMessage: "Credits field contains non-numeric value",
       stackTrace: `Error: Invalid credits format
@@ -996,7 +1026,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:38:15Z"),
     },
     {
-      jobId: fakeJobs[28].id,
+      jobId: fakeJobs[29].id,
       errorType: "network" as const,
       errorMessage: "Failed to load course details",
       stackTrace: `Error: Connection timeout
@@ -1004,9 +1034,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:38:08Z"),
     },
 
-    // Errors for math-ua-343 (index 31) - 2 errors
+    // Errors for math-ua-343 (index 32) - 2 errors
     {
-      jobId: fakeJobs[31].id,
+      jobId: fakeJobs[32].id,
       errorType: "timeout" as const,
       errorMessage: "Operation timed out after 60 seconds",
       stackTrace: `Error: Timeout
@@ -1014,16 +1044,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:41:55Z"),
     },
     {
-      jobId: fakeJobs[31].id,
+      jobId: fakeJobs[32].id,
       errorType: "unknown" as const,
       errorMessage: "Unexpected error during scraping",
       stackTrace: null,
       timestamp: new Date("2025-01-10T09:42:02Z"),
     },
 
-    // Errors for econ-ua-11 (index 41) - 2 errors
+    // Errors for econ-ua-11 (index 42) - 2 errors
     {
-      jobId: fakeJobs[41].id,
+      jobId: fakeJobs[42].id,
       errorType: "parsing" as const,
       errorMessage: "Unable to parse course schedule",
       stackTrace: `Error: Element not found
@@ -1032,16 +1062,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:54:15Z"),
     },
     {
-      jobId: fakeJobs[41].id,
+      jobId: fakeJobs[42].id,
       errorType: "validation" as const,
       errorMessage: "Missing course description",
       stackTrace: null,
       timestamp: new Date("2025-01-10T09:54:22Z"),
     },
 
-    // Errors for econ-ua-266 (index 44) - 3 errors
+    // Errors for econ-ua-266 (index 45) - 3 errors
     {
-      jobId: fakeJobs[44].id,
+      jobId: fakeJobs[45].id,
       errorType: "network" as const,
       errorMessage: "HTTP 404: Page not found",
       stackTrace: `Error: HTTP 404
@@ -1050,7 +1080,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:57:10Z"),
     },
     {
-      jobId: fakeJobs[44].id,
+      jobId: fakeJobs[45].id,
       errorType: "parsing" as const,
       errorMessage: "Failed to parse course content",
       stackTrace: `Error: Invalid HTML
@@ -1058,7 +1088,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:57:15Z"),
     },
     {
-      jobId: fakeJobs[44].id,
+      jobId: fakeJobs[45].id,
       errorType: "timeout" as const,
       errorMessage: "Request timeout after 30s",
       stackTrace: `Error: Timeout
@@ -1066,9 +1096,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T09:57:30Z"),
     },
 
-    // Errors for phys-ua-91 (index 53) - 2 errors
+    // Errors for phys-ua-91 (index 54) - 2 errors
     {
-      jobId: fakeJobs[53].id,
+      jobId: fakeJobs[54].id,
       errorType: "network" as const,
       errorMessage: "HTTP 404: Page not found",
       stackTrace: `Error: HTTP 404
@@ -1077,16 +1107,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:08:05Z"),
     },
     {
-      jobId: fakeJobs[53].id,
+      jobId: fakeJobs[54].id,
       errorType: "validation" as const,
       errorMessage: "Course URL is invalid",
       stackTrace: null,
       timestamp: new Date("2025-01-10T10:08:12Z"),
     },
 
-    // Errors for phys-ua-123 (index 56) - 2 errors
+    // Errors for phys-ua-123 (index 57) - 2 errors
     {
-      jobId: fakeJobs[56].id,
+      jobId: fakeJobs[57].id,
       errorType: "parsing" as const,
       errorMessage: "Cannot extract course information",
       stackTrace: `Error: Missing required elements
@@ -1095,7 +1125,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:11:15Z"),
     },
     {
-      jobId: fakeJobs[56].id,
+      jobId: fakeJobs[57].id,
       errorType: "network" as const,
       errorMessage: "Connection error during page load",
       stackTrace: `Error: ETIMEDOUT
@@ -1103,9 +1133,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:11:08Z"),
     },
 
-    // Errors for chem-ua-127 (index 63) - 3 errors
+    // Errors for chem-ua-127 (index 64) - 3 errors
     {
-      jobId: fakeJobs[63].id,
+      jobId: fakeJobs[64].id,
       errorType: "parsing" as const,
       errorMessage: "Failed to parse lab requirements",
       stackTrace: `Error: querySelector returned null
@@ -1114,14 +1144,14 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:23:12Z"),
     },
     {
-      jobId: fakeJobs[63].id,
+      jobId: fakeJobs[64].id,
       errorType: "validation" as const,
       errorMessage: "Invalid credit hours format",
       stackTrace: null,
       timestamp: new Date("2025-01-10T10:23:18Z"),
     },
     {
-      jobId: fakeJobs[63].id,
+      jobId: fakeJobs[64].id,
       errorType: "network" as const,
       errorMessage: "Failed to fetch lab schedule",
       stackTrace: `Error: HTTP 500
@@ -1129,9 +1159,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:23:05Z"),
     },
 
-    // Errors for chem-ua-375 (index 65) - 2 errors
+    // Errors for chem-ua-375 (index 66) - 2 errors
     {
-      jobId: fakeJobs[65].id,
+      jobId: fakeJobs[66].id,
       errorType: "timeout" as const,
       errorMessage: "Operation timed out after 60 seconds",
       stackTrace: `Error: Timeout
@@ -1139,7 +1169,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:25:55Z"),
     },
     {
-      jobId: fakeJobs[65].id,
+      jobId: fakeJobs[66].id,
       errorType: "parsing" as const,
       errorMessage: "Unable to locate course description",
       stackTrace: `Error: Element not found
@@ -1147,9 +1177,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:25:15Z"),
     },
 
-    // Errors for bio-ua-21 (index 71) - 2 errors
+    // Errors for bio-ua-21 (index 72) - 2 errors
     {
-      jobId: fakeJobs[71].id,
+      jobId: fakeJobs[72].id,
       errorType: "network" as const,
       errorMessage: "Connection reset during fetch",
       stackTrace: `Error: ECONNRESET
@@ -1157,7 +1187,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:35:10Z"),
     },
     {
-      jobId: fakeJobs[71].id,
+      jobId: fakeJobs[72].id,
       errorType: "parsing" as const,
       errorMessage: "Failed to parse prerequisites",
       stackTrace: `Error: Invalid structure
@@ -1165,16 +1195,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:35:20Z"),
     },
 
-    // Errors for bio-ua-123 (index 73) - 3 errors
+    // Errors for bio-ua-123 (index 74) - 3 errors
     {
-      jobId: fakeJobs[73].id,
+      jobId: fakeJobs[74].id,
       errorType: "validation" as const,
       errorMessage: "Missing required field: course_name",
       stackTrace: null,
       timestamp: new Date("2025-01-10T10:37:25Z"),
     },
     {
-      jobId: fakeJobs[73].id,
+      jobId: fakeJobs[74].id,
       errorType: "parsing" as const,
       errorMessage: "Cannot parse course sections",
       stackTrace: `Error: Sections table not found
@@ -1183,7 +1213,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:37:15Z"),
     },
     {
-      jobId: fakeJobs[73].id,
+      jobId: fakeJobs[74].id,
       errorType: "network" as const,
       errorMessage: "HTTP 502: Bad gateway",
       stackTrace: `Error: HTTP 502
@@ -1191,9 +1221,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:37:08Z"),
     },
 
-    // Errors for psychology-ba program (index 76) - 3 errors
+    // Errors for psychology-ba program (index 77) - 3 errors
     {
-      jobId: fakeJobs[76].id,
+      jobId: fakeJobs[77].id,
       errorType: "parsing" as const,
       errorMessage: "Unexpected document structure - missing main content div",
       stackTrace: `Error: querySelector returned null
@@ -1202,7 +1232,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:44:12Z"),
     },
     {
-      jobId: fakeJobs[76].id,
+      jobId: fakeJobs[77].id,
       errorType: "unknown" as const,
       errorMessage: "Unexpected error occurred during processing",
       stackTrace: `Error: Unexpected error
@@ -1211,7 +1241,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:44:25Z"),
     },
     {
-      jobId: fakeJobs[76].id,
+      jobId: fakeJobs[77].id,
       errorType: "network" as const,
       errorMessage: "Failed to load program requirements",
       stackTrace: `Error: Connection timeout
@@ -1219,9 +1249,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:44:08Z"),
     },
 
-    // Errors for psych-ua-10 (index 79) - 2 errors
+    // Errors for psych-ua-10 (index 80) - 2 errors
     {
-      jobId: fakeJobs[79].id,
+      jobId: fakeJobs[80].id,
       errorType: "parsing" as const,
       errorMessage: "Failed to extract instructor information",
       stackTrace: `Error: Instructor element not found
@@ -1230,16 +1260,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:47:15Z"),
     },
     {
-      jobId: fakeJobs[79].id,
+      jobId: fakeJobs[80].id,
       errorType: "validation" as const,
       errorMessage: "Course schedule is invalid",
       stackTrace: null,
       timestamp: new Date("2025-01-10T10:47:22Z"),
     },
 
-    // Errors for marketing-bs program (index 83) - 3 errors
+    // Errors for marketing-bs program (index 84) - 3 errors
     {
-      jobId: fakeJobs[83].id,
+      jobId: fakeJobs[84].id,
       errorType: "parsing" as const,
       errorMessage: "Unable to locate program requirements table",
       stackTrace: `Error: Element not found
@@ -1248,14 +1278,14 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:55:18Z"),
     },
     {
-      jobId: fakeJobs[83].id,
+      jobId: fakeJobs[84].id,
       errorType: "validation" as const,
       errorMessage: "Missing required field: program_code",
       stackTrace: null,
       timestamp: new Date("2025-01-10T10:55:22Z"),
     },
     {
-      jobId: fakeJobs[83].id,
+      jobId: fakeJobs[84].id,
       errorType: "network" as const,
       errorMessage: "Failed to fetch program details",
       stackTrace: `Error: HTTP 500
@@ -1263,9 +1293,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:55:10Z"),
     },
 
-    // Errors for management-bs program (index 85) - 2 errors
+    // Errors for management-bs program (index 86) - 2 errors
     {
-      jobId: fakeJobs[85].id,
+      jobId: fakeJobs[86].id,
       errorType: "timeout" as const,
       errorMessage: "Page load timeout exceeded",
       stackTrace: `Error: Timeout
@@ -1273,7 +1303,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:57:45Z"),
     },
     {
-      jobId: fakeJobs[85].id,
+      jobId: fakeJobs[86].id,
       errorType: "parsing" as const,
       errorMessage: "Cannot parse program concentrations",
       stackTrace: `Error: Concentrations section not found
@@ -1282,9 +1312,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T10:57:15Z"),
     },
 
-    // Errors for civil-engineering-bs (index 90) - 2 errors
+    // Errors for civil-engineering-bs (index 91) - 2 errors
     {
-      jobId: fakeJobs[90].id,
+      jobId: fakeJobs[91].id,
       errorType: "network" as const,
       errorMessage: "Connection timeout during fetch",
       stackTrace: `Error: Connection timeout
@@ -1292,16 +1322,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T11:05:30Z"),
     },
     {
-      jobId: fakeJobs[90].id,
+      jobId: fakeJobs[91].id,
       errorType: "validation" as const,
       errorMessage: "Program degree type is missing",
       stackTrace: null,
       timestamp: new Date("2025-01-10T11:05:35Z"),
     },
 
-    // Errors for hist-ua-101 (index 92) - 3 errors
+    // Errors for hist-ua-101 (index 93) - 3 errors
     {
-      jobId: fakeJobs[92].id,
+      jobId: fakeJobs[93].id,
       errorType: "timeout" as const,
       errorMessage: "Operation timed out after 60 seconds",
       stackTrace: `Error: Timeout
@@ -1310,7 +1340,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T11:10:55Z"),
     },
     {
-      jobId: fakeJobs[92].id,
+      jobId: fakeJobs[93].id,
       errorType: "network" as const,
       errorMessage: "Failed to fetch: Connection timeout after 30s",
       stackTrace: `Error: Connection timeout
@@ -1319,7 +1349,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T11:10:32Z"),
     },
     {
-      jobId: fakeJobs[92].id,
+      jobId: fakeJobs[93].id,
       errorType: "parsing" as const,
       errorMessage: "Unable to parse historical context section",
       stackTrace: `Error: Section not found
@@ -1328,9 +1358,9 @@ async function seed() {
       timestamp: new Date("2025-01-10T11:10:15Z"),
     },
 
-    // Errors for soc-ua-1 (index 95) - 2 errors
+    // Errors for soc-ua-1 (index 96) - 2 errors
     {
-      jobId: fakeJobs[95].id,
+      jobId: fakeJobs[96].id,
       errorType: "parsing" as const,
       errorMessage: "Failed to parse course syllabus link",
       stackTrace: `Error: Link element not found
@@ -1339,16 +1369,16 @@ async function seed() {
       timestamp: new Date("2025-01-10T11:13:18Z"),
     },
     {
-      jobId: fakeJobs[95].id,
+      jobId: fakeJobs[96].id,
       errorType: "validation" as const,
       errorMessage: "Invalid course format code",
       stackTrace: null,
       timestamp: new Date("2025-01-10T11:13:25Z"),
     },
 
-    // Errors for pol-ua-101 (index 97) - 2 errors
+    // Errors for pol-ua-101 (index 98) - 2 errors
     {
-      jobId: fakeJobs[97].id,
+      jobId: fakeJobs[98].id,
       errorType: "network" as const,
       errorMessage: "HTTP 503: Service temporarily unavailable",
       stackTrace: `Error: HTTP 503
@@ -1356,7 +1386,7 @@ async function seed() {
       timestamp: new Date("2025-01-10T11:15:10Z"),
     },
     {
-      jobId: fakeJobs[97].id,
+      jobId: fakeJobs[98].id,
       errorType: "unknown" as const,
       errorMessage: "Unhandled exception during scraping",
       stackTrace: `Error: Unknown error

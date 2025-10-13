@@ -19,14 +19,14 @@ const app = new Hono<{ Bindings: CloudflareBindings }>();
 app.get("/", async (c) => {
   const db = getDB(c.env); // env variables
 
-  const dbdata = await getDashboardData(db);
+  const db_data = await getDashboardData(db);
   // if request JSON data, just return JSON data
   const acceptHeader = c.req.header("Accept");
   if (acceptHeader?.includes("application/json")) {
-    return c.json(dbdata);
+    return c.json(db_data);
   }
   // otherwise return HTML dashboard
-  return c.html(Dashboard(dbdata));
+  return c.html(Dashboard(db_data));
 });
 
 export default {
