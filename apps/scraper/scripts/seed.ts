@@ -1,11 +1,15 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
-import { errorLogs, jobs } from "../drizzle/schema";
+import { config } from "dotenv";
+import { errorLogs, jobs } from "../src/drizzle/schema";
+
+config({ path: "../.db.env" });
 
 // GENERATED SEED DATA
 // Connect to local D1 database (same location as wrangler)
 const client = createClient({
-  url: "file:.wrangler/state/v3/d1/miniflare-D1DatabaseObject/375a4651d06c046d8ffdc237c06c7167f5c9a9197f195868ac20afdc84593bba.sqlite",
+  // biome-ignore lint/style/noNonNullAssertion: env variables must exist
+  url: process.env.DEV_DATABASE_URL!,
 });
 
 const db = drizzle(client);

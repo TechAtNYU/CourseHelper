@@ -17,16 +17,18 @@ import { discoverPrograms, scrapeProgram } from "./modules/programs";
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 app.get("/", async (c) => {
-  const db = getDB(c.env); // env variables
+  const db = getDB(c.env);
 
-  const db_data = await getDashboardData(db);
+  const dbData = await getDashboardData(db);
+
   // if request JSON data, just return JSON data
   const acceptHeader = c.req.header("Accept");
   if (acceptHeader?.includes("application/json")) {
-    return c.json(db_data);
+    return c.json(dbData);
   }
+
   // otherwise return HTML dashboard
-  return c.html(Dashboard(db_data));
+  return c.html(Dashboard(dbData));
 });
 
 const ZCacheData = z.object({

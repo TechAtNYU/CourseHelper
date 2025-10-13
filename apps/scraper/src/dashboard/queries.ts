@@ -2,6 +2,9 @@ import { desc, eq, sql } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import { errorLogs, jobs } from "../drizzle/schema";
 
+const MAX_JOBS_TO_SHOW = 500;
+const MAX_ERRORS_TO_SHOW = 100;
+
 /**
  * Exports the data from the queries in this format
  */
@@ -21,7 +24,7 @@ export type DashboardData = {
     timeout: number;
     unknown: number;
   };
-  jobs: Array<{
+  jobs: {
     id: string;
     url: string;
     status: string;
@@ -29,8 +32,8 @@ export type DashboardData = {
     createdAt: Date;
     startedAt: Date | null;
     completedAt: Date | null;
-  }>;
-  errors: Array<{
+  }[];
+  errors: {
     id: string;
     jobId: string | null;
     errorType: string;
@@ -38,7 +41,7 @@ export type DashboardData = {
     timestamp: Date;
     jobType: string;
     jobUrl: string;
-  }>;
+  }[];
 };
 
 /**
@@ -49,10 +52,6 @@ export type DashboardData = {
 export async function getDashboardData(
   db: DrizzleD1Database,
 ): Promise<DashboardData> {
-  // how many to query
-  const MAX_JOBS_TO_SHOW = 500;
-  const MAX_ERRORS_TO_SHOW = 100;
-
   // Recent Jobs
   const recentJobs = await db
     .select()
