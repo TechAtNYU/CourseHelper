@@ -15,7 +15,7 @@ export default defineManifest({
     },
     default_popup: "src/popup/index.html",
   },
-  permissions: ["sidePanel", "contentSettings"],
+  permissions: ["sidePanel", "contentSettings", "storage"],
   content_scripts: [
     {
       js: ["src/content/main.tsx"],
@@ -24,5 +24,9 @@ export default defineManifest({
   ],
   side_panel: {
     default_path: "src/sidepanel/index.html",
+  },
+  background: {
+    service_worker: "src/background.ts",
+    type: "module",
   },
 });
