@@ -5,6 +5,7 @@ import {
   MapIcon,
   Send,
   Settings,
+  ShieldCheck,
 } from "lucide-react";
 
 const config = {
@@ -19,6 +20,7 @@ const config = {
       { title: "Settings", url: "/settings", icon: Settings },
       { title: "Feedback", url: "/feedback", icon: Send },
     ],
+    navAdmin: [{ title: "Admin", url: "/dashboard/admin", icon: ShieldCheck }],
   },
 };
 

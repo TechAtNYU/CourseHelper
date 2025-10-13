@@ -20,13 +20,6 @@ export const getProgramByName = protectedQuery({
   },
 });
 
-export const deleteProgramInternal = internalMutation({
-  args: { id: v.id("programs") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-  },
-});
-
 export const upsertProgramInternal = internalMutation({
   args: programs,
   handler: async (ctx, args) => {

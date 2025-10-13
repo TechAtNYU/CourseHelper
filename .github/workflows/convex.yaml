@@ -33,7 +33,6 @@ jobs:
 
       - name: 🔄 Sync environment variables to Convex
         run: |
-          cd packages/server
           doppler secrets download --no-file --format env-no-quotes | \
           while IFS='=' read -r key value; do
             bunx convex env set "$key" "$value"

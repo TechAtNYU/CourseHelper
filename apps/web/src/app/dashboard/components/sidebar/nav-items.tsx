@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-export function NavBottom({
+export function NavItems({
   items,
   ...props
 }: {
