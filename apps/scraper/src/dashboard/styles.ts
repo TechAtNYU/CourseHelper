@@ -178,10 +178,11 @@ export const minimalCSS = `
     border-collapse: collapse;
   }
 
-  /* (12 rows * 41px per row) */
+  /* document.querySelector('#jobs-table-body').scrollHeight + 1 */
+  /* is the exact height of 12 rows */
   tbody {
     display: block;
-    min-height: calc(12 * 41px);
+    min-height: 505px;
     overflow-y: auto;
   }
   /* table rows (including the header) */
@@ -313,8 +314,7 @@ export const minimalCSS = `
     align-items: center;
     justify-content: center;
     gap: 12px;
-    padding: 16px;
-    border-top: 1px solid #e5e5e5;
+    padding: 12px;
   }
 
   .pagination-btn {
