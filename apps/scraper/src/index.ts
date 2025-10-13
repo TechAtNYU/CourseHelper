@@ -4,7 +4,7 @@ import type {
 } from "@dev-team-fall-25/server/convex/http";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import type z from "zod";
+import * as z from "zod/mini";
 import getDB from "./drizzle";
 import { errorLogs, jobs } from "./drizzle/schema";
 import { ConvexApi } from "./lib/convex";
@@ -18,6 +18,11 @@ app.get("/", async (c) => {
   // const db = await getDB(c.env);
   // TODO: use hono to render a dashboard to monitor the scraping status
   return c.json({ status: "ok" });
+});
+
+const ZCacheData = z.object({
+  isMajorsEnabled: z.transform((val) => val === "true"),
+  isCoursesEnabled: z.transform((val) => val === "true"),
 });
 
 export default {
@@ -39,27 +44,29 @@ export default {
     // Check to see if app configs are cached
     const cached = await cache.match(cacheKey);
     if (cached) {
-      const cachedData = (await cached.json()) as {
-        is_scraping_majors: string | null;
-        is_scraping_courses: string | null;
-      };
-      isMajorsEnabled = cachedData.is_scraping_majors === "true";
-      isCoursesEnabled = cachedData.is_scraping_courses === "true";
+      const { data, success } = ZCacheData.safeParse(await cached.json());
+
+      if (!success) {
+        throw new JobError("Failed to parse cache data", "validation");
+      }
+
+      isMajorsEnabled = data.isMajorsEnabled;
+      isCoursesEnabled = data.isCoursesEnabled;
     } else {
-      const [majorsConfig, coursesConfig] = await Promise.all([
+      const [isScrapingMajors, isScrapingCourses] = await Promise.all([
         convex.getAppConfig({ key: "is_scraping_majors" }),
         convex.getAppConfig({ key: "is_scraping_courses" }),
       ]);
 
-      isMajorsEnabled = majorsConfig === "true";
-      isCoursesEnabled = coursesConfig === "true";
+      isMajorsEnabled = isScrapingMajors === "true";
+      isCoursesEnabled = isScrapingCourses === "true";
 
       await cache.put(
         cacheKey,
         new Response(
           JSON.stringify({
-            is_scraping_majors: majorsConfig,
-            is_scraping_courses: coursesConfig,
+            isScrapingMajors,
+            isScrapingCourses,
           }),
           {
             headers: { "Cache-Control": "max-age=3600" },

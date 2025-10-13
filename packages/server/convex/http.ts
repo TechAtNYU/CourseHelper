@@ -124,12 +124,12 @@ http.route({
   path: "/api/courses/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
+    const data = await ctx.runMutation(
       internal.courses.upsertCourseInternal,
       body,
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -140,12 +140,12 @@ http.route({
   path: "/api/programs/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
+    const data = await ctx.runMutation(
       internal.programs.upsertProgramInternal,
       body,
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -171,14 +171,14 @@ http.route({
       );
     }
 
-    const result = await ctx.runMutation(
+    const data = await ctx.runMutation(
       internal.requirements.createRequirementsInternal,
       {
         requirements: body,
       },
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -204,14 +204,14 @@ http.route({
       );
     }
 
-    const result = await ctx.runMutation(
+    const data = await ctx.runMutation(
       internal.prerequisites.createPrerequisitesInternal,
       {
         prerequisites: body,
       },
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -222,12 +222,12 @@ http.route({
   path: "/api/courseOfferings/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
+    const data = await ctx.runMutation(
       internal.courseOfferings.upsertCourseOfferingInternal,
       body,
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -238,12 +238,12 @@ http.route({
   path: "/api/appConfigs/get",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runQuery(
+    const data = await ctx.runQuery(
       internal.appConfigs.getAppConfigInternal,
       body,
     );
 
-    return new Response(JSON.stringify({ value: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -254,12 +254,12 @@ http.route({
   path: "/api/appConfigs/set",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
+    const data = await ctx.runMutation(
       internal.appConfigs.setAppConfigInternal,
       body,
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
