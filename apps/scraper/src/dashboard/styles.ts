@@ -178,10 +178,10 @@ export const minimalCSS = `
     border-collapse: collapse;
   }
 
-  /* (12 rows * 40px per row) */
+  /* (12 rows * 41px per row) */
   tbody {
     display: block;
-    min-height: calc(12 * 40px);
+    min-height: calc(12 * 41px);
     overflow-y: auto;
   }
   /* table rows (including the header) */
