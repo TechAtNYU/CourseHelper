@@ -1,49 +1,23 @@
 "use client";
 
-import { RiCalendarCheckLine } from "@remixicon/react";
-import {
-  addDays,
-  addMonths,
-  addWeeks,
-  endOfWeek,
-  format,
-  isSameMonth,
-  startOfWeek,
-  subMonths,
-  subWeeks,
-} from "date-fns";
-import {
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PlusIcon,
-} from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import {
-  AgendaView,
-  addHoursToDate,
-  CalendarDndProvider,
-  EventDialog,
-  WeekView,
+    PlusIcon
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+    CalendarDndProvider,
+    EventDialog,
+    WeekView
 } from ".";
 import {
-  AgendaDaysToShow,
-  EventGap,
-  EventHeight,
-  WeekCellsHeight,
+    EventGap,
+    EventHeight,
+    WeekCellsHeight
 } from "./constants";
+import { addClassToCalendar } from './event-dialog';
 import type { CalendarEvent, CalendarView, EventColor } from "./types";
-import {addClassToCalendar,addBasicAlgorithms} from './event-dialog';
 
 export interface EventCalendarProps {
   events?: CalendarEvent[];
