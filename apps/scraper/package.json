@@ -20,15 +20,15 @@
     "@dev-team-fall-25/server": "workspace:*",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
-    "hono": "^4.9.10",
+    "hono": "^4.9.12",
     "nanoid": "^5.1.6",
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.5",
+    "@biomejs/biome": "2.2.6",
     "@libsql/client": "^0.15.15",
-    "convex": "^1.27.5",
+    "convex": "^1.28.0",
     "drizzle-kit": "^0.31.5",
-    "wrangler": "^4.42.1"
+    "wrangler": "^4.43.0"
   }
 }
