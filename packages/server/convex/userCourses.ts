@@ -43,7 +43,7 @@ export const createUserCourse = protectedMutation({
 export const updateUserCourse = protectedMutation({
   args: {
     id: v.id("userCourses"),
-    ...partial(omit(userCourses, ["userId", "courseId"])),
+    ...partial(omit(userCourses, ["userId", "courseCode"])),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
