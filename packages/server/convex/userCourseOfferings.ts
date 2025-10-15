@@ -1,15 +1,28 @@
+import { asyncMap, omit } from "convex-helpers";
 import { v } from "convex/values";
-import { omit } from "convex-helpers";
 import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { userCourseOfferings } from "./schemas/courseOfferings";
 
 export const getUserCourseOfferings = protectedQuery({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
+    const userOfferings = await ctx.db
       .query("userCourseOfferings")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
       .collect();
+
+    return await asyncMap(userOfferings, async (userOffering) => {
+      const courseOffering = await ctx.db.get(userOffering.courseOfferingId);
+      if (!courseOffering) {
+        throw new Error(
+          `Course offering ${userOffering.courseOfferingId} not found`,
+        );
+      }
+      return {
+        ...userOffering,
+        courseOffering,
+      };
+    });
   },
 });
 
