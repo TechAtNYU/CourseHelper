@@ -3,7 +3,7 @@ import { v } from "convex/values";
 const courseOfferings = {
   courseCode: v.string(), // course code
   title: v.string(),
-  section: v.string(),
+  section: v.string(), // 001
   year: v.number(), // 2025
   term: v.union(
     v.literal("spring"),
@@ -12,7 +12,7 @@ const courseOfferings = {
     v.literal("j-term"),
   ),
   instructor: v.string(),
-  location: v.string(),
+  location: v.optional(v.string()),
   days: v.array(
     v.union(
       v.literal("monday"),
@@ -32,6 +32,7 @@ const courseOfferings = {
     v.literal("waitlist"),
   ),
   waitlistNum: v.optional(v.number()),
+  corequisite: v.optional(v.array(v.string())), // course code
 };
 
 const userCourseOfferings = {
