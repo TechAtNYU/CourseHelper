@@ -22,9 +22,16 @@
   ],
   "devDependencies": {
     "turbo": "^2.5.8",
-    "@types/bun": "latest"
+    "@types/bun": "1.3.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
-  }
+  },
+  "trustedDependencies": [
+    "@clerk/shared",
+    "@tailwindcss/oxide",
+    "esbuild",
+    "sharp",
+    "workerd"
+  ]
 }
