@@ -18,8 +18,10 @@ export default defineSchema({
   prerequisites: defineTable(prerequisites).index("by_course", ["courseId"]),
   courseOfferings: defineTable(courseOfferings)
     .index("by_course_code", ["courseCode"])
+    .index("by_class_number", ["classNumber"])
     .index("by_term_year", ["term", "year"])
-    .index("by_course_term_section", ["courseCode", "term", "year", "section"]),
+    .index("by_course_term_section", ["courseCode", "term", "year", "section"])
+    .index("by_corequisite_of", ["corequisiteOf", "term", "year"]),
   userCourses: defineTable(userCourses).index("by_user", ["userId"]),
   userCourseOfferings: defineTable(userCourseOfferings).index("by_user", [
     "userId",

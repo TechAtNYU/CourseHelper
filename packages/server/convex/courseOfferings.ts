@@ -54,6 +54,30 @@ export const getCourseOfferingsByCourseTerm = protectedQuery({
   },
 });
 
+export const getCorequisitesByCourseCode = protectedQuery({
+  args: {
+    courseCode: v.string(),
+    term: v.union(
+      v.literal("spring"),
+      v.literal("summer"),
+      v.literal("fall"),
+      v.literal("j-term"),
+    ),
+    year: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("courseOfferings")
+      .withIndex("by_corequisite_of", (q) =>
+        q
+          .eq("corequisiteOf", args.courseCode)
+          .eq("term", args.term)
+          .eq("year", args.year),
+      )
+      .collect();
+  },
+});
+
 export const upsertCourseOfferingInternal = internalMutation({
   args: courseOfferings,
   handler: async (ctx, args) => {

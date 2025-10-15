@@ -4,6 +4,7 @@ import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { apiAction } from "./helpers/auth";
 import { AppConfigKey } from "./schemas/appConfigs";
+import { courses } from "./schemas/courses";
 
 export const ZUpsertCourse = z.object({
   program: z.string(),
@@ -92,6 +93,7 @@ export const ZUpsertPrerequisites = z.array(
 
 export const ZUpsertCourseOffering = z.object({
   courseCode: z.string(),
+  classNumber: z.number(),
   title: z.string(),
   section: z.string(),
   year: z.number(),
@@ -111,8 +113,10 @@ export const ZUpsertCourseOffering = z.object({
   ),
   startTime: z.string(),
   endTime: z.string(),
-  status: z.enum(["open", "closed", "waitlist"]),
-  waitlistNum: z.number(),
+  status: z.enum(["open", "closed", "waitlist", "enrolled"]),
+  waitlistNum: z.optional(z.number()),
+  isCorequisite: z.boolean(),
+  corequisiteOf: z.optional(z.string()),
 });
 
 export const ZGetAppConfig = z.object({ key: AppConfigKey });
