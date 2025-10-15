@@ -32,7 +32,6 @@ const courseOfferings = {
     v.literal("waitlist"),
   ),
   waitlistNum: v.optional(v.number()),
-  corequisite: v.optional(v.array(v.string())), // course code
 };
 
 const userCourseOfferings = {

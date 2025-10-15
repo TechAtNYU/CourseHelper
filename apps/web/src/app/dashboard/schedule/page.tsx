@@ -1,12 +1,22 @@
-import Schedule from "@/components/comp-542";
+import { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { preloadQuery } from "convex/nextjs";
+import { getAuthToken } from "@/lib/convex";
 import { AppHeader } from "../components/app-header";
+import { ScheduleContent } from "./components/schedule-content";
 
-const SchedulePage = () => {
+const SchedulePage = async () => {
+  const token = await getAuthToken();
+  const preloadedClasses = await preloadQuery(
+    api.userCourseOfferings.getUserCourseOfferings,
+    {},
+    { token },
+  );
+
   return (
     <>
       <AppHeader title="Schedule" />
       <main className="p-6 space-y-6">
-        <Schedule />
+        <ScheduleContent preloadedClasses={preloadedClasses} />
       </main>
     </>
   );

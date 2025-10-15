@@ -1,7 +1,8 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { cookies } from "next/headers";
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
+import { AuthenticatedContent } from "./components/authenticated-content";
 
 export default async function Layout({
   children,
@@ -29,7 +30,9 @@ export default async function Layout({
           isAdmin: Boolean(user?.publicMetadata?.is_admin),
         }}
       />
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset>
+        <AuthenticatedContent>{children}</AuthenticatedContent>
+      </SidebarInset>
     </SidebarProvider>
   );
 }
