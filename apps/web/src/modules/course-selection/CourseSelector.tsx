@@ -39,10 +39,7 @@ async function fetchServerPage(
   return { rows, nextOffset: offset + 1 };
 }
 
-const CourseSelector = ({
-  data,
-  onHover,
-}: CourseSelectorComponentProps) => {
+const CourseSelector = ({ data, onHover }: CourseSelectorComponentProps) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [creditFilter, setCreditFilter] = useState<number | null>(null);
   const [hoveredCourse, setHoveredCourse] = useState<Course | null>(null);
