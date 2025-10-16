@@ -5,8 +5,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function Layout({
   children,
+  header,
 }: {
   children: React.ReactNode;
+  header: React.ReactNode;
 }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
@@ -26,9 +28,13 @@ export default async function Layout({
           email: user?.primaryEmailAddress?.emailAddress || "",
           avatar: user?.imageUrl || "",
           initial: `${user?.firstName?.[0]}${user?.lastName?.[0]}` || "UU",
+          isAdmin: Boolean(user?.publicMetadata?.is_admin),
         }}
       />
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset>
+        {header}
+        <main className="p-6 space-y-6">{children}</main>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

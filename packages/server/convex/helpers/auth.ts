@@ -27,6 +27,22 @@ export async function auth({
   return identity;
 }
 
+export async function requireAdmin({
+  ctx,
+}: {
+  ctx: QueryCtx | MutationCtx | ActionCtx;
+}) {
+  const identity = await auth({ ctx });
+
+  const isAdmin = identity.is_admin;
+
+  if (!isAdmin) {
+    throw new Error("Unauthorized: Admin access required");
+  }
+
+  return identity;
+}
+
 export function authApiKey(apiKey: string | null) {
   const expectedKey = process.env.CONVEX_API_KEY;
 
@@ -55,6 +71,30 @@ export const protectedAction = customAction(
   action,
   customCtx(async (ctx: ActionCtx) => {
     const user = await auth({ ctx });
+    return { ...ctx, user };
+  }),
+);
+
+export const protectedAdminQuery = customQuery(
+  query,
+  customCtx(async (ctx: QueryCtx) => {
+    const user = await requireAdmin({ ctx });
+    return { ...ctx, user };
+  }),
+);
+
+export const protectedAdminMutation = customMutation(
+  mutation,
+  customCtx(async (ctx: MutationCtx) => {
+    const user = await requireAdmin({ ctx });
+    return { ...ctx, user };
+  }),
+);
+
+export const protectedAdminAction = customAction(
+  action,
+  customCtx(async (ctx: ActionCtx) => {
+    const user = await requireAdmin({ ctx });
     return { ...ctx, user };
   }),
 );

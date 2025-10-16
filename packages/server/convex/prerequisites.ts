@@ -20,26 +20,28 @@ export const getPrerequisitesByCourse = protectedQuery({
   },
 });
 
-export const createPrerequisiteInternal = internalMutation({
+export const createPrerequisitesInternal = internalMutation({
   args: {
-    prereq: prerequisites,
+    prerequisites: v.array(prerequisites),
   },
   handler: async (ctx, args) => {
-    const newPrereq = args.prereq;
-    if (newPrereq.type === "options") {
-      return await ctx.db.insert("prerequisites", {
-        courseId: newPrereq.courseId,
-        type: newPrereq.type,
-        courses: newPrereq.courses,
-        creditsRequired: newPrereq.creditsRequired,
-      });
-    } else {
-      return await ctx.db.insert("prerequisites", {
-        courseId: newPrereq.courseId,
-        type: newPrereq.type,
-        courses: newPrereq.courses,
-      });
-    }
+    return await Promise.all(
+      args.prerequisites.map((newPrereq) => {
+        if (newPrereq.type === "options") {
+          return ctx.db.insert("prerequisites", {
+            courseId: newPrereq.courseId,
+            type: newPrereq.type,
+            courses: newPrereq.courses,
+            creditsRequired: newPrereq.creditsRequired,
+          });
+        }
+        return ctx.db.insert("prerequisites", {
+          courseId: newPrereq.courseId,
+          type: newPrereq.type,
+          courses: newPrereq.courses,
+        });
+      }),
+    );
   },
 });
 

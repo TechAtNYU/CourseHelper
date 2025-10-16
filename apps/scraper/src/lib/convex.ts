@@ -1,16 +1,16 @@
+import type { internal } from "@dev-team-fall-25/server/convex/_generated/api";
 import {
-  ZCreatePrerequisite,
-  ZCreateRequirement,
-  ZDeleteCourse,
-  ZDeleteCourseOffering,
-  ZDeletePrerequisites,
-  ZDeleteProgram,
-  ZDeleteRequirements,
+  ZGetAppConfig,
+  type ZSetAppConfig,
   ZUpsertCourse,
   ZUpsertCourseOffering,
+  ZUpsertPrerequisites,
   ZUpsertProgram,
+  ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
-import type * as z from "zod/mini";
+import type { FunctionReturnType } from "convex/server";
+import * as z from "zod/mini";
+import { JobError } from "./queue";
 
 type ConvexApiConfig = {
   baseUrl: string;
@@ -24,12 +24,19 @@ export class ConvexApi {
     this.config = config;
   }
 
-  private async request<T extends z.ZodMiniType>(
+  private async request<R>(
     path: string,
-    schema: T,
-    data: z.infer<T>,
-  ): Promise<{ success: boolean; id?: string }> {
-    const validated = schema.parse(data);
+    schema: z.ZodMiniType,
+    data: unknown,
+  ): Promise<{ data: R }> {
+    const { data: validated, success, error } = schema.safeParse(data);
+
+    if (!success) {
+      throw new JobError(
+        `Invalid data shape: \n${z.prettifyError(error)}`,
+        "validation",
+      );
+    }
 
     const response = await fetch(`${this.config.baseUrl}/${path}`, {
       method: "POST",
@@ -41,78 +48,71 @@ export class ConvexApi {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+      throw new JobError(
+        `HTTP ${response.status}: ${await response.text()}`,
+        "network",
+      );
     }
 
     return response.json();
   }
 
   async upsertCourse(data: z.infer<typeof ZUpsertCourse>) {
-    const result = await this.request(
-      "/api/courses/upsert",
-      ZUpsertCourse,
-      data,
-    );
-    return result.id;
-  }
-
-  async deleteCourse(data: z.infer<typeof ZDeleteCourse>) {
-    await this.request("/api/courses/delete", ZDeleteCourse, data);
+    const res = await this.request<
+      FunctionReturnType<typeof internal.courses.upsertCourseInternal>
+    >("/api/courses/upsert", ZUpsertCourse, data);
+    return res.data;
   }
 
   async upsertProgram(data: z.infer<typeof ZUpsertProgram>) {
-    const result = await this.request(
-      "/api/programs/upsert",
-      ZUpsertProgram,
-      data,
-    );
-    return result.id;
+    const res = await this.request<
+      FunctionReturnType<typeof internal.programs.upsertProgramInternal>
+    >("/api/programs/upsert", ZUpsertProgram, data);
+    return res.data;
   }
 
-  async deleteProgram(data: z.infer<typeof ZDeleteProgram>) {
-    await this.request("/api/programs/delete", ZDeleteProgram, data);
+  async upsertRequirements(data: z.infer<typeof ZUpsertRequirements>) {
+    const res = await this.request<
+      FunctionReturnType<
+        typeof internal.requirements.createRequirementsInternal
+      >
+    >("/api/requirements/upsert", ZUpsertRequirements, data);
+    return res.data;
   }
 
-  async createRequirement(data: z.infer<typeof ZCreateRequirement>) {
-    const result = await this.request(
-      "/api/requirements/create",
-      ZCreateRequirement,
-      data,
-    );
-    return result.id;
-  }
-
-  async deleteRequirements(data: z.infer<typeof ZDeleteRequirements>) {
-    await this.request("/api/requirements/delete", ZDeleteRequirements, data);
-  }
-
-  async createPrerequisite(data: z.infer<typeof ZCreatePrerequisite>) {
-    const result = await this.request(
-      "/api/prerequisites/create",
-      ZCreatePrerequisite,
-      data,
-    );
-    return result.id;
-  }
-
-  async deletePrerequisites(data: z.infer<typeof ZDeletePrerequisites>) {
-    await this.request("/api/prerequisites/delete", ZDeletePrerequisites, data);
+  async upsertPrerequisites(data: z.infer<typeof ZUpsertPrerequisites>) {
+    const res = await this.request<
+      FunctionReturnType<
+        typeof internal.prerequisites.createPrerequisitesInternal
+      >
+    >("/api/prerequisites/upsert", ZUpsertPrerequisites, data);
+    return res.data;
   }
 
   async upsertCourseOffering(data: z.infer<typeof ZUpsertCourseOffering>) {
-    const result = await this.request(
-      "/api/courseOfferings/upsert",
-      ZUpsertCourseOffering,
-      data,
-    );
-    return result.id;
+    const res = await this.request<
+      FunctionReturnType<
+        typeof internal.courseOfferings.upsertCourseOfferingInternal
+      >
+    >("/api/courseOfferings/upsert", ZUpsertCourseOffering, data);
+    return res.data;
   }
 
-  async deleteCourseOffering(data: z.infer<typeof ZDeleteCourseOffering>) {
-    await this.request(
-      "/api/courseOfferings/delete",
-      ZDeleteCourseOffering,
+  async getAppConfig(data: z.infer<typeof ZGetAppConfig>) {
+    const res = await this.request<
+      FunctionReturnType<typeof internal.appConfigs.getAppConfigInternal>
+    >("api/appConfigs/get", ZGetAppConfig, data);
+    return res.data;
+  }
+
+  async setAppConfig(data: z.infer<typeof ZSetAppConfig>) {
+    const res = await this.request<
+      FunctionReturnType<typeof internal.appConfigs.setAppConfigInternal>
+    >(
+      "api/appConfigs/set",
+      z.object({ key: z.string(), value: z.string() }),
       data,
     );
+    return res.data;
   }
 }

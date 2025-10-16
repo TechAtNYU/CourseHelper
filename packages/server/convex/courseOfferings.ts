@@ -54,13 +54,6 @@ export const getCourseOfferingsByCourseTerm = protectedQuery({
   },
 });
 
-export const deleteCourseOfferingInternal = internalMutation({
-  args: { id: v.id("courseOfferings") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-  },
-});
-
 export const upsertCourseOfferingInternal = internalMutation({
   args: courseOfferings,
   handler: async (ctx, args) => {
