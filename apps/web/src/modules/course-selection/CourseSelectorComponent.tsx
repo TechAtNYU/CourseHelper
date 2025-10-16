@@ -117,7 +117,7 @@ const CourseSelectorComponent = ({ data }: CourseSelectorComponentProps) => {
     fetchNextPage,
     allRows.length,
     isFetchingNextPage,
-    rowVirtualizer.getVirtualItems(),
+    rowVirtualizer,
   ]);
 
   return (
