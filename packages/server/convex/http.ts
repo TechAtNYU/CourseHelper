@@ -4,7 +4,6 @@ import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { apiAction } from "./helpers/auth";
 import { AppConfigKey } from "./schemas/appConfigs";
-import { courses } from "./schemas/courses";
 
 export const ZUpsertCourse = z.object({
   program: z.string(),
@@ -20,6 +19,38 @@ export const ZUpsertProgram = z.object({
   name: z.string(),
   level: z.enum(["undergraduate", "graduate"]),
   programUrl: z.string(),
+});
+
+export const ZUpsertProgramWithRequirements = z.object({
+  name: z.string(),
+  level: z.enum(["undergraduate", "graduate"]),
+  programUrl: z.string(),
+  requirements: z.array(
+    z.discriminatedUnion("type", [
+      z.object({
+        isMajor: z.boolean(),
+        type: z.literal("required"),
+        courses: z.array(z.string()),
+      }),
+      z.object({
+        isMajor: z.boolean(),
+        type: z.literal("alternative"),
+        courses: z.array(z.string()),
+      }),
+      z.object({
+        isMajor: z.boolean(),
+        type: z.literal("options"),
+        courses: z.array(z.string()),
+        courseLevels: z.array(
+          z.object({
+            program: z.string(),
+            level: z.coerce.number(),
+          }),
+        ),
+        creditsRequired: z.number(),
+      }),
+    ]),
+  ),
 });
 
 export const ZUpsertRequirements = z.array(
@@ -144,49 +175,32 @@ http.route({
   path: "/api/programs/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const data = await ctx.runMutation(
+    const { requirements, ...programData } = body;
+
+    const programId = await ctx.runMutation(
       internal.programs.upsertProgramInternal,
-      body,
+      programData,
     );
 
-    return new Response(JSON.stringify({ data }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZUpsertProgram),
-});
-
-http.route({
-  path: "/api/requirements/upsert",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    const programIds = new Set(body.map((p) => p.programId));
-
-    if (programIds.size > 1) {
-      throw new Error("requirements must have same program id");
-    }
-
-    for (const programId of programIds) {
+    if (requirements && requirements.length > 0) {
       await ctx.runMutation(
         internal.requirements.deleteRequirementsByProgramInternal,
-        {
-          programId,
-        },
+        { programId },
       );
+
+      await ctx.runMutation(internal.requirements.createRequirementsInternal, {
+        requirements: requirements.map((req) => ({
+          ...req,
+          programId,
+        })),
+      });
     }
 
-    const data = await ctx.runMutation(
-      internal.requirements.createRequirementsInternal,
-      {
-        requirements: body,
-      },
-    );
-
-    return new Response(JSON.stringify({ data }), {
+    return new Response(JSON.stringify({ data: programId }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZUpsertRequirements),
+  }, ZUpsertProgramWithRequirements),
 });
 
 http.route({

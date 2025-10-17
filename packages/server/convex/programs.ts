@@ -81,7 +81,8 @@ export const upsertProgramInternal = internalMutation({
       .unique();
 
     if (existing) {
-      return await ctx.db.patch(existing._id, args);
+      await ctx.db.patch(existing._id, args);
+      return existing._id;
     } else {
       return await ctx.db.insert("programs", args);
     }
