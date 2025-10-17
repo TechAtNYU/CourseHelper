@@ -15,6 +15,33 @@ export const ZUpsertCourse = z.object({
   courseUrl: z.string(),
 });
 
+export const ZUpsertCourseWithPrerequisites = z.object({
+  program: z.string(),
+  code: z.string(),
+  level: z.coerce.number(),
+  title: z.string(),
+  credits: z.int(),
+  description: z.string(),
+  courseUrl: z.string(),
+  prerequisites: z.array(
+    z.discriminatedUnion("type", [
+      z.object({
+        type: z.literal("required"),
+        courses: z.array(z.string()),
+      }),
+      z.object({
+        type: z.literal("alternative"),
+        courses: z.array(z.string()),
+      }),
+      z.object({
+        type: z.literal("options"),
+        courses: z.array(z.string()),
+        creditsRequired: z.number(),
+      }),
+    ]),
+  ),
+});
+
 export const ZUpsertProgram = z.object({
   name: z.string(),
   level: z.enum(["undergraduate", "graduate"]),
@@ -159,16 +186,35 @@ http.route({
   path: "/api/courses/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const data = await ctx.runMutation(
+    const { prerequisites, ...courseData } = body;
+
+    const courseId = await ctx.runMutation(
       internal.courses.upsertCourseInternal,
-      body,
+      courseData,
     );
 
-    return new Response(JSON.stringify({ data }), {
+    if (prerequisites && prerequisites.length > 0) {
+      await ctx.runMutation(
+        internal.prerequisites.deletePrerequisitesByCourseInternal,
+        { courseId },
+      );
+
+      await ctx.runMutation(
+        internal.prerequisites.createPrerequisitesInternal,
+        {
+          prerequisites: prerequisites.map((prereq) => ({
+            ...prereq,
+            courseId,
+          })),
+        },
+      );
+    }
+
+    return new Response(JSON.stringify({ data: courseId }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZUpsertCourse),
+  }, ZUpsertCourseWithPrerequisites),
 });
 
 http.route({
@@ -201,39 +247,6 @@ http.route({
       headers: { "Content-Type": "application/json" },
     });
   }, ZUpsertProgramWithRequirements),
-});
-
-http.route({
-  path: "/api/prerequisites/upsert",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    const courseIds = new Set(body.map((p) => p.courseId));
-
-    if (courseIds.size > 1) {
-      throw new Error("prerequisites must have same course id");
-    }
-
-    for (const courseId of courseIds) {
-      await ctx.runMutation(
-        internal.prerequisites.deletePrerequisitesByCourseInternal,
-        {
-          courseId,
-        },
-      );
-    }
-
-    const data = await ctx.runMutation(
-      internal.prerequisites.createPrerequisitesInternal,
-      {
-        prerequisites: body,
-      },
-    );
-
-    return new Response(JSON.stringify({ data }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZUpsertPrerequisites),
 });
 
 http.route({

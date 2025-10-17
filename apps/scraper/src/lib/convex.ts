@@ -2,12 +2,9 @@ import type { internal } from "@dev-team-fall-25/server/convex/_generated/api";
 import {
   ZGetAppConfig,
   type ZSetAppConfig,
-  ZUpsertCourse,
   ZUpsertCourseOffering,
-  ZUpsertPrerequisites,
-  ZUpsertProgram,
+  ZUpsertCourseWithPrerequisites,
   ZUpsertProgramWithRequirements,
-  ZUpsertRequirements,
 } from "@dev-team-fall-25/server/convex/http";
 import type { FunctionReturnType } from "convex/server";
 import * as z from "zod/mini";
@@ -58,10 +55,12 @@ export class ConvexApi {
     return response.json();
   }
 
-  async upsertCourse(data: z.infer<typeof ZUpsertCourse>) {
+  async upsertCourseWithPrerequisites(
+    data: z.infer<typeof ZUpsertCourseWithPrerequisites>,
+  ) {
     const res = await this.request<
       FunctionReturnType<typeof internal.courses.upsertCourseInternal>
-    >("/api/courses/upsert", ZUpsertCourse, data);
+    >("/api/courses/upsert", ZUpsertCourseWithPrerequisites, data);
     return res.data;
   }
 
@@ -71,15 +70,6 @@ export class ConvexApi {
     const res = await this.request<
       FunctionReturnType<typeof internal.programs.upsertProgramInternal>
     >("/api/programs/upsert", ZUpsertProgramWithRequirements, data);
-    return res.data;
-  }
-
-  async upsertPrerequisites(data: z.infer<typeof ZUpsertPrerequisites>) {
-    const res = await this.request<
-      FunctionReturnType<
-        typeof internal.prerequisites.createPrerequisitesInternal
-      >
-    >("/api/prerequisites/upsert", ZUpsertPrerequisites, data);
     return res.data;
   }
 

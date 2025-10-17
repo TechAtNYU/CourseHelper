@@ -61,7 +61,7 @@ export const getCourseOfferingByClassNumber = protectedQuery({
           .eq("term", args.term)
           .eq("year", args.year),
       )
-      .collect();
+      .unique();
   },
 });
 
