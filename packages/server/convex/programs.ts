@@ -1,5 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { getManyFrom } from "convex-helpers/server/relationships";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { programs } from "./schemas/programs";
@@ -10,10 +11,13 @@ export const getProgramById = protectedQuery({
     const program = await ctx.db.get(args.id);
     if (!program) return null;
 
-    const requirements = await ctx.db
-      .query("requirements")
-      .withIndex("by_program", (q) => q.eq("programId", args.id))
-      .collect();
+    const requirements = await getManyFrom(
+      ctx.db,
+      "requirements",
+      "by_program",
+      args.id,
+      "programId",
+    );
 
     const requirementsWithoutProgramId = requirements.map(
       ({ programId, ...rest }) => rest,
@@ -36,10 +40,13 @@ export const getProgramByName = protectedQuery({
 
     if (!program) return null;
 
-    const requirements = await ctx.db
-      .query("requirements")
-      .withIndex("by_program", (q) => q.eq("programId", program._id))
-      .collect();
+    const requirements = await getManyFrom(
+      ctx.db,
+      "requirements",
+      "by_program",
+      program._id,
+      "programId",
+    );
 
     const requirementsWithoutProgramId = requirements.map(
       ({ programId, ...rest }) => rest,

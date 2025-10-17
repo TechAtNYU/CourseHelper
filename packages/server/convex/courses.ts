@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { courses } from "./schemas/courses";
+import { getManyFrom } from "convex-helpers/server/relationships";
 
 export const getCourseById = protectedQuery({
   args: { id: v.id("courses") },
@@ -13,10 +14,13 @@ export const getCourseById = protectedQuery({
       return null;
     }
 
-    const prerequisites = await ctx.db
-      .query("prerequisites")
-      .withIndex("by_course", (q) => q.eq("courseId", args.id))
-      .collect();
+    const prerequisites = await getManyFrom(
+      ctx.db,
+      "prerequisites",
+      "by_course",
+      args.id,
+      "courseId",
+    );
 
     const prerequisitesWithoutCourseId = prerequisites.map(
       ({ courseId, ...rest }) => rest,
@@ -41,10 +45,13 @@ export const getCourseByCode = protectedQuery({
       return null;
     }
 
-    const prerequisites = await ctx.db
-      .query("prerequisites")
-      .withIndex("by_course", (q) => q.eq("courseId", course._id))
-      .collect();
+    const prerequisites = await getManyFrom(
+      ctx.db,
+      "prerequisites",
+      "by_course",
+      course._id,
+      "courseId",
+    );
 
     const prerequisitesWithoutCourseId = prerequisites.map(
       ({ courseId, ...rest }) => rest,
