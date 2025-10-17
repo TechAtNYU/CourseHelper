@@ -218,7 +218,11 @@ const CourseSelector = ({ data, onHover }: CourseSelectorComponentProps) => {
                     )
                   ) : (
                     // TODO: import addClassToCalendar function
-                    <button type="button" onClick={() => {}}>
+                    <button
+                      className="block w-full"
+                      type="button"
+                      onClick={() => {}}
+                    >
                       <Card
                         className="hover:bg-neutral-100 hover:cursor-pointer"
                         onMouseEnter={() => setHoveredCourse(course)}
