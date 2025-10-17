@@ -3,20 +3,51 @@ import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { programs } from "./schemas/programs";
 
-export const getProgram = protectedQuery({
+export const getProgramById = protectedQuery({
   args: { id: v.id("programs") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.id);
+    const program = await ctx.db.get(args.id);
+    if (!program) return null;
+
+    const requirements = await ctx.db
+      .query("requirements")
+      .withIndex("by_program", (q) => q.eq("programId", args.id))
+      .collect();
+
+    const requirementsWithoutProgramId = requirements.map(
+      ({ programId, ...rest }) => rest,
+    );
+
+    return {
+      ...program,
+      requirements: requirementsWithoutProgramId,
+    };
   },
 });
 
 export const getProgramByName = protectedQuery({
   args: { name: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const program = await ctx.db
       .query("programs")
       .withIndex("by_program_name", (q) => q.eq("name", args.name))
       .unique();
+
+    if (!program) return null;
+
+    const requirements = await ctx.db
+      .query("requirements")
+      .withIndex("by_program", (q) => q.eq("programId", program._id))
+      .collect();
+
+    const requirementsWithoutProgramId = requirements.map(
+      ({ programId, ...rest }) => rest,
+    );
+
+    return {
+      ...program,
+      requirements: requirementsWithoutProgramId,
+    };
   },
 });
 
