@@ -1,13 +1,13 @@
 "use client";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { groupBy } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { useDebounce } from "@/hooks/use-debounce";
 import { CourseCard } from "./CourseCard";
 import { CourseFilters } from "./CourseFilters";
-import { DEFAULT_SELECTED_DAYS, type DayOptionValue } from "./DaysOfWeek";
+import { type DayOptionValue, DEFAULT_SELECTED_DAYS } from "./DaysOfWeek";
 import type { Course, CourseOffering } from "./types";
-import { Button } from "@/components/ui/button";
 
 interface CourseSelectorComponentProps {
   courses: Course[];
@@ -15,16 +15,51 @@ interface CourseSelectorComponentProps {
   onHover: (course: CourseOffering | null) => void;
 }
 
+// Filter state and reducer
+interface FilterState {
+  searchInput: string;
+  creditFilter: number | null;
+  selectedDays: DayOptionValue[];
+}
+
+type FilterAction =
+  | { type: "SET_SEARCH"; payload: string }
+  | { type: "SET_CREDIT"; payload: number | null }
+  | { type: "SET_DAYS"; payload: DayOptionValue[] }
+  | { type: "RESET_FILTERS" };
+
+const initialFilterState: FilterState = {
+  searchInput: "",
+  creditFilter: null,
+  selectedDays: DEFAULT_SELECTED_DAYS,
+};
+
+const filterReducer = (
+  state: FilterState,
+  action: FilterAction,
+): FilterState => {
+  switch (action.type) {
+    case "SET_SEARCH":
+      return { ...state, searchInput: action.payload };
+    case "SET_CREDIT":
+      return { ...state, creditFilter: action.payload };
+    case "SET_DAYS":
+      return { ...state, selectedDays: action.payload };
+    case "RESET_FILTERS":
+      return initialFilterState;
+    default:
+      return state;
+  }
+};
+
 const CourseSelector = ({
   courses,
   courseOfferings,
   onHover,
 }: CourseSelectorComponentProps) => {
-  const [searchInput, setSearchInput] = useState<string>("");
-  const [creditFilter, setCreditFilter] = useState<number | null>(null);
-  const [selectedDays, setSelectedDays] = useState<DayOptionValue[]>(
-    DEFAULT_SELECTED_DAYS,
-  );
+  const [filterState, dispatch] = useReducer(filterReducer, initialFilterState);
+  const { searchInput, creditFilter, selectedDays } = filterState;
+
   const [hoveredSection, setHoveredSection] = useState<CourseOffering | null>(
     null,
   );
@@ -124,30 +159,35 @@ const CourseSelector = ({
     console.log("Selected offering:", offering);
   };
 
-  const resetFilters = () => {
-    setSearchInput("");
-    setCreditFilter(null);
-    setSelectedDays(DEFAULT_SELECTED_DAYS);
-  };
-
   return (
     <div className="flex flex-col gap-4 w-full md:max-w-[350px] h-full">
       <div className="flex-shrink-0">
         <CourseFilters
           searchInput={searchInput}
-          onSearchChange={setSearchInput}
+          onSearchChange={(value) =>
+            dispatch({ type: "SET_SEARCH", payload: value })
+          }
           creditFilter={creditFilter}
-          onCreditFilterChange={setCreditFilter}
+          onCreditFilterChange={(credit) =>
+            dispatch({ type: "SET_CREDIT", payload: credit })
+          }
           selectedDays={selectedDays}
-          onSelectedDaysChange={setSelectedDays}
+          onSelectedDaysChange={(days) =>
+            dispatch({ type: "SET_DAYS", payload: days })
+          }
           availableCredits={availableCredits}
         />
       </div>
 
-      {filteredData.length == 0 && (
+      {filteredData.length === 0 && (
         <div className="flex flex-col space-y-4 items-center justify-center h-full">
           <p className="text-gray-500">No courses found.</p>
-          <Button variant="outline" onClick={resetFilters}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              dispatch({ type: "RESET_FILTERS" });
+            }}
+          >
             Reset Filters
           </Button>
         </div>

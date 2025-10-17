@@ -3,19 +3,34 @@ import { useId } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const dayOptions = [
-  { value: "monday", label: "Monday", defaultChecked: true },
-  { value: "tuesday", label: "Tuesday", defaultChecked: true },
-  { value: "wednesday", label: "Wednesday", defaultChecked: true },
-  { value: "thursday", label: "Thursday", defaultChecked: true },
-  { value: "friday", label: "Friday", defaultChecked: true },
-  { value: "saturday", label: "Saturday", defaultChecked: false },
-  { value: "sunday", label: "Sunday", defaultChecked: false },
+  { value: "monday", label: "Monday", defaultChecked: true, disabled: false },
+  { value: "tuesday", label: "Tuesday", defaultChecked: true, disabled: false },
+  {
+    value: "wednesday",
+    label: "Wednesday",
+    defaultChecked: true,
+    disabled: false,
+  },
+  {
+    value: "thursday",
+    label: "Thursday",
+    defaultChecked: true,
+    disabled: false,
+  },
+  { value: "friday", label: "Friday", defaultChecked: true, disabled: false },
+  {
+    value: "saturday",
+    label: "Saturday",
+    defaultChecked: false,
+    disabled: false,
+  },
+  { value: "sunday", label: "Sunday", defaultChecked: false, disabled: false },
 ] as const;
 
 export type DayOptionValue = (typeof dayOptions)[number]["value"];
 
 export const DEFAULT_SELECTED_DAYS = dayOptions
-  .filter((option) => option.defaultChecked && !option.disabled)
+  .filter((option) => option.defaultChecked)
   .map((option) => option.value);
 
 interface DaysOfWeekProps {
@@ -61,6 +76,9 @@ export default function DaysOfWeek({
             key={`${id}-${item.value}`}
             className="relative flex size-9 cursor-pointer flex-col items-center justify-center gap-3 rounded-full border border-input text-center shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:border-ring has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50 has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary has-data-[state=checked]:text-primary-foreground"
           >
+            {/* Biome: A form label must be associated with an input. */}
+            <input type="hidden" />
+
             <Checkbox
               id={`${id}-${item.value}`}
               value={item.value}

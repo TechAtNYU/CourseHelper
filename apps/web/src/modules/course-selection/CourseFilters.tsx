@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
-import DaysOfWeek, { type DayOptionValue } from "./DaysOfWeek";
 import { Label } from "@/components/ui/label";
+import DaysOfWeek, { type DayOptionValue } from "./DaysOfWeek";
 
 interface CourseFiltersProps {
   searchInput: string;

@@ -49,8 +49,6 @@ const timeSlots = [
 export const sampleData: Doc<"courses">[] = Array.from(
   { length: 200 },
   (_, i) => {
-    const deptIndex = Math.floor(i / 40);
-
     const dept = [...crypto.getRandomValues(new Uint8Array(4))]
       .map((n) => String.fromCharCode(65 + (n % 26)))
       .join("");
