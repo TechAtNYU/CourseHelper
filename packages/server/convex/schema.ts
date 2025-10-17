@@ -24,7 +24,11 @@ export default defineSchema({
     .index("by_class_number", ["classNumber", "term", "year"])
     .index("by_term_year", ["isCorequisite", "term", "year"])
     .index("by_course_term", ["courseCode", "term", "year"])
-    .index("by_corequisite_of", ["corequisiteOf", "term", "year"]),
+    .index("by_corequisite_of", ["corequisiteOf", "term", "year"])
+    .searchIndex("search_title", {
+      searchField: "title",
+      filterFields: ["isCorequisite", "term", "year"],
+    }),
   userCourses: defineTable(userCourses).index("by_user", ["userId"]),
   userCourseOfferings: defineTable(userCourseOfferings).index("by_user", [
     "userId",

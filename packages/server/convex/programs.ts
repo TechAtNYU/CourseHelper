@@ -54,7 +54,7 @@ export const getProgramByName = protectedQuery({
 
 export const getPrograms = protectedQuery({
   args: {
-    query: v.string(),
+    query: v.optional(v.string()),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, { query, paginationOpts }) => {

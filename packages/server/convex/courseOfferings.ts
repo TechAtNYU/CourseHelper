@@ -1,3 +1,4 @@
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
@@ -85,6 +86,42 @@ export const getCorequisitesByCourseCode = protectedQuery({
           .eq("year", args.year),
       )
       .collect();
+  },
+});
+
+export const getCourseOfferings = protectedQuery({
+  args: {
+    query: v.optional(v.string()),
+    term: v.union(
+      v.literal("spring"),
+      v.literal("summer"),
+      v.literal("fall"),
+      v.literal("j-term"),
+    ),
+    year: v.number(),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, { query, paginationOpts, term, year }) => {
+    if (query) {
+      return await ctx.db
+        .query("courseOfferings")
+        .withSearchIndex("search_title", (q) =>
+          q
+            .search("title", query)
+            .eq("isCorequisite", false)
+            .eq("term", term)
+            .eq("year", year),
+        )
+        .paginate(paginationOpts);
+    }
+
+    return await ctx.db
+      .query("courseOfferings")
+      .withIndex("by_term_year", (q) =>
+        q.eq("isCorequisite", false).eq("term", term).eq("year", year),
+      )
+      .order("desc")
+      .paginate(paginationOpts);
   },
 });
 
