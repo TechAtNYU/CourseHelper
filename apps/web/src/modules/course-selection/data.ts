@@ -48,11 +48,14 @@ const timeSlots = [
 ] as const;
 
 export const sampleData: Doc<"courses">[] = Array.from(
-  { length: 1000 },
+  { length: 200 },
   (_, i) => {
-    const dept = departments[i % departments.length];
+    const deptIndex = Math.floor(i / 40); // Each dept gets 40 courses
+    const dept = departments[deptIndex % departments.length];
     const credits = [0, 2, 3, 4][i % 4];
-    const level = 1000 + ((i * 100) % 4000);
+    // Create unique levels: 1000, 1100, 1200, ..., 4900
+    const levelOffset = (i % 40) * 100;
+    const level = 1000 + levelOffset;
     const title = titles[i % titles.length];
     const code = `${dept}-${level}`;
 
@@ -71,13 +74,16 @@ export const sampleData: Doc<"courses">[] = Array.from(
 );
 
 export const sampleCourseOfferings: Doc<"courseOfferings">[] = Array.from(
-  { length: 200 },
+  { length: 600 },
   (_, i) => {
-    const course = sampleData[i % sampleData.length];
-    const term = terms[i % terms.length];
+    // Each course gets 3 sections on average (600 offerings / 200 courses)
+    const courseIndex = Math.floor(i / 3);
+    const course = sampleData[courseIndex % sampleData.length];
+    const sectionIndex = i % sections.length;
+    const term = terms[Math.floor(i / 150) % terms.length]; // Group by term
     const status = statuses[i % statuses.length];
     const { start, end } = timeSlots[i % timeSlots.length];
-    const section = sections[i % sections.length];
+    const section = sections[sectionIndex];
     const location = `${buildings[i % buildings.length]} ${100 + (i % 50)}`;
     const days = dayPatterns[i % dayPatterns.length];
 
@@ -87,7 +93,7 @@ export const sampleCourseOfferings: Doc<"courseOfferings">[] = Array.from(
       courseCode: course.code,
       title: course.title,
       section,
-      year: 2024 + (i % 3),
+      year: 2024 + (Math.floor(i / 200) % 3),
       term,
       instructor: instructors[i % instructors.length],
       location,
