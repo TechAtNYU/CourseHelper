@@ -7,17 +7,53 @@ import { courses } from "./schemas/courses";
 export const getCourseById = protectedQuery({
   args: { id: v.id("courses") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.id);
+    const course = await ctx.db.get(args.id);
+
+    if (!course) {
+      return null;
+    }
+
+    const prerequisites = await ctx.db
+      .query("prerequisites")
+      .withIndex("by_course", (q) => q.eq("courseId", args.id))
+      .collect();
+
+    const prerequisitesWithoutCourseId = prerequisites.map(
+      ({ courseId, ...rest }) => rest,
+    );
+
+    return {
+      ...course,
+      prerequisites: prerequisitesWithoutCourseId,
+    };
   },
 });
 
 export const getCourseByCode = protectedQuery({
   args: { code: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const course = await ctx.db
       .query("courses")
       .withIndex("by_course_code", (q) => q.eq("code", args.code))
       .unique();
+
+    if (!course) {
+      return null;
+    }
+
+    const prerequisites = await ctx.db
+      .query("prerequisites")
+      .withIndex("by_course", (q) => q.eq("courseId", course._id))
+      .collect();
+
+    const prerequisitesWithoutCourseId = prerequisites.map(
+      ({ courseId, ...rest }) => rest,
+    );
+
+    return {
+      ...course,
+      prerequisites: prerequisitesWithoutCourseId,
+    };
   },
 });
 
