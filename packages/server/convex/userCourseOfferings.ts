@@ -1,15 +1,33 @@
 import { v } from "convex/values";
 import { omit } from "convex-helpers";
+import { getOneFrom } from "convex-helpers/server/relationships";
 import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { userCourseOfferings } from "./schemas/courseOfferings";
 
 export const getUserCourseOfferings = protectedQuery({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
+    const userCourseOfferings = await ctx.db
       .query("userCourseOfferings")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
       .collect();
+
+    return await Promise.all(
+      userCourseOfferings.map(async (userOffering) => {
+        const courseOffering = await getOneFrom(
+          ctx.db,
+          "courseOfferings",
+          "by_class_number",
+          userOffering.classNumber,
+          "classNumber",
+        );
+
+        return {
+          ...userOffering,
+          courseOffering,
+        };
+      }),
+    );
   },
 });
 

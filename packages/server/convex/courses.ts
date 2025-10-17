@@ -1,5 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { getManyFrom } from "convex-helpers/server/relationships";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { courses } from "./schemas/courses";
@@ -7,17 +8,59 @@ import { courses } from "./schemas/courses";
 export const getCourseById = protectedQuery({
   args: { id: v.id("courses") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.id);
+    const course = await ctx.db.get(args.id);
+
+    if (!course) {
+      return null;
+    }
+
+    const prerequisites = await getManyFrom(
+      ctx.db,
+      "prerequisites",
+      "by_course",
+      args.id,
+      "courseId",
+    );
+
+    const prerequisitesWithoutCourseId = prerequisites.map(
+      ({ courseId, ...rest }) => rest,
+    );
+
+    return {
+      ...course,
+      prerequisites: prerequisitesWithoutCourseId,
+    };
   },
 });
 
 export const getCourseByCode = protectedQuery({
   args: { code: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const course = await ctx.db
       .query("courses")
       .withIndex("by_course_code", (q) => q.eq("code", args.code))
       .unique();
+
+    if (!course) {
+      return null;
+    }
+
+    const prerequisites = await getManyFrom(
+      ctx.db,
+      "prerequisites",
+      "by_course",
+      course._id,
+      "courseId",
+    );
+
+    const prerequisitesWithoutCourseId = prerequisites.map(
+      ({ courseId, ...rest }) => rest,
+    );
+
+    return {
+      ...course,
+      prerequisites: prerequisitesWithoutCourseId,
+    };
   },
 });
 
