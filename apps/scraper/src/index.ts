@@ -1,6 +1,8 @@
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import * as z from "zod/mini";
+import { Dashboard } from "./dashboard/components";
+import { getDashboardData } from "./dashboard/queries";
 import getDB from "./drizzle";
 import { errorLogs, jobs } from "./drizzle/schema";
 import { ConvexApi } from "./lib/convex";
@@ -11,9 +13,18 @@ import { discoverPrograms, scrapeProgram } from "./modules/programs";
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 app.get("/", async (c) => {
-  // const db = await getDB(c.env);
-  // TODO: use hono to render a dashboard to monitor the scraping status
-  return c.json({ status: "ok" });
+  const db = getDB(c.env);
+
+  const dbData = await getDashboardData(db);
+
+  // if request JSON data, just return JSON data
+  const acceptHeader = c.req.header("Accept");
+  if (acceptHeader?.includes("application/json")) {
+    return c.json(dbData);
+  }
+
+  // otherwise return HTML dashboard
+  return c.html(Dashboard(dbData));
 });
 
 const ZCacheData = z.object({
