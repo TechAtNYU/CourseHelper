@@ -8,7 +8,14 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { ConfigDialog } from "./components/config-dialog";
 import { ConfigTable } from "./components/config-table";
@@ -24,10 +31,16 @@ export default function AdminPage() {
     isAuthenticated && isAdmin ? {} : "skip",
   );
   const setConfig = useMutation(api.appConfigs.setAppConfig);
+  const removeConfig = useMutation(api.appConfigs.removeAppConfig);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [editingValues, setEditingValues] = useState<
+    Doc<"appConfigs"> | undefined
+  >(undefined);
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deletingConfig, setDeletingConfig] = useState<
     Doc<"appConfigs"> | undefined
   >(undefined);
 
@@ -56,6 +69,19 @@ export default function AdminPage() {
     setIsDialogOpen(true);
   };
 
+  const handleDelete = (config: Doc<"appConfigs">) => {
+    setDeletingConfig(config);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (deletingConfig) {
+      await removeConfig({ key: deletingConfig.key });
+      setIsDeleteDialogOpen(false);
+      setDeletingConfig(undefined);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <Button onClick={handleAdd} size="sm">
@@ -63,14 +89,7 @@ export default function AdminPage() {
         Add
       </Button>
 
-      {configs && configs.length === 0 ? (
-        <Card>
-          <CardContent className="p-6 text-center text-muted-foreground">
-            No configurations found. Click "Add" to create one.
-          </CardContent>
-        </Card>
-      ) : null}
-      <ConfigTable data={configs} onEdit={handleEdit} />
+      <ConfigTable data={configs} onEdit={handleEdit} onDelete={handleDelete} />
 
       <ConfigDialog
         open={isDialogOpen}
@@ -84,6 +103,40 @@ export default function AdminPage() {
         initial={editingValues}
         onSubmit={onSaveConfig}
       />
+
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => {
+          setIsDeleteDialogOpen(open);
+          if (!open) {
+            setDeletingConfig(undefined);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Configuration</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete the configuration key{" "}
+              <span className="font-mono font-semibold">
+                {deletingConfig?.key}
+              </span>
+              ? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
