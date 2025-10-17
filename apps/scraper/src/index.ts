@@ -1,7 +1,3 @@
-import type {
-  ZUpsertPrerequisites,
-  ZUpsertRequirements,
-} from "@dev-team-fall-25/server/convex/http";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import * as z from "zod/mini";
