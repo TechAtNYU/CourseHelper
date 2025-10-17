@@ -40,7 +40,7 @@ const courseOfferings = {
 
 const userCourseOfferings = {
   userId: v.string(),
-  classNumber: v.string(),
+  classNumber: v.number(),
   alternativeOf: v.optional(v.id("userCourseOfferings")),
 };
 
