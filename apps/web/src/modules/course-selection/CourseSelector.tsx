@@ -3,8 +3,7 @@ import type { Doc } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import clsx from "clsx";
-import { LoaderCircle } from "lucide-react";
-import Link from "next/link";
+import { InfoIcon, LoaderCircle } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Card,
@@ -12,6 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -95,7 +99,7 @@ const CourseSelector = ({ data, onHover }: CourseSelectorComponentProps) => {
   const rowVirtualizer = useVirtualizer({
     count: hasNextPage ? allRows.length + 1 : allRows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 120,
+    estimateSize: () => 100,
     overscan: 5,
     gap: 8,
   });
@@ -213,14 +217,30 @@ const CourseSelector = ({ data, onHover }: CourseSelectorComponentProps) => {
                       </div>
                     )
                   ) : (
-                    <Link href={course.courseUrl}>
+                    // TODO: import addClassToCalendar function
+                    <button type="button" onClick={() => {}}>
                       <Card
-                        className="hover:bg-neutral-100"
+                        className="hover:bg-neutral-100 hover:cursor-pointer"
                         onMouseEnter={() => setHoveredCourse(course)}
                         onMouseLeave={() => setHoveredCourse(null)}
                       >
                         <CardHeader>
-                          <CardTitle>{course.title}</CardTitle>
+                          <div className="flex w-full items-center justify-between gap-2 min-w-0">
+                            <CardTitle
+                              className="truncate min-w-0"
+                              title={course.title}
+                            >
+                              {course.title}
+                            </CardTitle>
+                            <HoverCard openDelay={10}>
+                              <HoverCardTrigger>
+                                <InfoIcon className="size-4 shrink-0 text-blue-400" />
+                              </HoverCardTrigger>
+                              <HoverCardContent>
+                                {course.description}
+                              </HoverCardContent>
+                            </HoverCard>
+                          </div>
                           <CardDescription className="flex flex-row gap-1 flex-wrap text-sm">
                             <span>{course.code}</span>
                             <span>&middot;</span>
@@ -230,12 +250,9 @@ const CourseSelector = ({ data, onHover }: CourseSelectorComponentProps) => {
                             <span>&middot;</span>
                             <span>{course.program}</span>
                           </CardDescription>
-                          <div className="text-xs text-muted-foreground">
-                            {course.description}
-                          </div>
                         </CardHeader>
                       </Card>
-                    </Link>
+                    </button>
                   )}
                 </div>
               );

@@ -32,7 +32,7 @@ export const sampleData: Doc<"courses">[] = Array.from(
       level,
       title: `${title} ${i + 1}`,
       credits,
-      description: `${dept} course worth ${credits} credits.`,
+      description: `Students learn how to design algorithms to solve problems and how to translate these algorithms into working computer programs. Experience is acquired through programming projects in a high level programming language. ${code} is intended as a first course for computer science majors, and for students of other scientific disciplines. Programming assignments.`,
       courseUrl: "#",
     };
   },
