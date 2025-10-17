@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { programs } from "./schemas/programs";
@@ -48,6 +49,26 @@ export const getProgramByName = protectedQuery({
       ...program,
       requirements: requirementsWithoutProgramId,
     };
+  },
+});
+
+export const getPrograms = protectedQuery({
+  args: {
+    query: v.string(),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, { query, paginationOpts }) => {
+    if (query) {
+      return await ctx.db
+        .query("programs")
+        .withSearchIndex("search_name", (q) => q.search("name", query))
+        .paginate(paginationOpts);
+    }
+
+    return await ctx.db
+      .query("programs")
+      .order("desc")
+      .paginate(paginationOpts);
   },
 });
 

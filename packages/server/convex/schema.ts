@@ -10,7 +10,11 @@ import { students } from "./schemas/students";
 
 export default defineSchema({
   appConfigs: defineTable(appConfigs).index("by_key", ["key"]),
-  programs: defineTable(programs).index("by_program_name", ["name"]),
+  programs: defineTable(programs)
+    .index("by_program_name", ["name"])
+    .searchIndex("search_name", {
+      searchField: "name",
+    }),
   requirements: defineTable(requirements).index("by_program", ["programId"]),
   courses: defineTable(courses)
     .index("by_course_code", ["code"])
