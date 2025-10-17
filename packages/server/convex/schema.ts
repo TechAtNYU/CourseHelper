@@ -18,7 +18,11 @@ export default defineSchema({
   requirements: defineTable(requirements).index("by_program", ["programId"]),
   courses: defineTable(courses)
     .index("by_course_code", ["code"])
-    .index("by_program_level", ["program", "level"]),
+    .index("by_level", ["level"])
+    .searchIndex("search_title", {
+      searchField: "title",
+      filterFields: ["level"],
+    }),
   prerequisites: defineTable(prerequisites).index("by_course", ["courseId"]),
   courseOfferings: defineTable(courseOfferings)
     .index("by_class_number", ["classNumber", "term", "year"])
