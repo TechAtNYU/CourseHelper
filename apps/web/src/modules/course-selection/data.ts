@@ -3,7 +3,6 @@ import type {
   Id,
 } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 
-const departments = ["CSCI", "MATH", "ECON", "ENGW", "PHIL"];
 const titles = [
   "Introduction to Computer Science",
   "Discrete Mathematics",
@@ -50,8 +49,11 @@ const timeSlots = [
 export const sampleData: Doc<"courses">[] = Array.from(
   { length: 200 },
   (_, i) => {
-    const deptIndex = Math.floor(i / 40); // Each dept gets 40 courses
-    const dept = departments[deptIndex % departments.length];
+    const deptIndex = Math.floor(i / 40);
+
+    const dept = [...crypto.getRandomValues(new Uint8Array(4))]
+      .map((n) => String.fromCharCode(65 + (n % 26)))
+      .join("");
     const credits = [0, 2, 3, 4][i % 4];
     // Create unique levels: 1000, 1100, 1200, ..., 4900
     const levelOffset = (i % 40) * 100;

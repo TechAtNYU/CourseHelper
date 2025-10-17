@@ -5,7 +5,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { CourseCard } from "./CourseCard";
 import { CourseFilters } from "./CourseFilters";
+import { DEFAULT_SELECTED_DAYS, type DayOptionValue } from "./DaysOfWeek";
 import type { Course, CourseOffering } from "./types";
+import { Button } from "@/components/ui/button";
 
 interface CourseSelectorComponentProps {
   courses: Course[];
@@ -20,6 +22,9 @@ const CourseSelector = ({
 }: CourseSelectorComponentProps) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [creditFilter, setCreditFilter] = useState<number | null>(null);
+  const [selectedDays, setSelectedDays] = useState<DayOptionValue[]>(
+    DEFAULT_SELECTED_DAYS,
+  );
   const [hoveredSection, setHoveredSection] = useState<CourseOffering | null>(
     null,
   );
@@ -60,8 +65,29 @@ const CourseSelector = ({
       filtered = filtered.filter((course) => course.credits === creditFilter);
     }
 
+    const selectedDaySet = new Set(
+      selectedDays.map((day) => day.toLowerCase()),
+    );
+
+    if (selectedDaySet.size === 0) {
+      return [];
+    }
+
+    filtered = filtered
+      .map((course) => {
+        const offerings = course.offerings.filter((offering) =>
+          offering.days.some((day) => selectedDaySet.has(day.toLowerCase())),
+        );
+
+        return {
+          ...course,
+          offerings,
+        };
+      })
+      .filter((course) => course.offerings.length > 0);
+
     return filtered;
-  }, [coursesWithOfferings, debouncedSearch, creditFilter]);
+  }, [coursesWithOfferings, debouncedSearch, creditFilter, selectedDays]);
 
   const parentRef = React.useRef<HTMLDivElement>(null);
 
@@ -98,6 +124,12 @@ const CourseSelector = ({
     console.log("Selected offering:", offering);
   };
 
+  const resetFilters = () => {
+    setSearchInput("");
+    setCreditFilter(null);
+    setSelectedDays(DEFAULT_SELECTED_DAYS);
+  };
+
   return (
     <div className="flex flex-col gap-4 w-full md:max-w-[350px] h-full">
       <div className="flex-shrink-0">
@@ -106,9 +138,20 @@ const CourseSelector = ({
           onSearchChange={setSearchInput}
           creditFilter={creditFilter}
           onCreditFilterChange={setCreditFilter}
+          selectedDays={selectedDays}
+          onSelectedDaysChange={setSelectedDays}
           availableCredits={availableCredits}
         />
       </div>
+
+      {filteredData.length == 0 && (
+        <div className="flex flex-col space-y-4 items-center justify-center h-full">
+          <p className="text-gray-500">No courses found.</p>
+          <Button variant="outline" onClick={resetFilters}>
+            Reset Filters
+          </Button>
+        </div>
+      )}
 
       <div ref={parentRef} className="overflow-auto no-scrollbar w-full flex-1">
         <div

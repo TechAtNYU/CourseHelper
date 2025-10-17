@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
+import DaysOfWeek, { type DayOptionValue } from "./DaysOfWeek";
 import { Label } from "@/components/ui/label";
 
 interface CourseFiltersProps {
@@ -7,6 +8,8 @@ interface CourseFiltersProps {
   onSearchChange: (value: string) => void;
   creditFilter: number | null;
   onCreditFilterChange: (credit: number | null) => void;
+  selectedDays: DayOptionValue[];
+  onSelectedDaysChange: (days: DayOptionValue[]) => void;
   availableCredits: number[];
 }
 
@@ -15,6 +18,8 @@ export const CourseFilters = ({
   onSearchChange,
   creditFilter,
   onCreditFilterChange,
+  selectedDays,
+  onSelectedDaysChange,
   availableCredits,
 }: CourseFiltersProps) => {
   return (
@@ -30,6 +35,11 @@ export const CourseFilters = ({
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
+
+      <DaysOfWeek
+        selectedDays={selectedDays}
+        onSelectedDaysChange={onSelectedDaysChange}
+      />
 
       {/* Credit Filter Buttons */}
       <div className="flex flex-col space-y-2">
