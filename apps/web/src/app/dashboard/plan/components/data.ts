@@ -1,6 +1,8 @@
 import type { Id } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 import type { YearPlan } from "./types";
 
+// TODO: please remember to remove it once we have actual data
+
 export const sampleData: YearPlan[] = [
   {
     year: "Freshman",
