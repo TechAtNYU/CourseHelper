@@ -63,13 +63,6 @@ export default function AdminPage() {
         Add
       </Button>
 
-      {configs && configs.length === 0 ? (
-        <Card>
-          <CardContent className="p-6 text-center text-muted-foreground">
-            No configurations found. Click "Add" to create one.
-          </CardContent>
-        </Card>
-      ) : null}
       <ConfigTable data={configs} onEdit={handleEdit} />
 
       <ConfigDialog
