@@ -19,7 +19,7 @@ export const addUserCourseOffering = protectedMutation({
     const existing = await ctx.db
       .query("userCourseOfferings")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
-      .filter((q) => q.eq(q.field("courseOfferingId"), args.courseOfferingId))
+      .filter((q) => q.eq(q.field("classNumber"), args.classNumber))
       .unique();
 
     if (existing) {
@@ -28,7 +28,7 @@ export const addUserCourseOffering = protectedMutation({
 
     return await ctx.db.insert("userCourseOfferings", {
       userId: ctx.user.subject,
-      courseOfferingId: args.courseOfferingId,
+      classNumber: args.classNumber,
       alternativeOf: args.alternativeOf,
     });
   },
