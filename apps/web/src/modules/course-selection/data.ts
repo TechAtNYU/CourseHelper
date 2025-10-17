@@ -15,7 +15,7 @@ const titles = [
   "Web Development",
 ];
 const terms = ["spring", "summer", "fall", "j-term"] as const;
-const statuses = ["open", "closed", "waitlist"] as const;
+const statuses = ["open", "closed", "waitlist", "enrolled"] as const;
 const sections = ["001", "002", "003", "004", "005", "006"];
 const instructors = [
   "Dr. Alice Johnson",
@@ -86,11 +86,15 @@ export const sampleCourseOfferings: Doc<"courseOfferings">[] = Array.from(
     const section = sections[sectionIndex];
     const location = `${buildings[i % buildings.length]} ${100 + (i % 50)}`;
     const days = dayPatterns[i % dayPatterns.length];
+    const classNumber = 10000 + i; // Generate unique class numbers starting from 10000
+    const isCorequisite = i % 10 === 0; // Every 10th offering is a corequisite
+    const corequisiteOf = isCorequisite && i > 0 ? classNumber - 1 : undefined;
 
     return {
       _id: `co_${i + 1}` as Id<"courseOfferings">,
       _creationTime: 0,
       courseCode: course.code,
+      classNumber,
       title: course.title,
       section,
       year: 2024 + (Math.floor(i / 200) % 3),
@@ -102,6 +106,8 @@ export const sampleCourseOfferings: Doc<"courseOfferings">[] = Array.from(
       endTime: end,
       status,
       waitlistNum: status === "waitlist" ? (i % 20) + 1 : undefined,
+      isCorequisite,
+      corequisiteOf,
     };
   },
 );
@@ -118,7 +124,7 @@ export const sampleUserCourseOfferings: Doc<"userCourseOfferings">[] =
       _id: id,
       _creationTime: 0,
       userId: `user_${(index % 8) + 1}`,
-      courseOfferingId: offering._id,
+      classNumber: offering.classNumber.toString(),
       alternativeOf,
     };
   });
