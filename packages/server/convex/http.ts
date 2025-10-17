@@ -3,6 +3,7 @@ import * as z from "zod/mini";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { apiAction } from "./helpers/auth";
+import { AppConfigKey } from "./schemas/appConfigs";
 
 export const ZUpsertCourse = z.object({
   program: z.string(),
@@ -14,10 +15,30 @@ export const ZUpsertCourse = z.object({
   courseUrl: z.string(),
 });
 
-export const ZDeleteCourse = z.object({
-  id: z.pipe(
-    z.string(),
-    z.transform((val) => val as Id<"courses">),
+export const ZUpsertCourseWithPrerequisites = z.object({
+  program: z.string(),
+  code: z.string(),
+  level: z.coerce.number(),
+  title: z.string(),
+  credits: z.int(),
+  description: z.string(),
+  courseUrl: z.string(),
+  prerequisites: z.array(
+    z.discriminatedUnion("type", [
+      z.object({
+        type: z.literal("required"),
+        courses: z.array(z.string()),
+      }),
+      z.object({
+        type: z.literal("alternative"),
+        courses: z.array(z.string()),
+      }),
+      z.object({
+        type: z.literal("options"),
+        courses: z.array(z.string()),
+        creditsRequired: z.number(),
+      }),
+    ]),
   ),
 });
 
@@ -27,97 +48,110 @@ export const ZUpsertProgram = z.object({
   programUrl: z.string(),
 });
 
-export const ZDeleteProgram = z.object({
-  id: z.pipe(
-    z.string(),
-    z.transform((val) => val as Id<"programs">),
-  ),
-});
-
-export const ZCreateRequirement = z.discriminatedUnion("type", [
-  z.object({
-    programId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"programs">),
-    ),
-    isMajor: z.boolean(),
-    type: z.literal("required"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    programId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"programs">),
-    ),
-    isMajor: z.boolean(),
-    type: z.literal("alternative"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    programId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"programs">),
-    ),
-    isMajor: z.boolean(),
-    type: z.literal("options"),
-    courses: z.array(z.string()),
-    courseLevels: z.array(
+export const ZUpsertProgramWithRequirements = z.object({
+  name: z.string(),
+  level: z.enum(["undergraduate", "graduate"]),
+  programUrl: z.string(),
+  requirements: z.array(
+    z.discriminatedUnion("type", [
       z.object({
-        program: z.string(),
-        level: z.coerce.number(),
+        isMajor: z.boolean(),
+        type: z.literal("required"),
+        courses: z.array(z.string()),
       }),
-    ),
-    creditsRequired: z.number(),
-  }),
-]);
-
-export const ZDeleteRequirements = z.object({
-  programId: z.pipe(
-    z.string(),
-    z.transform((val) => val as Id<"programs">),
+      z.object({
+        isMajor: z.boolean(),
+        type: z.literal("alternative"),
+        courses: z.array(z.string()),
+      }),
+      z.object({
+        isMajor: z.boolean(),
+        type: z.literal("options"),
+        courses: z.array(z.string()),
+        courseLevels: z.array(
+          z.object({
+            program: z.string(),
+            level: z.coerce.number(),
+          }),
+        ),
+        creditsRequired: z.number(),
+      }),
+    ]),
   ),
 });
 
-export const ZCreatePrerequisite = z.discriminatedUnion("type", [
-  z.object({
-    courseId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"courses">),
-    ),
-    type: z.literal("required"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    courseId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"courses">),
-    ),
-    type: z.literal("alternative"),
-    courses: z.array(z.string()),
-  }),
-  z.object({
-    courseId: z.pipe(
-      z.string(),
-      z.transform((val) => val as Id<"courses">),
-    ),
-    type: z.literal("options"),
-    courses: z.array(z.string()),
-    creditsRequired: z.number(),
-  }),
-]);
+export const ZUpsertRequirements = z.array(
+  z.discriminatedUnion("type", [
+    z.object({
+      programId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"programs">),
+      ),
+      isMajor: z.boolean(),
+      type: z.literal("required"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      programId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"programs">),
+      ),
+      isMajor: z.boolean(),
+      type: z.literal("alternative"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      programId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"programs">),
+      ),
+      isMajor: z.boolean(),
+      type: z.literal("options"),
+      courses: z.array(z.string()),
+      courseLevels: z.array(
+        z.object({
+          program: z.string(),
+          level: z.coerce.number(),
+        }),
+      ),
+      creditsRequired: z.number(),
+    }),
+  ]),
+);
 
-export const ZDeletePrerequisites = z.object({
-  courseId: z.pipe(
-    z.string(),
-    z.transform((val) => val as Id<"courses">),
-  ),
-});
+export const ZUpsertPrerequisites = z.array(
+  z.discriminatedUnion("type", [
+    z.object({
+      courseId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"courses">),
+      ),
+      type: z.literal("required"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      courseId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"courses">),
+      ),
+      type: z.literal("alternative"),
+      courses: z.array(z.string()),
+    }),
+    z.object({
+      courseId: z.pipe(
+        z.string(),
+        z.transform((val) => val as Id<"courses">),
+      ),
+      type: z.literal("options"),
+      courses: z.array(z.string()),
+      creditsRequired: z.number(),
+    }),
+  ]),
+);
 
 export const ZUpsertCourseOffering = z.object({
-  courseId: z.pipe(
-    z.string(),
-    z.transform((val) => val as Id<"courses">),
-  ),
+  courseCode: z.string(),
+  classNumber: z.number(),
   title: z.string(),
   section: z.string(),
   year: z.number(),
@@ -137,16 +171,14 @@ export const ZUpsertCourseOffering = z.object({
   ),
   startTime: z.string(),
   endTime: z.string(),
-  status: z.enum(["open", "closed", "waitlist"]),
-  waitlistNum: z.number(),
+  status: z.enum(["open", "closed", "waitlist", "enrolled"]),
+  waitlistNum: z.optional(z.number()),
+  isCorequisite: z.boolean(),
+  corequisiteOf: z.optional(z.number()),
 });
 
-export const ZDeleteCourseOffering = z.object({
-  id: z.pipe(
-    z.string(),
-    z.transform((val) => val as Id<"courseOfferings">),
-  ),
-});
+export const ZGetAppConfig = z.object({ key: AppConfigKey });
+export const ZSetAppConfig = z.object({ key: AppConfigKey, value: z.string() });
 
 const http = httpRouter();
 
@@ -154,158 +186,115 @@ http.route({
   path: "/api/courses/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
+    const { prerequisites, ...courseData } = body;
+
+    const courseId = await ctx.runMutation(
       internal.courses.upsertCourseInternal,
-      body,
+      courseData,
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    if (prerequisites && prerequisites.length > 0) {
+      await ctx.runMutation(
+        internal.prerequisites.deletePrerequisitesByCourseInternal,
+        { courseId },
+      );
+
+      await ctx.runMutation(
+        internal.prerequisites.createPrerequisitesInternal,
+        {
+          prerequisites: prerequisites.map((prereq) => ({
+            ...prereq,
+            courseId,
+          })),
+        },
+      );
+    }
+
+    return new Response(JSON.stringify({ data: courseId }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZUpsertCourse),
-});
-
-http.route({
-  path: "/api/courses/delete",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    await ctx.runMutation(internal.courses.deleteCourseInternal, body);
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZDeleteCourse),
+  }, ZUpsertCourseWithPrerequisites),
 });
 
 http.route({
   path: "/api/programs/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
+    const { requirements, ...programData } = body;
+
+    const programId = await ctx.runMutation(
       internal.programs.upsertProgramInternal,
-      body,
+      programData,
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    if (requirements && requirements.length > 0) {
+      await ctx.runMutation(
+        internal.requirements.deleteRequirementsByProgramInternal,
+        { programId },
+      );
+
+      await ctx.runMutation(internal.requirements.createRequirementsInternal, {
+        requirements: requirements.map((req) => ({
+          ...req,
+          programId,
+        })),
+      });
+    }
+
+    return new Response(JSON.stringify({ data: programId }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZUpsertProgram),
-});
-
-http.route({
-  path: "/api/programs/delete",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    await ctx.runMutation(internal.programs.deleteProgramInternal, body);
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZDeleteProgram),
-});
-
-http.route({
-  path: "/api/requirements/create",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
-      internal.requirements.createRequirementInternal,
-      {
-        requirement: body,
-      },
-    );
-
-    return new Response(JSON.stringify({ success: true, id: result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZCreateRequirement),
-});
-
-http.route({
-  path: "/api/requirements/delete",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    await ctx.runMutation(
-      internal.requirements.deleteRequirementsByProgramInternal,
-      body,
-    );
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZDeleteRequirements),
-});
-
-http.route({
-  path: "/api/prerequisites/create",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
-      internal.prerequisites.createPrerequisiteInternal,
-      {
-        prereq: body,
-      },
-    );
-
-    return new Response(JSON.stringify({ success: true, id: result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZCreatePrerequisite),
-});
-
-http.route({
-  path: "/api/prerequisites/delete",
-  method: "POST",
-  handler: apiAction(async (ctx, body) => {
-    await ctx.runMutation(
-      internal.prerequisites.deletePrerequisitesByCourseInternal,
-      body,
-    );
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, ZDeletePrerequisites),
+  }, ZUpsertProgramWithRequirements),
 });
 
 http.route({
   path: "/api/courseOfferings/upsert",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    const result = await ctx.runMutation(
-      internal.courseOfferings.upsertCourseOfferingInternal,
-      body,
+    const data = await ctx.runMutation(
+      internal.courseOfferings.upsertCourseOfferingsInternal,
+      { courseOfferings: body },
     );
 
-    return new Response(JSON.stringify({ success: true, id: result }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZUpsertCourseOffering),
+  }, z.array(ZUpsertCourseOffering)),
 });
 
 http.route({
-  path: "/api/courseOfferings/delete",
+  path: "/api/appConfigs/get",
   method: "POST",
   handler: apiAction(async (ctx, body) => {
-    await ctx.runMutation(
-      internal.courseOfferings.deleteCourseOfferingInternal,
+    const data = await ctx.runQuery(
+      internal.appConfigs.getAppConfigInternal,
       body,
     );
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZDeleteCourseOffering),
+  }, ZGetAppConfig),
+});
+
+http.route({
+  path: "/api/appConfigs/set",
+  method: "POST",
+  handler: apiAction(async (ctx, body) => {
+    const data = await ctx.runMutation(
+      internal.appConfigs.setAppConfigInternal,
+      body,
+    );
+
+    return new Response(JSON.stringify({ data }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }, ZSetAppConfig),
 });
 
 export default http;

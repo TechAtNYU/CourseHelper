@@ -1,12 +1,7 @@
-import { AppHeader } from "./components/app-header";
+import FileUploadButton from "@/modules/report-parsing/components/file-upload-button";
 
-const DashboardPage = () => {
-  return (
-    <>
-      <AppHeader title="Home" />
-      <main></main>
-    </>
-  );
+const HomePage = () => {
+  return <FileUploadButton />;
 };
 
-export default DashboardPage;
+export default HomePage;

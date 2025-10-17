@@ -1,13 +1,18 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { nanoid } from "nanoid";
 
 export const jobs = sqliteTable("jobs", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
   url: text("url").notNull(),
   status: text("status", {
     enum: ["pending", "processing", "completed", "failed"],
-  }).notNull(),
+  })
+    .notNull()
+    .default("pending"),
   jobType: text("job_type", {
-    enum: ["discovery", "program", "course"],
+    enum: ["discover-programs", "discover-courses", "program", "course"],
   }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
@@ -17,13 +22,14 @@ export const jobs = sqliteTable("jobs", {
 });
 
 export const errorLogs = sqliteTable("error_logs", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  jobId: integer("job_id").references(() => jobs.id),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  jobId: text("job_id").references(() => jobs.id),
   errorType: text("error_type", {
-    enum: ["network", "parsing", "validation", "timeout"],
+    enum: ["network", "parsing", "validation", "timeout", "unknown"],
   }).notNull(),
   errorMessage: text("error_message").notNull(),
   stackTrace: text("stack_trace"),
-  retryCount: integer("retry_count").notNull(),
   timestamp: integer("timestamp", { mode: "timestamp" }).notNull(),
 });

@@ -1,3 +1,4 @@
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
@@ -20,22 +21,27 @@ export const getCourseByCode = protectedQuery({
   },
 });
 
-export const getCourseByProgramLevel = protectedQuery({
-  args: { program: v.string(), level: v.number() },
+export const getCourses = protectedQuery({
+  args: {
+    level: v.number(),
+    query: v.optional(v.string()),
+    paginationOpts: paginationOptsValidator,
+  },
   handler: async (ctx, args) => {
+    if (args.query !== undefined) {
+      return await ctx.db
+        .query("courses")
+        .withSearchIndex("search_title", (q) =>
+          q.search("title", args.query as string).eq("level", args.level),
+        )
+        .paginate(args.paginationOpts);
+    }
+
     return await ctx.db
       .query("courses")
-      .withIndex("by_program_level", (q) =>
-        q.eq("program", args.program).eq("level", args.level),
-      )
-      .unique();
-  },
-});
-
-export const deleteCourseInternal = internalMutation({
-  args: { id: v.id("courses") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
+      .withIndex("by_level", (q) => q.eq("level", args.level))
+      .order("desc")
+      .paginate(args.paginationOpts);
   },
 });
 
@@ -48,7 +54,8 @@ export const upsertCourseInternal = internalMutation({
       .unique();
 
     if (existing) {
-      return await ctx.db.patch(existing._id, args);
+      await ctx.db.patch(existing._id, args);
+      return existing._id;
     } else {
       return await ctx.db.insert("courses", args);
     }

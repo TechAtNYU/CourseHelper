@@ -1,6 +1,6 @@
 {
   "root": false,
-  "$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.6/schema.json",
   "extends": "//",
   "files": {
     "includes": [
@@ -8,6 +8,7 @@
       "!node_modules",
       "!.next",
       "!dist",
+      "!public",
       "!build",
       "!src/components/ui",
       "!convex/_generated"

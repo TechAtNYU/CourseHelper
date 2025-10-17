@@ -26,8 +26,8 @@ const requirements = v.union(
     courses: v.array(v.string()), // course code
     courseLevels: v.array(
       v.object({
-        program: v.string(),
-        level: v.number(),
+        program: v.string(), // CSCI-UA
+        level: v.number(), // 400
       }),
     ), // course levels
     creditsRequired: v.number(),

@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { omit, pick } from "convex-helpers";
+import { omit } from "convex-helpers";
 import { partial } from "convex-helpers/validators";
 import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { userCourses } from "./schemas/courses";
@@ -10,22 +10,6 @@ export const getUserCourses = protectedQuery({
     return await ctx.db
       .query("userCourses")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
-      .collect();
-  },
-});
-
-export const getUserCoursesByTerm = protectedQuery({
-  args: pick(userCourses, ["term", "year"]),
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("userCourses")
-      .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("term"), args.term),
-          q.eq(q.field("year"), args.year),
-        ),
-      )
       .collect();
   },
 });
@@ -43,7 +27,7 @@ export const createUserCourse = protectedMutation({
 export const updateUserCourse = protectedMutation({
   args: {
     id: v.id("userCourses"),
-    ...partial(omit(userCourses, ["userId", "courseId"])),
+    ...partial(omit(userCourses, ["userId", "courseCode"])),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;

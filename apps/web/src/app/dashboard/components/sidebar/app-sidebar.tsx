@@ -2,8 +2,7 @@
 
 import { ArrowUpCircleIcon } from "lucide-react";
 import type * as React from "react";
-import { NavBottom } from "@/app/dashboard/components/sidebar/nav-buttom";
-import { NavMain } from "@/app/dashboard/components/sidebar/nav-main";
+import { NavItems } from "@/app/dashboard/components/sidebar/nav-items";
 import { NavUser } from "@/app/dashboard/components/sidebar/nav-user";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -23,6 +22,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     email: string;
     avatar: string;
     initial: string;
+    isAdmin: boolean;
   };
 }
 
@@ -46,8 +46,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <Separator />
       <SidebarContent>
-        <NavMain items={config.sidebar.navMain} />
-        <NavBottom items={config.sidebar.navBottom} className="mt-auto" />
+        <NavItems items={config.sidebar.navMain} />
+        <div className="mt-auto">
+          {user.isAdmin && <NavItems items={config.sidebar.navAdmin} />}
+          <NavItems items={config.sidebar.navBottom} />
+        </div>
       </SidebarContent>
       <Separator />
       <SidebarFooter>

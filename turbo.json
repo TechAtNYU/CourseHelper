@@ -1,14 +1,7 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalEnv": [
-    "NEXT_PUBLIC_CONVEX_URL",
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-    "CONVEX_DEPLOYMENT",
-    "CONVEX_DEPLOY_KEY",
-    "CLERK_SECRET_KEY",
-    "CLERK_JWT_ISSUER_DOMAIN"
-  ],
+  "envMode": "loose",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
