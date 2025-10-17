@@ -1,5 +1,5 @@
-import FourYearTable from "@/modules/four-year-plan/components/FourYearTable";
-import { sampleData } from "./FourYearPlan/data";
+import { sampleData } from "./data";
+import FourYearTable from "./FourYearTable";
 
 const FourYearPlan = () => {
   return <FourYearTable data={sampleData} />;
