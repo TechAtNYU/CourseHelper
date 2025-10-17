@@ -3,14 +3,32 @@ import { omit } from "convex-helpers";
 import { partial } from "convex-helpers/validators";
 import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { userCourses } from "./schemas/courses";
+import { getOneFrom } from "convex-helpers/server/relationships";
 
 export const getUserCourses = protectedQuery({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
+    const userCourses = await ctx.db
       .query("userCourses")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
       .collect();
+
+    return await Promise.all(
+      userCourses.map(async (userCourse) => {
+        const course = await getOneFrom(
+          ctx.db,
+          "courses",
+          "by_course_code",
+          userCourse.courseCode,
+          "code",
+        );
+
+        return {
+          ...userCourse,
+          course,
+        };
+      }),
+    );
   },
 });
 
