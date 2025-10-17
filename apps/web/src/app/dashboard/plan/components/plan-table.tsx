@@ -1,6 +1,8 @@
 "use client";
 
+import type { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import clsx from "clsx";
+import type { FunctionReturnType } from "convex/server";
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -14,13 +16,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Course, YearPlan } from "./types";
 
-interface FourYearTableProps {
-  data: YearPlan[];
+interface PlanTableProps {
+  courses: FunctionReturnType<typeof api.userCourses.getUserCourses>;
 }
 
-export default function FourYearTable({ data }: FourYearTableProps) {
+export default function PlanTable({ courses }: PlanTableProps) {
   const allTerms = ["Fall", "J-Term", "Spring", "Summer"] as const;
 
   const [courseSearch, setCourseSearch] = useState<string>("");
