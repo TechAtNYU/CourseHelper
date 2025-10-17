@@ -1,9 +1,9 @@
 import { v } from "convex/values";
 import { omit } from "convex-helpers";
+import { getOneFrom } from "convex-helpers/server/relationships";
 import { partial } from "convex-helpers/validators";
 import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { userCourses } from "./schemas/courses";
-import { getOneFrom } from "convex-helpers/server/relationships";
 
 export const getUserCourses = protectedQuery({
   args: {},

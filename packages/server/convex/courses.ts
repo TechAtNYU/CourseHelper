@@ -1,9 +1,9 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { getManyFrom } from "convex-helpers/server/relationships";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { courses } from "./schemas/courses";
-import { getManyFrom } from "convex-helpers/server/relationships";
 
 export const getCourseById = protectedQuery({
   args: { id: v.id("courses") },
