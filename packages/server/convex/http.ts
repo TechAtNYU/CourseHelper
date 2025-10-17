@@ -116,7 +116,7 @@ export const ZUpsertCourseOffering = z.object({
   status: z.enum(["open", "closed", "waitlist", "enrolled"]),
   waitlistNum: z.optional(z.number()),
   isCorequisite: z.boolean(),
-  corequisiteOf: z.optional(z.string()),
+  corequisiteOf: z.optional(z.number()),
 });
 
 export const ZGetAppConfig = z.object({ key: AppConfigKey });
@@ -227,15 +227,15 @@ http.route({
   method: "POST",
   handler: apiAction(async (ctx, body) => {
     const data = await ctx.runMutation(
-      internal.courseOfferings.upsertCourseOfferingInternal,
-      body,
+      internal.courseOfferings.upsertCourseOfferingsInternal,
+      { courseOfferings: body },
     );
 
     return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  }, ZUpsertCourseOffering),
+  }, z.array(ZUpsertCourseOffering)),
 });
 
 http.route({

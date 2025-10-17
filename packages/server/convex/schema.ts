@@ -17,10 +17,9 @@ export default defineSchema({
     .index("by_program_level", ["program", "level"]),
   prerequisites: defineTable(prerequisites).index("by_course", ["courseId"]),
   courseOfferings: defineTable(courseOfferings)
-    .index("by_course_code", ["courseCode"])
-    .index("by_class_number", ["classNumber"])
-    .index("by_term_year", ["term", "year"])
-    .index("by_course_term_section", ["courseCode", "term", "year", "section"])
+    .index("by_class_number", ["classNumber", "term", "year"])
+    .index("by_term_year", ["isCorequisite", "term", "year"])
+    .index("by_course_term", ["courseCode", "term", "year"])
     .index("by_corequisite_of", ["corequisiteOf", "term", "year"]),
   userCourses: defineTable(userCourses).index("by_user", ["userId"]),
   userCourseOfferings: defineTable(userCourseOfferings).index("by_user", [

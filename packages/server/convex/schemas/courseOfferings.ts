@@ -4,7 +4,7 @@ const courseOfferings = {
   courseCode: v.string(), // CSCI-UA 102
   classNumber: v.number(), // 10349
   title: v.string(),
-  section: v.string(),
+  section: v.string(), // 001
   year: v.number(), // 2025
   term: v.union(
     v.literal("spring"),
@@ -35,7 +35,7 @@ const courseOfferings = {
   ),
   waitlistNum: v.optional(v.number()),
   isCorequisite: v.boolean(),
-  corequisiteOf: v.optional(v.string()), // course number
+  corequisiteOf: v.optional(v.number()), // class number
 };
 
 const userCourseOfferings = {
