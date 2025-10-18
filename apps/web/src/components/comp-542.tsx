@@ -2,9 +2,15 @@
 
 import { useState } from "react";
 import { type CalendarEvent, EventCalendar } from "./ui/event-calendar";
+import { Class } from './ui/event-calendar/types';
 
-export default function Schedule() {
+interface ScheduleProps {
+  classes: Class[];
+}
+
+export default function Schedule({ classes: initialClasses }: ScheduleProps) {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [classes, setClasses] = useState<Class[]>(initialClasses);
 
   const handleEventAdd = (event: CalendarEvent) => {
     setEvents([...events, event]);
@@ -28,6 +34,7 @@ export default function Schedule() {
       onEventAdd={handleEventAdd}
       onEventUpdate={handleEventUpdate}
       onEventDelete={handleEventDelete}
+      classes={classes} // Pass classes to EventCalendar
     />
   );
 }

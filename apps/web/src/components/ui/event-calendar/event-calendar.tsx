@@ -26,6 +26,7 @@ export interface EventCalendarProps {
   onEventDelete?: (eventId: string) => void;
   className?: string;
   initialView?: CalendarView;
+  classes?: Class[];
 }
 
 interface Class {
@@ -44,6 +45,7 @@ export function EventCalendar({
   onEventDelete,
   className,
   initialView = "week",
+  classes: initialClasses = [],
 }: EventCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>(initialView);
@@ -51,8 +53,6 @@ export function EventCalendar({
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null,
   );
-
-  
 
   const allColors: EventColor[] = ["sky", "amber", "violet", "rose", "emerald", "orange", "teal", "lime", "indigo", "fuchsia", "pink", "cyan"];
 
@@ -98,34 +98,15 @@ export function EventCalendar({
     };
   }, [isEventDialogOpen]);
 
-  const [classes, setClassesState] = useState<Class[]>([
-    {
-      id: "basic-algo-ba",
-      title: "CSCI-UA 310 Basic Algorithms",
-      color: pickColor(),
-      times: ["Monday 9 15 10 30", "Wednesday 9 15 10 30", "Friday 14 0 15 15"],
-      description: "An introduction to the study of algorithms. Two main themes are presented: designing appropriate data structures, and analyzing the efficiency of the algorithms which use them. Algorithms for basic problems are studied. These include sorting, searching, graph algorithms and maintaining dynamic data structures. Homework assignments, not necessarily involving programming.",
-      selected: false,
-    },
-    {
-      id: "french-tth",
-      title: "FREN-UA 30 French Grammar and Composition",
-      color: pickColor(),
-      times: ["Tuesday 11 0 12 15", "Thursday 11 0 12 15"],
-      description: "Systematizes and reinforces the language skills presented in earlier-level courses through an intensive review of grammar, written exercises, an introduction to composition, lexical enrichment, and literary analysis.",
-      
-      selected: false,
-    },
-    {
-      id: "cs-mw",
-      title: "CS-UH 1002 Discrete Mathematics",
-      color: pickColor(),
-      times: ["Monday 14 10 15 25", "Wednesday 14 10 15 25"],
-      description: "Discrete mathematics concerns the study of mathematical structures that are discrete rather than continuous, and provides a powerful language for investigating many areas of computer science. Discrete structures are characterized by distinct elements, which are often represented by integers. Continuous mathematics on the other hand deals with real numbers. Topics in this course include: sets, counting techniques, logic, proof techniques, solving recurrence relations, number theory, probability, statistics, graph theory, and discrete geometry. These mathematical tools are illustrated with applications in computer science.",
-      selected: false,
-    },
-  ]);
+  const [classes, setClassesState] = useState<Class[]>(() => {
+    if (initialClasses && initialClasses.length > 0) {
+      return initialClasses.map(cls => ({ ...cls, selected: false }));
+    }
 
+    // fallback if no classes are passed
+    return [];
+  });
+  
   const handleEventSelect = (event: CalendarEvent) => {
     console.log("Event selected:", event); // Debug log
     setSelectedEvent(event);
