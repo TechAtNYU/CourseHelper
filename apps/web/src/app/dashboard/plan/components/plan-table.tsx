@@ -22,7 +22,7 @@ interface PlanTableProps {
 }
 
 export default function PlanTable({ courses }: PlanTableProps) {
-  const allTerms = ["Fall", "J-Term", "Spring", "Summer"] as const;
+  const allTerms = ["fall", "j-term", "spring", "summer"] as const;
 
   const [courseSearch, setCourseSearch] = useState<string>("");
   const [creditFilter, setCreditFilter] = useState<number | null>(null);
@@ -31,62 +31,83 @@ export default function PlanTable({ courses }: PlanTableProps) {
   // used by the credits filter
   const availableCredits = useMemo(() => {
     const credits = new Set<number>();
-    data.forEach((yearPlan) => {
-      yearPlan.terms.forEach((term) => {
-        term.courses.forEach((course) => {
-          credits.add(course.credits);
-        });
-      });
+    courses.forEach((userCourse) => {
+      if (userCourse.course) {
+        credits.add(userCourse.course.credits);
+      }
     });
     return Array.from(credits).sort((a, b) => a - b);
-  }, [data]);
+  }, [courses]);
 
-  // Filter data based on all filters
+  // Filter courses based on all filters
   const filteredData = useMemo(() => {
-    return data.map((yearPlan) => ({
-      ...yearPlan,
-      terms: yearPlan.terms.map((termCourses) => ({
-        ...termCourses,
-        courses: termCourses.courses.filter((course) => {
-          const matchesSearch =
-            !courseSearch ||
-            course.code.toLowerCase().includes(courseSearch.toLowerCase()) ||
-            course.title.toLowerCase().includes(courseSearch.toLowerCase());
-          const matchesCredits =
-            creditFilter === null || course.credits === creditFilter;
-          return matchesSearch && matchesCredits;
-        }),
-      })),
-    }));
-  }, [data, courseSearch, creditFilter]);
+    return courses.filter((userCourse) => {
+      if (!userCourse.course) return false;
 
-  // Create a map of year -> term -> courses using filtered data
-  const yearTermMap = useMemo(() => {
-    const map = new Map<string, Map<string, Course[]>>();
-    filteredData.forEach((yearPlan) => {
-      const termMap = new Map(yearPlan.terms.map((t) => [t.term, t.courses]));
-      map.set(yearPlan.year, termMap);
+      const matchesSearch =
+        !courseSearch ||
+        userCourse.course.code
+          .toLowerCase()
+          .includes(courseSearch.toLowerCase()) ||
+        userCourse.title.toLowerCase().includes(courseSearch.toLowerCase());
+      const matchesCredits =
+        creditFilter === null || userCourse.course.credits === creditFilter;
+      return matchesSearch && matchesCredits;
     });
+  }, [courses, courseSearch, creditFilter]);
+
+  // Get unique years from the filtered data
+  const years = useMemo(() => {
+    const yearSet = new Set<number>();
+    filteredData.forEach((userCourse) => {
+      yearSet.add(userCourse.year);
+    });
+    return Array.from(yearSet).sort((a, b) => a - b);
+  }, [filteredData]);
+
+  // Create a map of year -> term -> courses using filtered courses
+  const yearTermMap = useMemo(() => {
+    const map = new Map<
+      number,
+      Map<(typeof allTerms)[number], typeof filteredData>
+    >();
+
+    filteredData.forEach((userCourse) => {
+      if (!map.has(userCourse.year)) {
+        map.set(userCourse.year, new Map());
+      }
+      const termMap = map.get(userCourse.year);
+      if (!termMap) return;
+
+      if (!termMap.has(userCourse.term)) {
+        termMap.set(userCourse.term, []);
+      }
+      const termCourses = termMap.get(userCourse.term);
+      if (termCourses) {
+        termCourses.push(userCourse);
+      }
+    });
+
     return map;
   }, [filteredData]);
 
   // only show terms with course
   const visibleTerms = useMemo(() => {
     return allTerms.filter((term) => {
-      return filteredData.some((yearPlan) => {
-        const termMap = yearTermMap.get(yearPlan.year);
+      return years.some((year) => {
+        const termMap = yearTermMap.get(year);
         const courses = termMap?.get(term) || [];
         return courses.length > 0;
       });
     });
-  }, [allTerms, filteredData, yearTermMap]);
+  }, [allTerms, years, yearTermMap]);
 
   return (
     <div className="space-y-3 overflow-x-auto">
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-end">
         {/* Course search */}
-        <div className="w-64">
+        <div className="w-64 flex flex-col space-y-1">
           <Label htmlFor="course-search">Search</Label>
           <div className="relative">
             <Input
@@ -104,7 +125,7 @@ export default function PlanTable({ courses }: PlanTableProps) {
         </div>
 
         {/* Credits filter */}
-        <div>
+        <div className="flex flex-col space-y-1">
           <Label>Credits</Label>
           <div className="flex gap-2">
             <button
@@ -143,12 +164,12 @@ export default function PlanTable({ courses }: PlanTableProps) {
             <TableHead className="border-t w-[80px]">
               <div className="font-semibold">Term</div>
             </TableHead>
-            {filteredData.map((yearPlan) => (
+            {years.map((year) => (
               <TableHead
-                key={yearPlan.year}
+                key={year}
                 className="border-t min-w-[200px] w-[200px]"
               >
-                <div className="font-semibold">{yearPlan.year} Year</div>
+                <div className="font-semibold">{year}</div>
               </TableHead>
             ))}
           </TableRow>
@@ -156,36 +177,40 @@ export default function PlanTable({ courses }: PlanTableProps) {
         <TableBody>
           {visibleTerms.map((term) => (
             <TableRow key={term}>
-              <TableCell className="font-medium bg-muted/30">{term}</TableCell>
-              {filteredData.map((yearPlan) => {
-                const termMap = yearTermMap.get(yearPlan.year);
-                const courses = termMap?.get(term) || [];
-                const totalCredits = courses.reduce(
-                  (sum, course) => sum + course.credits,
+              <TableCell className="font-medium bg-muted/30 capitalize">
+                {term}
+              </TableCell>
+              {years.map((year) => {
+                const termMap = yearTermMap.get(year);
+                const userCourses = termMap?.get(term) || [];
+                const totalCredits = userCourses.reduce(
+                  (sum, userCourse) => sum + (userCourse.course?.credits || 0),
                   0,
                 );
 
                 return (
-                  <TableCell key={yearPlan.year} className="align-top p-3">
-                    {courses.length > 0 ? (
+                  <TableCell key={year} className="align-top p-3">
+                    {userCourses.length > 0 ? (
                       <div className="space-y-3">
-                        {courses.map((course) => {
-                          const key = `${yearPlan.year}-${term}-${course.code}`;
+                        {userCourses.map((userCourse) => {
+                          if (!userCourse.course) return null;
+
+                          const key = `${year}-${term}-${userCourse.course.code}`;
                           return (
                             <Link
                               key={key}
-                              href={course.courseUrl}
+                              href={userCourse.course.courseUrl}
                               target="_blank"
                               className="block p-2 border rounded-md bg-card hover:bg-muted/50 transition-colors"
                             >
                               <div className="font-medium text-sm">
-                                {course.code}
+                                {userCourse.course.code}
                               </div>
                               <div className="text-xs text-muted-foreground mt-1">
-                                {course.title}
+                                {userCourse.title}
                               </div>
                               <div className="text-xs text-muted-foreground mt-1">
-                                {course.credits} credits
+                                {userCourse.course.credits} credits
                               </div>
                             </Link>
                           );
