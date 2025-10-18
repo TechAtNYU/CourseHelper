@@ -14,6 +14,7 @@ export const createRequirementsInternal = internalMutation({
             programId: newReq.programId,
             isMajor: newReq.isMajor,
             type: newReq.type,
+            category: newReq.category,
             courses: newReq.courses,
             courseLevels: newReq.courseLevels,
             creditsRequired: newReq.creditsRequired,
@@ -23,6 +24,7 @@ export const createRequirementsInternal = internalMutation({
           programId: newReq.programId,
           isMajor: newReq.isMajor,
           type: newReq.type,
+          category: newReq.category,
           courses: newReq.courses,
         });
       }),

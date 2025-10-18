@@ -11,18 +11,21 @@ const requirements = v.union(
     programId: v.id("programs"),
     isMajor: v.boolean(),
     type: v.literal("required"),
+    category: v.string(), // e.g., "Computer Science", "Mathematics", "Natural Science", "General Education"
     courses: v.array(v.string()), // course code
   }),
   v.object({
     programId: v.id("programs"),
     isMajor: v.boolean(),
     type: v.literal("alternative"),
+    category: v.string(), // e.g., "Computer Science", "Mathematics", "Natural Science", "General Education"
     courses: v.array(v.string()), // course code
   }),
   v.object({
     programId: v.id("programs"),
     isMajor: v.boolean(),
     type: v.literal("options"),
+    category: v.string(), // e.g., "Computer Science", "Mathematics", "Natural Science", "General Education"
     courses: v.array(v.string()), // course code
     courseLevels: v.array(
       v.object({
