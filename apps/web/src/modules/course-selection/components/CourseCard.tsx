@@ -10,8 +10,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import type { CourseOffering, CourseWithOfferings } from "../types";
 import { CourseSectionItem } from "./CourseSectionItem";
-import type { CourseOffering, CourseWithOfferings } from "./types";
 
 interface CourseCardProps {
   course: CourseWithOfferings;

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { CourseOffering } from "./types";
+import type { CourseOffering } from "../types";
 
 interface CourseSectionItemProps {
   offering: CourseOffering;
