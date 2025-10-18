@@ -14,6 +14,9 @@ jobs:
     defaults:
       run:
         working-directory: ./apps/browser
+    env:
+      CRX_PUBLIC_KEY: ${{ secrets.CRX_PUBLIC_KEY }}
+      CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
 
     steps:
       - name: 💾 Checkout code
