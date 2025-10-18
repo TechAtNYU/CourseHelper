@@ -1,6 +1,8 @@
+import clsx from "clsx";
 import { ChevronDown, ChevronRight, InfoIcon } from "lucide-react";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -30,21 +32,20 @@ export const CourseCard = ({
 }: CourseCardProps) => {
   return (
     <div className="w-full">
-      <Card>
-        <CardHeader>
+      <Card className={clsx(!isExpanded && "hover:bg-neutral-100")}>
+        <CardHeader
+          className="cursor-pointer"
+          onClick={() => onToggleExpand(course.code)}
+        >
           <div className="flex w-full items-center justify-between gap-2 min-w-0">
             <div className="flex items-center gap-2 min-w-0 flex-1">
-              <button
-                type="button"
-                onClick={() => onToggleExpand(course.code)}
-                className="shrink-0 hover:bg-neutral-200 rounded p-1"
-              >
+              <div className="shrink-0 rounded p-1">
                 {isExpanded ? (
                   <ChevronDown className="size-4" />
                 ) : (
                   <ChevronRight className="size-4" />
                 )}
-              </button>
+              </div>
               <CardTitle className="truncate min-w-0" title={course.title}>
                 {course.title}
               </CardTitle>
@@ -72,21 +73,21 @@ export const CourseCard = ({
               </>
             )}
           </CardDescription>
-
-          {/* Course Sections */}
-          {isExpanded && course.offerings.length > 0 && (
-            <div className="mt-4 space-y-2 border-t pt-4">
-              {course.offerings.map((offering) => (
-                <CourseSectionItem
-                  key={offering._id}
-                  offering={offering}
-                  onSelect={onSectionSelect}
-                  onHover={onSectionHover}
-                />
-              ))}
-            </div>
-          )}
         </CardHeader>
+
+        {/* Course Sections */}
+        {isExpanded && course.offerings.length > 0 && (
+          <CardContent className="space-y-2">
+            {course.offerings.map((offering) => (
+              <CourseSectionItem
+                key={offering._id}
+                offering={offering}
+                onSelect={onSectionSelect}
+                onHover={onSectionHover}
+              />
+            ))}
+          </CardContent>
+        )}
       </Card>
     </div>
   );
