@@ -5,13 +5,15 @@
   "description": "A course registration companion for Albert",
   "author": "Tech@NYU <hello@techatnyu.org>",
   "scripts": {
-    "dev": "plasmo dev",
+    "dev": "doppler run -- plasmo dev",
     "build": "plasmo build",
     "package": "plasmo package",
     "check": "biome check",
     "check:types": "tsc -noEmit"
   },
   "dependencies": {
+    "@clerk/chrome-extension": "^2.7.7",
+    "convex": "^1.28.0",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -26,8 +28,15 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "key": "$CRX_PUBLIC_KEY",
+    "permissions": [
+      "cookies",
+      "storage"
+    ],
     "host_permissions": [
-      "https://*/*"
+      "https://*/*",
+      "http://localhost/*",
+      "$CLERK_FRONTEND_API/*"
     ]
   }
 }
