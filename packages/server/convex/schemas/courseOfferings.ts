@@ -1,9 +1,10 @@
 import { v } from "convex/values";
 
 const courseOfferings = {
-  courseCode: v.string(), // course code
+  courseCode: v.string(), // CSCI-UA 102
+  classNumber: v.number(), // 10349
   title: v.string(),
-  section: v.string(),
+  section: v.string(), // 001
   year: v.number(), // 2025
   term: v.union(
     v.literal("spring"),
@@ -30,13 +31,16 @@ const courseOfferings = {
     v.literal("open"),
     v.literal("closed"),
     v.literal("waitlist"),
+    v.literal("enrolled"),
   ),
   waitlistNum: v.optional(v.number()),
+  isCorequisite: v.boolean(),
+  corequisiteOf: v.optional(v.number()), // class number
 };
 
 const userCourseOfferings = {
   userId: v.string(),
-  courseOfferingId: v.id("courseOfferings"),
+  classNumber: v.number(),
   alternativeOf: v.optional(v.id("userCourseOfferings")),
 };
 

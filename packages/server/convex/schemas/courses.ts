@@ -40,6 +40,7 @@ const userCourses = {
     v.literal("fall"),
     v.literal("j-term"),
   ),
+  alternativeOf: v.optional(v.id("userCourses")), // course code
   grade: v.optional(
     v.union(
       v.literal("a"),

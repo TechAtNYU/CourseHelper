@@ -7,7 +7,7 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,10 +25,16 @@ export type ConfigRow = Doc<"appConfigs">;
 type ConfigTableProps = {
   data: ConfigRow[];
   onEdit: (config: ConfigRow) => void;
+  onDelete: (config: ConfigRow) => void;
   className?: string;
 };
 
-export function ConfigTable({ data, onEdit, className }: ConfigTableProps) {
+export function ConfigTable({
+  data,
+  onEdit,
+  onDelete,
+  className,
+}: ConfigTableProps) {
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "key",
@@ -63,16 +69,25 @@ export function ConfigTable({ data, onEdit, className }: ConfigTableProps) {
               aria-label={`Edit ${row.original.key}`}
               variant="ghost"
               size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto"
+              className="absolute right-10 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto"
               onClick={() => onEdit(row.original)}
             >
               <Pencil className="size-4" />
+            </Button>
+            <Button
+              aria-label={`Delete ${row.original.key}`}
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto"
+              onClick={() => onDelete(row.original)}
+            >
+              <Trash2 className="size-4 text-destructive" />
             </Button>
           </div>
         ),
       },
     ],
-    [onEdit],
+    [onEdit, onDelete],
   );
 
   const table = useReactTable({

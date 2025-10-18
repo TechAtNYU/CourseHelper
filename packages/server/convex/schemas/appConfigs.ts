@@ -2,8 +2,10 @@ import { v } from "convex/values";
 import * as z from "zod/mini";
 
 const appConfigOptions = [
-  "school_term",
-  "school_year",
+  "current_term",
+  "current_year",
+  "next_term",
+  "next_year",
   "is_scraping_majors",
   "is_scraping_courses",
 ] as const;

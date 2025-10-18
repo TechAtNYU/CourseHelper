@@ -24,6 +24,7 @@
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tanstack/react-form": "^1.23.7",
     "@tanstack/react-table": "^8.21.3",
+    "babel-plugin-react-compiler": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.28.0",
