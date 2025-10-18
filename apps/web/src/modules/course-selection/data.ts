@@ -124,7 +124,7 @@ export const sampleUserCourseOfferings: Doc<"userCourseOfferings">[] =
       _id: id,
       _creationTime: 0,
       userId: `user_${(index % 8) + 1}`,
-      classNumber: offering.classNumber.toString(),
+      classNumber: offering.classNumber,
       alternativeOf,
     };
   });
