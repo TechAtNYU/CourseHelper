@@ -8,6 +8,7 @@ import {
   Bar,
   BarChart,
   LabelList,
+  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
@@ -98,11 +99,13 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
   const chartData = Object.entries(program.requirementsByCategory).map(
     ([category, data]) => {
       const completed = completedCreditsByCategory[category] || 0;
+      const percentage = data.credits > 0 ? Math.round((completed / data.credits) * 100) : 0;
       return {
         category,
         credits: data.credits,
         completedCredits: completed,
         remainingCredits: data.credits - completed,
+        percentage,
       };
     },
   );
@@ -196,6 +199,44 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
                 hide
               />
               <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="rounded-lg border bg-background p-2 shadow-sm">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="flex flex-col">
+                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                              Category
+                            </span>
+                            <span className="font-bold text-muted-foreground">
+                              {data.category}
+                            </span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                              Completed
+                            </span>
+                            <span className="font-bold text-muted-foreground">
+                              {data.completedCredits} / {data.credits} credits
+                            </span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                              Progress
+                            </span>
+                            <span className="font-bold text-muted-foreground">
+                              {data.percentage}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
               <Bar
                 dataKey="completedCredits"
                 stackId="stack"
@@ -209,10 +250,10 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
                   offset={8}
                   className="fill-white"
                   fontSize={12}
-                  content={(props) => {
-                    const { x, y, width, value, index } = props;
+                  content={(props: any) => {
+                    const { x, y, value, width } = props;
                     // Only show if there are completed credits (width > 0)
-                    if (!chartData[index]?.completedCredits || chartData[index].completedCredits === 0) {
+                    if (!width || width <= 0) {
                       return null;
                     }
                     return (
@@ -229,13 +270,6 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
                     );
                   }}
                 />
-                <LabelList
-                  dataKey="completedCredits"
-                  position="right"
-                  offset={8}
-                  className="fill-white"
-                  fontSize={12}
-                />
               </Bar>
 
               <Bar
@@ -251,10 +285,10 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
                   offset={8}
                   className="fill-white"
                   fontSize={12}
-                  content={(props) => {
-                    const { x, y, value, index } = props;
+                  content={(props: any) => {
+                    const { x, y, value, payload } = props;
                     // Only show if there are NO completed credits
-                    if (chartData[index]?.completedCredits && chartData[index].completedCredits > 0) {
+                    if (payload?.completedCredits && payload.completedCredits > 0) {
                       return null;
                     }
                     return (
