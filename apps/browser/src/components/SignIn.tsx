@@ -1,7 +1,7 @@
 const SignIn = () => {
   const handleSignIn = () => {
     chrome.tabs.create({
-      url: `${process.env.PLASMO_PUBLIC_CLERK_SYNC_HOST}/signin`,
+      url: `${process.env.PLASMO_PUBLIC_CLERK_SYNC_HOST}/sign-in`,
     });
   };
   return (
