@@ -125,11 +125,11 @@ app.get("/", async (c) => {
         </style>
       </head>
       <body>
-        <h1>Web Scraper Dashboard</h1>
+        <h1>🕷️ Web Scraper Dashboard</h1>
         
         <div class="controls">
-          <button onclick="triggerScrape()">Start New Scraping Job</button>
-          <button onclick="location.reload()" style="margin-left: 10px; background: #666;">🔄 Refresh</button>
+          <button onclick="triggerScrape()"> Start New Scraping Job</button>
+          <button onclick="location.reload()" style="margin-left: 10px; background: #666;">Refresh</button>
         </div>
 
         <h2>Recent Jobs (${allJobs.length})</h2>
@@ -164,7 +164,7 @@ app.get("/", async (c) => {
                     ${
                       result.links.length > 0
                         ? `
-                      <h3>First 10 Links:</h3>
+                      <h3>🔗 First 10 Links:</h3>
                       <div class="links-list">
                         ${result.links
                           .slice(0, 10)
