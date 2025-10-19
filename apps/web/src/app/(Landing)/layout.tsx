@@ -1,4 +1,6 @@
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function HomeLayout({
   children,
@@ -9,7 +11,13 @@ export default function HomeLayout({
     <>
       <header className="flex justify-end items-center p-4 gap-4 h-16">
         <SignedOut>
-          <SignInButton />
+          <Button
+            asChild
+            variant="outline"
+            className="bg-white hover:bg-gray-50"
+          >
+            <Link href="/signin">Sign In</Link>
+          </Button>
         </SignedOut>
         <SignedIn>
           <UserButton />
