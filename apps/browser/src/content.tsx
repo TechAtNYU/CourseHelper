@@ -22,7 +22,7 @@ export const getStyle = (): HTMLStyleElement => {
 
   let updatedCssText = cssText.replaceAll(":root", ":host(plasmo-csui)");
   const remRegex = /([\d.]+)rem/g;
-  updatedCssText = updatedCssText.replace(remRegex, (match, remValue) => {
+  updatedCssText = updatedCssText.replace(remRegex, (_match, remValue) => {
     const pixelsValue = parseFloat(remValue) * baseFontSize;
 
     return `${pixelsValue}px`;

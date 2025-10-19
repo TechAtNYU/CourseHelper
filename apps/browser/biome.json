@@ -6,6 +6,11 @@
     "includes": ["**", "!build", "!src/components/ui"]
   },
   "linter": {
+    "rules": {
+      "suspicious": {
+        "noUnknownAtRules": "off"
+      }
+    },
     "domains": {
       "react": "recommended"
     }
