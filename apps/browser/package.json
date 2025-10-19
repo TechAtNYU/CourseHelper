@@ -34,8 +34,7 @@
       "storage"
     ],
     "host_permissions": [
-      "https://*/*",
-      "http://localhost/*",
+      "$PLASMO_PUBLIC_CLERK_SYNC_HOST/*",
       "$CLERK_FRONTEND_API/*"
     ]
   }

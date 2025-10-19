@@ -4,7 +4,7 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 
 const PUBLISHABLE_KEY = process.env
   .PLASMO_PUBLIC_CLERK_PUBLISHABLE_KEY as string;
-const EXTENSION_URL = chrome.runtime.getURL(".");
+const SYNC_HOST = process.env.PLASMO_PUBLIC_CLERK_SYNC_HOST as string;
 
 const convex = new ConvexReactClient(
   process.env.PLASMO_PUBLIC_CONVEX_URL as string,
@@ -14,9 +14,8 @@ const ConvexWithClerkProvider = ({ children }) => {
   return (
     <ClerkProvider
       publishableKey={PUBLISHABLE_KEY}
-      afterSignOutUrl={`${EXTENSION_URL}/popup.html`}
-      signInFallbackRedirectUrl={`${EXTENSION_URL}/popup.html`}
-      signUpFallbackRedirectUrl={`${EXTENSION_URL}/popup.html`}
+      syncHost={SYNC_HOST}
+      afterSignOutUrl={chrome.runtime.getURL("popup.html")}
     >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         {children}
