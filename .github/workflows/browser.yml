@@ -1,0 +1,41 @@
+name: "Submit to Web Store"
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/browser/**"
+      - "packages/server/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: deploy-browser
+    defaults:
+      run:
+        working-directory: ./apps/browser
+    env:
+      CRX_PUBLIC_KEY: ${{ secrets.CRX_PUBLIC_KEY }}
+      CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+
+    steps:
+      - name: 💾 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: 📦 Install dependencies
+        run: bun ci
+
+      - name: 🛠️ Build the Chrome Extension
+        run: bun run build
+
+      - name: 🛠️ Package the extension into a zip artifact
+        run: bun run package
+
+      - name: 🚀 Browser Platform Publish
+        uses: PlasmoHQ/bpp@v3
+        with:
+          keys: ${{ secrets.SUBMIT_KEYS }}
+          artifact: ./apps/browser/build/chrome-mv3-prod.zip
