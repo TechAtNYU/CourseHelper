@@ -21,6 +21,7 @@ export async function auth({
   ctx: QueryCtx | MutationCtx | ActionCtx;
 }) {
   const identity = await ctx.auth.getUserIdentity();
+  console.log("Auth identity:", identity);
   if (identity === null) {
     throw new Error("Not authenticated");
   }

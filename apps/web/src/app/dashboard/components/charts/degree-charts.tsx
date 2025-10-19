@@ -1,13 +1,13 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { useQuery } from "convex/react";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -18,48 +18,76 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "A mixed bar chart";
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
-
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  credits: {
+    label: "Credits",
   },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1)",
+  "Computer Science": {
+    label: "Computer Science",
+    color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
+  Mathematics: {
+    label: "Mathematics",
+    color: "hsl(var(--chart-2))",
   },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
+  "Natural Science": {
+    label: "Natural Science",
+    color: "hsl(var(--chart-3))",
   },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
+  "General Education": {
+    label: "General Education",
+    color: "hsl(var(--chart-4))",
   },
 } satisfies ChartConfig;
 
 export function ChartBarMixed() {
+  const program = useQuery(api.programs.getProgramWithGroupedRequirements, {
+    name: "Computer Science (BA)",
+  });
+
+  if (program === undefined) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Program Requirements</CardTitle>
+          <CardDescription>Loading...</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  if (program === null) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Program Requirements</CardTitle>
+          <CardDescription>Program not found</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  // Transform the data for the chart
+  const chartData = Object.entries(program.requirementsByCategory).map(
+    ([category, data]) => ({
+      category,
+      credits: data.credits,
+      fill: `var(--color-${category.replace(/\s+/g, "-").toLowerCase()})`,
+    })
+  );
+
+  const totalCredits = Object.values(program.requirementsByCategory).reduce(
+    (sum, data) => sum + data.credits,
+    0
+  );
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart - Mixed</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Program Requirements by Category</CardTitle>
+        <CardDescription>
+          {program.name} - Total: {totalCredits} credits
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -72,7 +100,7 @@ export function ChartBarMixed() {
             }}
           >
             <YAxis
-              dataKey="browser"
+              dataKey="category"
               type="category"
               tickLine={false}
               tickMargin={10}
@@ -81,23 +109,15 @@ export function ChartBarMixed() {
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
             />
-            <XAxis dataKey="visitors" type="number" hide />
+            <XAxis dataKey="credits" type="number" hide />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="visitors" layout="vertical" radius={5} />
+            <Bar dataKey="credits" layout="vertical" radius={5} />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground leading-none">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }
