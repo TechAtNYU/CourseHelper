@@ -16,7 +16,7 @@ export default function HomeLayout({
             variant="outline"
             className="bg-white hover:bg-gray-50"
           >
-            <Link href="/signin">Sign In</Link>
+            <Link href="/sign-in">Sign In</Link>
           </Button>
         </SignedOut>
         <SignedIn>

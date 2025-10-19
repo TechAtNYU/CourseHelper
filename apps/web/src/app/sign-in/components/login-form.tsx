@@ -1,6 +1,7 @@
 "use client";
 
 import { useSignIn } from "@clerk/nextjs";
+import { GalleryVerticalEnd } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,13 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldGroup } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 
 export function LoginForm({
@@ -28,11 +23,10 @@ export function LoginForm({
     if (!isLoaded) return;
 
     try {
-      // Use Clerk's Google OAuth with potential domain hint
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
-        redirectUrl: "/dashboard",
         redirectUrlComplete: "/dashboard",
+        redirectUrl: "/dashboard",
       });
     } catch (error) {
       console.error("Sign in failed:", error);
@@ -40,7 +34,16 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("relative", className)} {...props}>
+      <a
+        href="/"
+        className="absolute left-1/2 -translate-x-1/2 -top-12 flex items-center gap-2 font-medium"
+      >
+        <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+          <GalleryVerticalEnd className="size-4" />
+        </div>
+        CourseHelper
+      </a>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
@@ -64,33 +67,6 @@ export function LoginForm({
                   </svg>
                   Login with Google
                 </Button>
-              </Field>
-              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                Or continue with
-              </FieldSeparator>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
               </Field>
             </FieldGroup>
           </form>
