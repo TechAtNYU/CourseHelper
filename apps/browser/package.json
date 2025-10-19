@@ -17,7 +17,7 @@
     "plasmo": "0.90.5",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "tailwindcss": "4.1.14"
+    "tailwindcss": "3.4.1"
   },
   "devDependencies": {
     "@types/chrome": "0.1.24",
@@ -28,7 +28,6 @@
     "typescript": "5.9.3"
   },
   "manifest": {
-    "key": "$CRX_PUBLIC_KEY",
     "permissions": [
       "cookies",
       "storage"

@@ -1,4 +1,4 @@
-name: "Submit to Web Store"
+name: "browser"
 on:
   push:
     branches:
@@ -8,15 +8,15 @@ on:
       - "packages/server/**"
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     environment: deploy-browser
     defaults:
       run:
         working-directory: ./apps/browser
     env:
-      CRX_PUBLIC_KEY: ${{ secrets.CRX_PUBLIC_KEY }}
       CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+      PLASMO_PUBLIC_CLERK_SYNC_HOST: ${{ secrets.PLASMO_PUBLIC_CLERK_SYNC_HOST }}
 
     steps:
       - name: 💾 Checkout code
@@ -34,8 +34,12 @@ jobs:
       - name: 🛠️ Package the extension into a zip artifact
         run: bun run package
 
-      - name: 🚀 Browser Platform Publish
-        uses: PlasmoHQ/bpp@v3
+      - name: 🚀 Upload to Chrome Web Store
+        uses: mobilefirstllc/cws-publish@latest
         with:
-          keys: ${{ secrets.SUBMIT_KEYS }}
-          artifact: ./apps/browser/build/chrome-mv3-prod.zip
+          action: "upload" # one of: upload, publish, testers
+          client_id: ${{ secrets.CLIENT }}
+          client_secret: ${{ secrets.SECRET }}
+          refresh_token: ${{ secrets.TOKEN }}
+          extension_id: "bbhdnidgcmmpihfimomooiaojnaeedlj"
+          zip_file: "./apps/browser/build/chrome-mv3-prod.zip"
