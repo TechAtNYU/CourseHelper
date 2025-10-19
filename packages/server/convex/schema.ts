@@ -15,7 +15,10 @@ export default defineSchema({
     .searchIndex("search_name", {
       searchField: "name",
     }),
-  requirements: defineTable(requirements).index("by_program", ["programId"]),
+  requirements: defineTable(requirements)
+    .index("by_program", ["programId"])
+    .index("by_category", ["category"])
+    .index("by_program_and_category", ["programId", "category"]),
   courses: defineTable(courses)
     .index("by_course_code", ["code"])
     .index("by_level", ["level"])

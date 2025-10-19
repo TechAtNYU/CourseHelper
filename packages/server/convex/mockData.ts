@@ -173,7 +173,8 @@ export const additionalMockPrograms = [
   {
     name: "Business Studies Minor",
     level: "undergraduate" as const,
-    programUrl: "https://www.stern.nyu.edu/programs-admissions/undergraduate/academics/minors",
+    programUrl:
+      "https://www.stern.nyu.edu/programs-admissions/undergraduate/academics/minors",
   },
 ];
 
@@ -183,7 +184,114 @@ export const additionalMockPrograms = [
  */
 export const categoryStats = {
   "Computer Science": 10, // 6 required + 4 electives (average)
-  "Mathematics": 4, // 3 required + 1 alternative
+  Mathematics: 4, // 3 required + 1 alternative
   "Natural Science": 3,
   "General Education": 3,
 };
+
+/**
+ * Mock courses data
+ */
+export const mockCoursesData = [
+  {
+    code: "CSCI-UA 101",
+    program: "CSCI-UA",
+    level: 100,
+    title: "Intro to Computer Science",
+    credits: 4,
+    description: "Introduction to computer science and programming",
+    courseUrl: "https://cs.nyu.edu/courses/spring25/CSCI-UA.0101-001/",
+  },
+  {
+    code: "CSCI-UA 102",
+    program: "CSCI-UA",
+    level: 100,
+    title: "Data Structures",
+    credits: 4,
+    description: "Fundamental data structures and algorithms",
+    courseUrl: "https://cs.nyu.edu/courses/spring25/CSCI-UA.0102-001/",
+  },
+  {
+    code: "CSCI-UA 201",
+    program: "CSCI-UA",
+    level: 200,
+    title: "Computer Systems Organization",
+    credits: 4,
+    description: "Computer architecture and systems programming",
+    courseUrl: "https://cs.nyu.edu/courses/spring25/CSCI-UA.0201-001/",
+  },
+  {
+    code: "CSCI-UA 310",
+    program: "CSCI-UA",
+    level: 300,
+    title: "Basic Algorithms",
+    credits: 4,
+    description: "Algorithm design and analysis",
+    courseUrl: "https://cs.nyu.edu/courses/spring25/CSCI-UA.0310-001/",
+  },
+  {
+    code: "MATH-UA 120",
+    program: "MATH-UA",
+    level: 100,
+    title: "Discrete Mathematics",
+    credits: 4,
+    description: "Mathematical foundations for computer science",
+    courseUrl: "https://math.nyu.edu/courses/spring25/MATH-UA.0120-001/",
+  },
+  {
+    code: "MATH-UA 121",
+    program: "MATH-UA",
+    level: 100,
+    title: "Calculus I",
+    credits: 4,
+    description: "Differential calculus",
+    courseUrl: "https://math.nyu.edu/courses/spring25/MATH-UA.0121-001/",
+  },
+];
+
+/**
+ * Mock user courses data
+ * Note: Pass in a userId when calling the seed function
+ */
+export const mockUserCoursesData = [
+  {
+    courseCode: "CSCI-UA 101",
+    title: "Intro to Computer Science",
+    year: 2024,
+    term: "fall" as const,
+    grade: "a" as const,
+  },
+  {
+    courseCode: "MATH-UA 120",
+    title: "Discrete Mathematics",
+    year: 2024,
+    term: "fall" as const,
+    grade: "a-" as const,
+  },
+  {
+    courseCode: "CSCI-UA 102",
+    title: "Data Structures",
+    year: 2025,
+    term: "spring" as const,
+    grade: "b+" as const,
+  },
+  {
+    courseCode: "MATH-UA 121",
+    title: "Calculus I",
+    year: 2025,
+    term: "spring" as const,
+    grade: "a" as const,
+  },
+  {
+    courseCode: "CSCI-UA 201",
+    title: "Computer Systems Organization",
+    year: 2025,
+    term: "fall" as const,
+  },
+  {
+    courseCode: "CSCI-UA 310",
+    title: "Basic Algorithms",
+    year: 2025,
+    term: "fall" as const,
+  },
+];
