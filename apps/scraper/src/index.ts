@@ -8,9 +8,9 @@ import { ConvexApi } from "./lib/convex";
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 const scrapingResults = new Map<
-  number,
+  string,
   {
-    jobId: number;
+    jobId: string;
     url: string;
     title: string;
     contentLength: number;
@@ -156,7 +156,7 @@ app.get("/", async (c) => {
                   result
                     ? `
                   <div class="result-section">
-                    <h3>📊 Scraping Results</h3>
+                    <h3>Scraping Results</h3>
                     <div class="job-info"><strong>Page Title:</strong> ${result.title}</div>
                     <div class="job-info"><strong>Content Length:</strong> ${result.contentLength.toLocaleString()} characters</div>
                     <div class="job-info"><strong>Links Found:</strong> ${result.linkCount}</div>
@@ -164,7 +164,7 @@ app.get("/", async (c) => {
                     ${
                       result.links.length > 0
                         ? `
-                      <h3>🔗 First 10 Links:</h3>
+                      <h3>First 10 Links:</h3>
                       <div class="links-list">
                         ${result.links
                           .slice(0, 10)
@@ -228,7 +228,7 @@ app.get("/test-scrape", async (c) => {
       .values({
         url: discoveryUrl,
         status: "pending",
-        jobType: "discovery",
+        jobType: "discover-programs",
       })
       .returning();
 
@@ -265,43 +265,78 @@ export default {
   },
 
   async scheduled(event: ScheduledEvent, env: CloudflareBindings) {
-    const db = await createDB(env);
-    const api = new ConvexApi({
-      baseUrl: env.CONVEX_SITE_URL,
-      apiKey: env.CONVEX_API_KEY,
-    });
-
-    console.log("Scheduled job started");
-    const discoveryUrl = "https://bulletins.nyu.edu/";
+    // 1) Don’t construct Convex until needed
+    // const api = new ConvexApi({ baseUrl: env.CONVEX_SITE_URL!, apiKey: env.CONVEX_API_KEY! });
 
     try {
-      const [createdJob] = await db
-        .insert(jobs)
-        .values({
-          url: discoveryUrl,
-          status: "pending",
-          jobType: "discovery",
-        })
-        .returning();
+      console.log("Scheduled job started");
+      const db = await createDB(env);
 
-      console.log(`Created discovery job with ID: ${createdJob.id}`);
-
-      await env.SCRAPING_QUEUE.send({
-        id: createdJob.id,
-        url: createdJob.url,
-        jobType: createdJob.jobType,
+      await db.insert(jobs).values({
+        url: "https://bulletins.nyu.edu/",
+        status: "pending",
+        jobType: "discover-programs",
       });
 
-      console.log("Sent job to queue");
-    } catch (error) {
-      console.error("Error in scheduled job:", error);
-      throw error;
+      if (env.SCRAPING_QUEUE && "send" in env.SCRAPING_QUEUE) {
+        event.waitUntil(
+          env.SCRAPING_QUEUE.send({
+            id: Date.now(),
+            url: "https://bulletins.nyu.edu/",
+            jobType: "discover-programs",
+          })
+            .then(() => console.log("Sent job to queue"))
+            .catch((e) => console.error("Queue send failed:", e))
+        );
+      } else {
+        console.warn("SCRAPING_QUEUE not bound in this environment");
+      }
+
+      console.log("[scheduled] end");
+      return;
+    } catch (err) {
+      console.error("[scheduled] error:", err);
     }
-    // TODO: set up jobs for scraping a list of urls need to be scraped and add them to queue as "discovery"
   },
 
+  // async scheduled(event: ScheduledEvent, env: CloudflareBindings) {
+  //   const db = await createDB(env);
+  //   const api = new ConvexApi({
+  //     baseUrl: env.CONVEX_SITE_URL,
+  //     apiKey: env.CONVEX_API_KEY,
+  //   });
+
+  //   console.log("Scheduled job started");
+  //   const discoveryUrl = "https://bulletins.nyu.edu/";
+
+  //   try {
+  //     const [createdJob] = await db
+  //       .insert(jobs)
+  //       .values({
+  //         url: discoveryUrl,
+  //         status: "pending",
+  //         jobType: "discover-programs",
+  //       })
+  //       .returning();
+
+  //     console.log(`Created discovery job with ID: ${createdJob.id}`);
+
+  //     await env.SCRAPING_QUEUE.send({
+  //       id: createdJob.id,
+  //       url: createdJob.url,
+  //       jobType: createdJob.jobType,
+  //     });
+
+  //     console.log("Sent job to queue");
+  //   } catch (error) {
+  //     console.error("Error in scheduled job:", error);
+  //     throw error;
+  //   }
+  //   // TODO: set up jobs for scraping a list of urls need to be scraped and add them to queue as "discovery"
+  // },
+
   async queue(
-    batch: MessageBatch<{ id: number; url: string; jobType: string }>,
+    batch: MessageBatch<{ id: string; url: string; jobType: string }>,
     env: CloudflareBindings
   ) {
     const db = await createDB(env);
@@ -390,7 +425,6 @@ export default {
           errorType: "network",
           errorMessage,
           stackTrace,
-          retryCount: message.attempts,
           timestamp: new Date(),
         });
 
