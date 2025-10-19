@@ -40,9 +40,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartBarMixed() {
+interface ChartBarMixedProps {
+  programName: string;
+}
+
+export function ChartBarMixed({ programName }: ChartBarMixedProps) {
   const program = useQuery(api.programs.getProgramWithGroupedRequirements, {
-    name: "Computer Science (BA)",
+    name: programName,
   });
 
   if (program === undefined) {
