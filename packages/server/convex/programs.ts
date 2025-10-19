@@ -78,7 +78,10 @@ export const getProgramWithGroupedRequirements = protectedQuery({
     );
 
     // Calculate total credits for each category
-    const groupedRequirements: Record<string, { credits: number; courses: string[] }> = {};
+    const groupedRequirements: Record<
+      string,
+      { credits: number; courses: string[] }
+    > = {};
 
     for (const req of requirements) {
       const { programId, category, courses, ...rest } = req;

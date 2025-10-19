@@ -81,11 +81,25 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
     );
   }
 
+  const completedCreditsByCategory: Record<string, number> = {};
+  if (userCourses) {
+    for (const userCourse of userCourses) {
+      for (const [category, data] of Object.entries(program.requirementsByCategory)) {
+        if (data.courses.includes(userCourse.courseCode)) {
+          completedCreditsByCategory[category] =
+            (completedCreditsByCategory[category] || 0) + (userCourse.course?.credits || 0);
+          break;
+        }
+      }
+    }
+  }
+
   // Transform the data for the chart
   const chartData = Object.entries(program.requirementsByCategory).map(
     ([category, data]) => ({
       category,
       credits: data.credits,
+      completedCredits: completedCreditsByCategory || 0,
       fill: `var(--color-${category.replace(/\s+/g, "-").toLowerCase()})`,
     }),
   );
@@ -137,6 +151,8 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
               layout="vertical"
               radius={4}
               barSize={100}
+              fill="hsl(var(--muted))"
+              fillOpacity={showProgress ? 0.3 : 1}
             >
               <LabelList
                 dataKey="category"
@@ -153,6 +169,22 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
                 fontSize={12}
               />
             </Bar>
+            {showProgress && (
+              <Bar
+                dataKey="completedCredits"
+                layout="vertical"
+                radius={4}
+                barSize={100}
+                fill="hsl(var(--primary))"
+              >
+                <LabelList
+                  dataKey="completedCredits"
+                  position="center"
+                  className="fill-white"
+                  fontSize={12}
+                />
+              </Bar>
+            )}
           </BarChart>
         </ChartContainer>
       </CardContent>
