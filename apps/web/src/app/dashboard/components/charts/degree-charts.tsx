@@ -96,12 +96,15 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
 
   // Transform the data for the chart
   const chartData = Object.entries(program.requirementsByCategory).map(
-    ([category, data]) => ({
-      category,
-      credits: data.credits,
-      completedCredits: completedCreditsByCategory || 0,
-      fill: `var(--color-${category.replace(/\s+/g, "-").toLowerCase()})`,
-    }),
+    ([category, data]) => {
+      const completed = completedCreditsByCategory[category] || 0;
+      return {
+        category,
+        credits: data.credits,
+        completedCredits: completed,
+        remainingCredits: data.credits - completed,
+      };
+    },
   );
 
   const totalCredits = Object.values(program.requirementsByCategory).reduce(
@@ -126,67 +129,159 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[400px] w-full">
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            layout="vertical"
-            margin={{
-              left: 20,
-              right: 16,
-            }}
-          >
-            <YAxis
-              dataKey="category"
-              type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              width={150}
-              hide
-            />
-            <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
-            <Bar
-              dataKey="credits"
+        {!showProgress && (
+          <ChartContainer config={chartConfig} className="h-[400px] w-full">
+            <BarChart
+              accessibilityLayer
+              data={chartData}
               layout="vertical"
-              radius={4}
-              barSize={100}
-              fill="hsl(var(--muted))"
-              fillOpacity={showProgress ? 0.3 : 1}
+              margin={{
+                left: 20,
+                right: 16,
+              }}
             >
-              <LabelList
+              <YAxis
                 dataKey="category"
-                position="insideLeft"
-                offset={8}
-                className="fill-white"
-                fontSize={12}
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                width={150}
+                hide
               />
-              <LabelList
-                dataKey="credits"
-                position="right"
-                offset={8}
-                className="fill-foreground"
-                fontSize={12}
-              />
-            </Bar>
-            {showProgress && (
+              <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
               <Bar
-                dataKey="completedCredits"
-                layout="vertical"
+                dataKey="credits"
                 radius={4}
                 barSize={100}
-                fill="hsl(var(--primary))"
+                fill="hsl(var(--muted))"
               >
                 <LabelList
+                  dataKey="category"
+                  position="insideLeft"
+                  offset={8}
+                  className="fill-white"
+                  fontSize={12}
+                />
+                <LabelList
+                  dataKey="credits"
+                  position="right"
+                  offset={8}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
+
+        {showProgress && (
+          <ChartContainer config={chartConfig} className="h-[400px] w-full">
+            <BarChart
+              accessibilityLayer
+              data={chartData}
+              layout="vertical"
+              margin={{
+                left: 20,
+                right: 16,
+              }}
+            >
+              <YAxis
+                dataKey="category"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                width={150}
+                hide
+              />
+              <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
+              <Bar
+                dataKey="completedCredits"
+                stackId="stack"
+                barSize={100}
+                fill="#3b82f6"
+                radius={[4, 0, 0, 4]}
+              >
+                <LabelList
+                  dataKey="category"
+                  position="insideLeft"
+                  offset={8}
+                  className="fill-white"
+                  fontSize={12}
+                  content={(props) => {
+                    const { x, y, width, value, index } = props;
+                    // Only show if there are completed credits (width > 0)
+                    if (!chartData[index]?.completedCredits || chartData[index].completedCredits === 0) {
+                      return null;
+                    }
+                    return (
+                      <text
+                        x={Number(x) + 8}
+                        y={Number(y) + Number(props.height || 0) / 2}
+                        fill="white"
+                        fontSize={12}
+                        textAnchor="start"
+                        dominantBaseline="middle"
+                      >
+                        {value}
+                      </text>
+                    );
+                  }}
+                />
+                <LabelList
                   dataKey="completedCredits"
-                  position="center"
+                  position="right"
+                  offset={8}
                   className="fill-white"
                   fontSize={12}
                 />
               </Bar>
-            )}
-          </BarChart>
-        </ChartContainer>
+
+              <Bar
+                dataKey="remainingCredits"
+                stackId="stack"
+                barSize={100}
+                fill="hsl(var(--muted))"
+                radius={[0, 4, 4, 0]}
+              >
+                <LabelList
+                  dataKey="category"
+                  position="insideLeft"
+                  offset={8}
+                  className="fill-white"
+                  fontSize={12}
+                  content={(props) => {
+                    const { x, y, value, index } = props;
+                    // Only show if there are NO completed credits
+                    if (chartData[index]?.completedCredits && chartData[index].completedCredits > 0) {
+                      return null;
+                    }
+                    return (
+                      <text
+                        x={Number(x) + 8}
+                        y={Number(y) + Number(props.height || 0) / 2}
+                        fill="white"
+                        fontSize={12}
+                        textAnchor="start"
+                        dominantBaseline="middle"
+                      >
+                        {value}
+                      </text>
+                    );
+                  }}
+                />
+                <LabelList
+                  dataKey="credits"
+                  position="right"
+                  offset={8}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
