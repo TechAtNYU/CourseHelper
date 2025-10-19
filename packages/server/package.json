@@ -6,15 +6,16 @@
     "dev": "doppler run -- convex dev",
     "dashboard": "convex dashboard",
     "check": "biome check",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "seed:configs": "convex import --table appConfigs --replace seed/appConfigs.jsonl"
   },
   "dependencies": {
-    "convex": "^1.27.4",
+    "convex": "^1.28.0",
     "convex-helpers": "^0.1.104",
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.5",
+    "@biomejs/biome": "2.2.6",
     "@types/bun": "latest",
     "typescript": "^5.9.3"
   },

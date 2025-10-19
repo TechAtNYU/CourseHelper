@@ -2,7 +2,7 @@
 import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
-config({ path: "./.env" });
+config({ path: "./.db.env" });
 
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID!;
 const databaseId = process.env.CLOUDFLARE_DATABASE_ID!;

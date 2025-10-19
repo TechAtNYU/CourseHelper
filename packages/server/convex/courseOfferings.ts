@@ -1,3 +1,4 @@
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
@@ -10,8 +11,9 @@ export const getCourseOfferingById = protectedQuery({
   },
 });
 
-export const getCourseOfferingsByTerm = protectedQuery({
+export const getCourseOfferingsByCourseTerm = protectedQuery({
   args: {
+    courseCodes: v.array(v.string()),
     term: v.union(
       v.literal("spring"),
       v.literal("summer"),
@@ -21,18 +23,27 @@ export const getCourseOfferingsByTerm = protectedQuery({
     year: v.number(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db
-      .query("courseOfferings")
-      .withIndex("by_term_year", (q) =>
-        q.eq("term", args.term).eq("year", args.year),
-      )
-      .collect();
+    const results = await Promise.all(
+      args.courseCodes.map((courseCode) =>
+        ctx.db
+          .query("courseOfferings")
+          .withIndex("by_course_term", (q) =>
+            q
+              .eq("courseCode", courseCode)
+              .eq("term", args.term)
+              .eq("year", args.year),
+          )
+          .collect(),
+      ),
+    );
+
+    return results.flat();
   },
 });
 
-export const getCourseOfferingsByCourseTerm = protectedQuery({
+export const getCourseOfferingByClassNumber = protectedQuery({
   args: {
-    courseId: v.id("courses"),
+    classNumber: v.number(),
     term: v.union(
       v.literal("spring"),
       v.literal("summer"),
@@ -44,9 +55,33 @@ export const getCourseOfferingsByCourseTerm = protectedQuery({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("courseOfferings")
-      .withIndex("by_course_term_section", (q) =>
+      .withIndex("by_class_number", (q) =>
         q
-          .eq("courseId", args.courseId)
+          .eq("classNumber", args.classNumber)
+          .eq("term", args.term)
+          .eq("year", args.year),
+      )
+      .unique();
+  },
+});
+
+export const getCorequisitesByCourseCode = protectedQuery({
+  args: {
+    classNumber: v.number(),
+    term: v.union(
+      v.literal("spring"),
+      v.literal("summer"),
+      v.literal("fall"),
+      v.literal("j-term"),
+    ),
+    year: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("courseOfferings")
+      .withIndex("by_corequisite_of", (q) =>
+        q
+          .eq("corequisiteOf", args.classNumber)
           .eq("term", args.term)
           .eq("year", args.year),
       )
@@ -54,10 +89,39 @@ export const getCourseOfferingsByCourseTerm = protectedQuery({
   },
 });
 
-export const deleteCourseOfferingInternal = internalMutation({
-  args: { id: v.id("courseOfferings") },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
+export const getCourseOfferings = protectedQuery({
+  args: {
+    query: v.optional(v.string()),
+    term: v.union(
+      v.literal("spring"),
+      v.literal("summer"),
+      v.literal("fall"),
+      v.literal("j-term"),
+    ),
+    year: v.number(),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, { query, paginationOpts, term, year }) => {
+    if (query) {
+      return await ctx.db
+        .query("courseOfferings")
+        .withSearchIndex("search_title", (q) =>
+          q
+            .search("title", query)
+            .eq("isCorequisite", false)
+            .eq("term", term)
+            .eq("year", year),
+        )
+        .paginate(paginationOpts);
+    }
+
+    return await ctx.db
+      .query("courseOfferings")
+      .withIndex("by_term_year", (q) =>
+        q.eq("isCorequisite", false).eq("term", term).eq("year", year),
+      )
+      .order("desc")
+      .paginate(paginationOpts);
   },
 });
 
@@ -66,19 +130,43 @@ export const upsertCourseOfferingInternal = internalMutation({
   handler: async (ctx, args) => {
     const existing = await ctx.db
       .query("courseOfferings")
-      .withIndex("by_course_term_section", (q) =>
+      .withIndex("by_class_number", (q) =>
         q
-          .eq("courseId", args.courseId)
+          .eq("classNumber", args.classNumber)
           .eq("term", args.term)
-          .eq("year", args.year)
-          .eq("section", args.section),
+          .eq("year", args.year),
       )
       .unique();
 
     if (existing) {
       return await ctx.db.patch(existing._id, args);
-    } else {
-      return await ctx.db.insert("courseOfferings", args);
     }
+    return await ctx.db.insert("courseOfferings", args);
+  },
+});
+
+export const upsertCourseOfferingsInternal = internalMutation({
+  args: { courseOfferings: v.array(v.object(courseOfferings)) },
+  handler: async (ctx, args) => {
+    const results = await Promise.all(
+      args.courseOfferings.map(async (offering) => {
+        const existing = await ctx.db
+          .query("courseOfferings")
+          .withIndex("by_class_number", (q) =>
+            q
+              .eq("classNumber", offering.classNumber)
+              .eq("term", offering.term)
+              .eq("year", offering.year),
+          )
+          .unique();
+
+        if (existing) {
+          return await ctx.db.patch(existing._id, offering);
+        }
+        return await ctx.db.insert("courseOfferings", offering);
+      }),
+    );
+
+    return results;
   },
 });

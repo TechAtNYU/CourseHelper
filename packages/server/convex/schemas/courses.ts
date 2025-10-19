@@ -31,7 +31,7 @@ const prerequisites = v.union(
 
 const userCourses = {
   userId: v.string(),
-  courseId: v.id("courses"),
+  courseCode: v.string(), // CSCI-UA 101
   title: v.string(),
   year: v.number(), // 2025
   term: v.union(
@@ -40,20 +40,23 @@ const userCourses = {
     v.literal("fall"),
     v.literal("j-term"),
   ),
-  grade: v.union(
-    v.literal("a"),
-    v.literal("a-"),
-    v.literal("b+"),
-    v.literal("b"),
-    v.literal("b-"),
-    v.literal("c+"),
-    v.literal("c"),
-    v.literal("c-"),
-    v.literal("d+"),
-    v.literal("d"),
-    v.literal("p"),
-    v.literal("f"),
-    v.literal("w"),
+  alternativeOf: v.optional(v.id("userCourses")), // course code
+  grade: v.optional(
+    v.union(
+      v.literal("a"),
+      v.literal("a-"),
+      v.literal("b+"),
+      v.literal("b"),
+      v.literal("b-"),
+      v.literal("c+"),
+      v.literal("c"),
+      v.literal("c-"),
+      v.literal("d+"),
+      v.literal("d"),
+      v.literal("p"),
+      v.literal("f"),
+      v.literal("w"),
+    ),
   ),
 };
 
