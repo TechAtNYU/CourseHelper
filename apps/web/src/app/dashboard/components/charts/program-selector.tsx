@@ -3,7 +3,6 @@
 import { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -11,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 interface ProgramSelectorProps {
   onSelectProgram: (programName: string) => void;
