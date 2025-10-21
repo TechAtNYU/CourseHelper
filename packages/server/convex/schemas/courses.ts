@@ -31,7 +31,7 @@ const prerequisites = v.union(
 
 const userCourses = {
   userId: v.string(),
-  courseId: v.id("courses"),
+  courseCode: v.string(), // CSCI-UA 101
   title: v.string(),
   year: v.number(), // 2025
   term: v.union(
@@ -40,6 +40,7 @@ const userCourses = {
     v.literal("fall"),
     v.literal("j-term"),
   ),
+  alternativeOf: v.optional(v.id("userCourses")), // course code
   grade: v.optional(
     v.union(
       v.literal("a"),

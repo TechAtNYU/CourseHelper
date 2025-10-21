@@ -1,28 +1,33 @@
-import { asyncMap, omit } from "convex-helpers";
 import { v } from "convex/values";
+import { omit } from "convex-helpers";
+import { getOneFrom } from "convex-helpers/server/relationships";
 import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { userCourseOfferings } from "./schemas/courseOfferings";
 
 export const getUserCourseOfferings = protectedQuery({
   args: {},
   handler: async (ctx) => {
-    const userOfferings = await ctx.db
+    const userCourseOfferings = await ctx.db
       .query("userCourseOfferings")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
       .collect();
 
-    return await asyncMap(userOfferings, async (userOffering) => {
-      const courseOffering = await ctx.db.get(userOffering.courseOfferingId);
-      if (!courseOffering) {
-        throw new Error(
-          `Course offering ${userOffering.courseOfferingId} not found`,
+    return await Promise.all(
+      userCourseOfferings.map(async (userOffering) => {
+        const courseOffering = await getOneFrom(
+          ctx.db,
+          "courseOfferings",
+          "by_class_number",
+          userOffering.classNumber,
+          "classNumber",
         );
-      }
-      return {
-        ...userOffering,
-        courseOffering,
-      };
-    });
+
+        return {
+          ...userOffering,
+          courseOffering,
+        };
+      }),
+    );
   },
 });
 
@@ -32,7 +37,7 @@ export const addUserCourseOffering = protectedMutation({
     const existing = await ctx.db
       .query("userCourseOfferings")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
-      .filter((q) => q.eq(q.field("courseOfferingId"), args.courseOfferingId))
+      .filter((q) => q.eq(q.field("classNumber"), args.classNumber))
       .unique();
 
     if (existing) {
@@ -41,7 +46,7 @@ export const addUserCourseOffering = protectedMutation({
 
     return await ctx.db.insert("userCourseOfferings", {
       userId: ctx.user.subject,
-      courseOfferingId: args.courseOfferingId,
+      classNumber: args.classNumber,
       alternativeOf: args.alternativeOf,
     });
   },

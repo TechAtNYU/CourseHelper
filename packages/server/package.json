@@ -6,7 +6,8 @@
     "dev": "doppler run -- convex dev",
     "dashboard": "convex dashboard",
     "check": "biome check",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "seed:configs": "convex import --table appConfigs --replace seed/appConfigs.jsonl"
   },
   "dependencies": {
     "convex": "^1.28.0",

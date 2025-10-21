@@ -1,13 +1,14 @@
-import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
-import { AuthenticatedContent } from "./components/authenticated-content";
+import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function Layout({
   children,
+  header,
 }: {
   children: React.ReactNode;
+  header: React.ReactNode;
 }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
@@ -31,7 +32,8 @@ export default async function Layout({
         }}
       />
       <SidebarInset>
-        <AuthenticatedContent>{children}</AuthenticatedContent>
+        {header}
+        <main className="p-6 space-y-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
