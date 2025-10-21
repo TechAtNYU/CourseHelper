@@ -1,7 +1,6 @@
 import { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import { preloadQuery } from "convex/nextjs";
 import { getAuthToken } from "@/lib/convex";
-import { AppHeader } from "../components/app-header";
 import { ScheduleContent } from "./components/schedule-content";
 
 const SchedulePage = async () => {
@@ -12,14 +11,7 @@ const SchedulePage = async () => {
     { token },
   );
 
-  return (
-    <>
-      <AppHeader title="Schedule" />
-      <main className="p-6 space-y-6">
-        <ScheduleContent preloadedClasses={preloadedClasses} />
-      </main>
-    </>
-  );
+  return <ScheduleContent preloadedClasses={preloadedClasses} />;
 };
 
 export default SchedulePage;
