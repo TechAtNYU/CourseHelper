@@ -3,6 +3,7 @@
 import type { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import clsx from "clsx";
 import type { FunctionReturnType } from "convex/server";
+import _ from "lodash";
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -164,71 +165,74 @@ export default function PlanTable({ courses }: PlanTableProps) {
             <TableHead className="border-t w-[80px]">
               <div className="font-semibold">Term</div>
             </TableHead>
-            {years.map((year) => (
-              <TableHead
-                key={year}
-                className="border-t min-w-[200px] w-[200px]"
-              >
-                <div className="font-semibold">{year}</div>
-              </TableHead>
-            ))}
+            {years.map((year) => {
+              const totalCredits = _.sumBy(
+                _.flatten(Array.from(yearTermMap.get(year)?.values() || [])),
+                (c) => c.course?.credits || 0,
+              );
+
+              return (
+                <TableHead
+                  key={year}
+                  className="border-t min-w-[200px] w-[200px] "
+                >
+                  <div className="px-2 flex flex-row justify-between">
+                    <div className="font-semibold">{year}</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {totalCredits} credits
+                    </div>
+                  </div>
+                </TableHead>
+              );
+            })}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {visibleTerms.map((term) => (
-            <TableRow key={term}>
-              <TableCell className="font-medium bg-muted/30 capitalize">
-                {term}
-              </TableCell>
-              {years.map((year) => {
-                const termMap = yearTermMap.get(year);
-                const userCourses = termMap?.get(term) || [];
-                const totalCredits = userCourses.reduce(
-                  (sum, userCourse) => sum + (userCourse.course?.credits || 0),
-                  0,
-                );
+          {visibleTerms.map((term) => {
+            return (
+              <TableRow key={term}>
+                <TableCell className="font-medium bg-muted/30 capitalize">
+                  {term}
+                </TableCell>
+                {years.map((year) => {
+                  const termMap = yearTermMap.get(year);
+                  const userCourses = termMap?.get(term) || [];
+                  return (
+                    <TableCell key={year} className="align-top p-3">
+                      {userCourses.length > 0 ? (
+                        <div className="space-y-3">
+                          {userCourses.map((userCourse) => {
+                            if (!userCourse.course) return null;
 
-                return (
-                  <TableCell key={year} className="align-top p-3">
-                    {userCourses.length > 0 ? (
-                      <div className="space-y-3">
-                        {userCourses.map((userCourse) => {
-                          if (!userCourse.course) return null;
-
-                          const key = `${year}-${term}-${userCourse.course.code}`;
-                          return (
-                            <Link
-                              key={key}
-                              href={userCourse.course.courseUrl}
-                              target="_blank"
-                              className="block p-2 border rounded-md bg-card hover:bg-muted/50 transition-colors"
-                            >
-                              <div className="font-medium text-sm">
-                                {userCourse.course.code}
-                              </div>
-                              <div className="text-xs text-muted-foreground mt-1">
-                                {userCourse.title}
-                              </div>
-                              <div className="text-xs text-muted-foreground mt-1">
-                                {userCourse.course.credits} credits
-                              </div>
-                            </Link>
-                          );
-                        })}
-                        <div className="pt-2 border-t text-sm font-medium">
-                          Total: {totalCredits} credits
+                            const key = `${year}-${term}-${userCourse.course.code}`;
+                            return (
+                              <Link
+                                key={key}
+                                href={userCourse.course.courseUrl}
+                                target="_blank"
+                                className="block p-2 border rounded-md bg-card hover:bg-muted/50 transition-colors"
+                              >
+                                <div className="font-medium text-sm">
+                                  {userCourse.course.code}
+                                </div>
+                                <div className="text-xs text-muted-foreground mt-1">
+                                  {userCourse.title}
+                                </div>
+                              </Link>
+                            );
+                          })}
                         </div>
-                      </div>
-                    ) : (
-                      <div className="text-sm text-muted-foreground italic">
-                        No courses
-                      </div>
-                    )}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
+                      ) : (
+                        <div className="text-sm text-muted-foreground italic">
+                          No courses
+                        </div>
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
