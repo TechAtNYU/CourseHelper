@@ -20,7 +20,7 @@
     "@dev-team-fall-25/server": "workspace:*",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
-    "hono": "^4.9.12",
+    "hono": "^4.10.1",
     "nanoid": "^5.1.6",
     "zod": "^4.1.12"
   },
