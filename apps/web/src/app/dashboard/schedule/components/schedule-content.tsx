@@ -1,7 +1,7 @@
 "use client";
 
-import { api } from "@dev-team-fall-25/server/convex/_generated/api";
-import { Preloaded, usePreloadedQuery } from "convex/react";
+import type { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { type Preloaded, usePreloadedQuery } from "convex/react";
 import { ScheduleCalendar } from "./schedule-calendar";
 
 interface ScheduleContentProps {

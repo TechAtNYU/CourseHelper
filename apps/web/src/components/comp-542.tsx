@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { type CalendarEvent, EventCalendar } from "./ui/event-calendar";
-import { Class } from './ui/event-calendar/types';
+import type { Class } from "./ui/event-calendar/types";
 
 interface ScheduleProps {
   classes: Class[];

@@ -1,7 +1,7 @@
 "use client";
 
-import { api } from "@dev-team-fall-25/server/convex/_generated/api";
-import { FunctionReturnType } from "convex/server";
+import type { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import type { FunctionReturnType } from "convex/server";
 import Schedule from "@/components/comp-542";
 
 export interface ScheduleCalendarProps {
@@ -12,5 +12,9 @@ export interface ScheduleCalendarProps {
 
 export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
   // TODO: implement the component to display all the classes
-  return <><Schedule/></>;
+  return (
+    <>
+      <Schedule />
+    </>
+  );
 }
