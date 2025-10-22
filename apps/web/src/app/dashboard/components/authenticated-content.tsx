@@ -1,17 +1,20 @@
 "use client";
 
-import { Authenticated, Unauthenticated } from "convex/react";
+import { Authenticated, AuthLoading } from "convex/react";
 import type { ReactNode } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export function AuthenticatedContent({ children }: { children: ReactNode }) {
+export function AuthenticatedContent({
+  children,
+  skeleton = <Skeleton className="h-screen w-full" />,
+}: {
+  children: ReactNode;
+  skeleton?: ReactNode;
+}) {
   return (
     <>
       <Authenticated>{children}</Authenticated>
-      <Unauthenticated>
-        <div className="flex h-screen items-center justify-center">
-          <div className="text-muted-foreground">Authenticating...</div>
-        </div>
-      </Unauthenticated>
+      <AuthLoading>{skeleton}</AuthLoading>
     </>
   );
 }
