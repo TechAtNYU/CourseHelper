@@ -20,7 +20,7 @@ import type React from "react";
 import { useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { type CalendarEvent, EndHour, EventItem, isMultiDayEvent, StartHour, useCurrentTimeIndicator, WeekCellsHeight } from ".";
+import { type CalendarEvent, EndHour, EventItem, StartHour, useCurrentTimeIndicator, WeekCellsHeight } from ".";
 import { TimeSlot } from "./types";
 
 interface WeekViewProps {
@@ -78,10 +78,10 @@ export function WeekView({
   // Get all-day events and multi-day events for the week
   const allDayEvents = useMemo(() => {
     return events
-      .filter((event) => {
-        // Include explicitly marked all-day events or multi-day events
-        return event.allDay || isMultiDayEvent(event);
-      })
+      // .filter((event) => {
+      //   // Include explicitly marked all-day events or multi-day events
+      //   return event.allDay || isMultiDayEvent(event);
+      // })
       .filter((event) => {
         // Each event can have multiple time slots — include if ANY overlap with the current days
         return event.timeSlots?.some((slot) => {

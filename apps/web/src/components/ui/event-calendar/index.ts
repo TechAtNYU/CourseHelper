@@ -1,7 +1,6 @@
 "use client";
 
 // Component exports
-export { AgendaView } from "./agenda-view";
 export { CalendarDndProvider, useCalendarDnd } from "./calendar-dnd-context";
 // Constants and utility exports
 export * from "./constants";
