@@ -3,6 +3,7 @@
 import type { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import Schedule from "@/components/comp-542";
+import { EventColor } from "@/components/ui/event-calendar/types";
 
 export interface ScheduleCalendarProps {
   classes: FunctionReturnType<
@@ -10,6 +11,12 @@ export interface ScheduleCalendarProps {
   >;
 }
 
+const allColors: EventColor[] = ["sky", "amber", "violet", "rose", "emerald", "orange", "teal", "lime", "indigo", "fuchsia", "pink", "cyan"];
+
+  const pickColor = (): EventColor => {
+    const randomIndex = Math.floor(Math.random() * allColors.length);
+    return allColors[randomIndex];
+  };
 
 interface Class {
   id: string; // unique identifier
@@ -41,7 +48,7 @@ export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
       return {
         id: offering._id,
         title: `${offering.courseCode} - ${offering.title}`,
-        color: "sky",
+        color: pickColor(),
         times,
         selected: false,
         description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
