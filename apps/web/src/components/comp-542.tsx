@@ -2,11 +2,20 @@
 
 import { useState } from "react";
 import { type CalendarEvent, EventCalendar } from "./ui/event-calendar";
-import type { Class } from "./ui/event-calendar/types";
 
 interface ScheduleProps {
   classes: Class[];
 }
+
+interface Class {
+  id: string; // unique identifier
+  title: string;
+  color: string;
+  times: string[]; // e.g. ["Monday 9 15 11 15"]
+  selected: boolean;
+  description: string;
+}
+
 
 export default function Schedule({ classes: initialClasses }: ScheduleProps) {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
