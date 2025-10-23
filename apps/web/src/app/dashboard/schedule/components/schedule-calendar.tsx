@@ -27,11 +27,15 @@ export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
     .filter((c) => c.courseOffering !== null)
     .map((c) => {
       const offering = c.courseOffering!;
-
+      const startTime=offering.startTime.split(":")[0]+" "+offering.startTime.split(":")[1]
+      const endTime=offering.endTime.split(":")[0]+" "+offering.endTime.split(":")[1]
+      
+      console.log(offering.startTime)
+      console.log(startTime)
       // Format times like "Monday 9 15 11 15"
       const times = offering.days.map((day) => {
         const dayName = day.charAt(0).toUpperCase() + day.slice(1);
-        return `${dayName} ${offering.startTime} ${offering.endTime}`;
+        return `${dayName} ${startTime} ${endTime}`;
       });
 
       return {
@@ -43,8 +47,7 @@ export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
         description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
       };
     });
-  console.log(classes)
-  console.log("HELLO")
+  console.log(transformedClasses)
   return (
     <>
       <Schedule classes={transformedClasses} />
