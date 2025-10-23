@@ -12,9 +12,11 @@ export interface ScheduleCalendarProps {
 
 export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
   // TODO: implement the component to display all the classes
+  console.log(classes)
+  console.log("HELLO")
   return (
     <>
-      <Schedule />
+      <Schedule classes={classes} />
     </>
   );
 }
