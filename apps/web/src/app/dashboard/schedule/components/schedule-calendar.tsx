@@ -10,13 +10,44 @@ export interface ScheduleCalendarProps {
   >;
 }
 
+
+interface Class {
+  id: string; // unique identifier
+  title: string;
+  color: string;
+  times: string[]; // e.g. ["Monday 9 15 11 15"]
+  selected: boolean;
+  description: string;
+}
+
+
 export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
   // TODO: implement the component to display all the classes
+  const transformedClasses: Class[] = classes
+    .filter((c) => c.courseOffering !== null)
+    .map((c) => {
+      const offering = c.courseOffering!;
+
+      // Format times like "Monday 9 15 11 15"
+      const times = offering.days.map((day) => {
+        const dayName = day.charAt(0).toUpperCase() + day.slice(1);
+        return `${dayName} ${offering.startTime} ${offering.endTime}`;
+      });
+
+      return {
+        id: offering._id,
+        title: `${offering.courseCode} - ${offering.title}`,
+        color: "sky",
+        times,
+        selected: false,
+        description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
+      };
+    });
   console.log(classes)
   console.log("HELLO")
   return (
     <>
-      <Schedule classes={classes} />
+      <Schedule classes={transformedClasses} />
     </>
   );
 }

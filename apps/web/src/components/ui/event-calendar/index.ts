@@ -6,7 +6,6 @@ export { CalendarDndProvider, useCalendarDnd } from "./calendar-dnd-context";
 // Constants and utility exports
 export * from "./constants";
 export { DraggableEvent } from "./draggable-event";
-export { DroppableCell } from "./droppable-cell";
 export { EventCalendar } from "./event-calendar";
 export { EventDialog } from "./event-dialog";
 export { EventItem } from "./event-item";

@@ -28,14 +28,13 @@ import {
   CalendarDndProvider,
   CalendarEvent,
   type CalendarView,
-  DayView,
   EventDialog,
   EventGap,
   EventHeight,
-  MonthView,
   WeekCellsHeight,
   WeekView,
-} from "@/components/event-calendar";
+} from "../ui/event-calendar";
+// from "@/components/event-calendar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -186,10 +185,10 @@ export function EventCalendar({
         id: Math.random().toString(36).substring(2, 11),
       });
       // Show toast notification when an event is added
-      toast(`Event "${event.title}" added`, {
-        description: format(new Date(event.start), "MMM d, yyyy"),
-        position: "bottom-left",
-      });
+      // toast(`Event "${event.title}" added`, {
+      //   description: format(new Date(event.start), "MMM d, yyyy"),
+      //   position: "bottom-left",
+      // });
     }
     setIsEventDialogOpen(false);
     setSelectedEvent(null);
@@ -201,23 +200,23 @@ export function EventCalendar({
     setIsEventDialogOpen(false);
     setSelectedEvent(null);
 
-    // Show toast notification when an event is deleted
-    if (deletedEvent) {
-      toast(`Event "${deletedEvent.title}" deleted`, {
-        description: format(new Date(deletedEvent.start), "MMM d, yyyy"),
-        position: "bottom-left",
-      });
-    }
+    // // Show toast notification when an event is deleted
+    // if (deletedEvent) {
+    //   toast(`Event "${deletedEvent.title}" deleted`, {
+    //     description: format(new Date(deletedEvent.start), "MMM d, yyyy"),
+    //     position: "bottom-left",
+    //   });
+    // }
   };
 
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {
     onEventUpdate?.(updatedEvent);
 
     // Show toast notification when an event is updated via drag and drop
-    toast(`Event "${updatedEvent.title}" moved`, {
-      description: format(new Date(updatedEvent.start), "MMM d, yyyy"),
-      position: "bottom-left",
-    });
+    // toast(`Event "${updatedEvent.title}" moved`, {
+    //   description: format(new Date(updatedEvent.start), "MMM d, yyyy"),
+    //   position: "bottom-left",
+    // });
   };
 
   const viewTitle = useMemo(() => {
@@ -366,35 +365,12 @@ export function EventCalendar({
         </div>
 
         <div className="flex flex-1 flex-col">
-          {view === "month" && (
-            <MonthView
-              currentDate={currentDate}
-              events={events}
-              onEventSelect={handleEventSelect}
-              onEventCreate={handleEventCreate}
-            />
-          )}
           {view === "week" && (
             <WeekView
               currentDate={currentDate}
               events={events}
               onEventSelect={handleEventSelect}
               onEventCreate={handleEventCreate}
-            />
-          )}
-          {view === "day" && (
-            <DayView
-              currentDate={currentDate}
-              events={events}
-              onEventSelect={handleEventSelect}
-              onEventCreate={handleEventCreate}
-            />
-          )}
-          {view === "agenda" && (
-            <AgendaView
-              currentDate={currentDate}
-              events={events}
-              onEventSelect={handleEventSelect}
             />
           )}
         </div>

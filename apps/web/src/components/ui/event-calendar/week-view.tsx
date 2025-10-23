@@ -20,7 +20,7 @@ import type React from "react";
 import { useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { type CalendarEvent, DraggableEvent, DroppableCell, EndHour, EventItem, isMultiDayEvent, StartHour, useCurrentTimeIndicator, WeekCellsHeight } from ".";
+import { type CalendarEvent, EndHour, EventItem, isMultiDayEvent, StartHour, useCurrentTimeIndicator, WeekCellsHeight } from ".";
 import { TimeSlot } from "./types";
 
 interface WeekViewProps {
