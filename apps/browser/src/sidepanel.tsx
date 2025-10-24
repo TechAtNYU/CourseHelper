@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Authenticated, Unauthenticated } from "convex/react";
 import ConvexWithClerkProvider from "~components/ConvexWithClerkProvider";
 import SignIn from "~components/SignIn";
+import Course from "~components/Course";
 
 import "~style.css";
 
@@ -52,14 +53,14 @@ function CourseDisplay() {
   }, []);
 
   return (
-    <div className="plasmo-p-4 plasmo-min-w-[300px]">
+    <div className="plasmo-p-4 plasmo-min-w-[350px] plasmo-max-w-[400px]">
       <h1 className="plasmo-text-lg plasmo-font-bold plasmo-mb-4">
         NYU Course Helper
       </h1>
 
       <div className="plasmo-mb-4">
         <h2 className="plasmo-text-md plasmo-font-semibold plasmo-mb-2">
-          Course Search Saved
+          Saved Courses
         </h2>
         {courseSearchSaved.length === 0 ? (
           <p className="plasmo-text-gray-500 plasmo-text-sm">
@@ -68,14 +69,13 @@ function CourseDisplay() {
         ) : (
           <div className="plasmo-space-y-2">
             {courseSearchSaved.map((course, index) => (
-              <div
-                key={index}
-                className="plasmo-border plasmo-border-gray-200 plasmo-rounded plasmo-p-2 plasmo-bg-gray-50"
-              >
-                <div className="plasmo-font-medium">
-                  {course.title || `Course ${index + 1}`}
-                </div>
-              </div>
+              <Course
+                courseCode={course.courseCode}
+                title={course.title}
+                timeStart={course.timeStart}
+                timeEnd={course.timeEnd}
+                instructor={course.instructor}
+              />
             ))}
           </div>
         )}
@@ -151,13 +151,13 @@ function CourseDisplay() {
   );
 }
 
-function IndexPopup() {
+function IndexSidePanel() {
   return (
     // <CourseDisplay />
     <ConvexWithClerkProvider>
       <div>
         <Unauthenticated>
-          <div className="p-4 min-w-[300px]">
+          <div className="p-4 min-w-[350px]">
             <h1 className="text-lg font-bold mb-4">NYU Course Helper</h1>
             <SignIn />
           </div>
@@ -170,4 +170,4 @@ function IndexPopup() {
   );
 }
 
-export default IndexPopup;
+export default IndexSidePanel;

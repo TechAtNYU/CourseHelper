@@ -30,11 +30,15 @@
   "manifest": {
     "permissions": [
       "cookies",
-      "storage"
+      "storage",
+      "activeTab",
+      "sidePanel"
     ],
     "host_permissions": [
       "$PLASMO_PUBLIC_CLERK_SYNC_HOST/*",
-      "$CLERK_FRONTEND_API/*"
+      "$CLERK_FRONTEND_API/*",
+      "https://sis.nyu.edu/*",
+      "https://albert.nyu.edu/*"
     ]
   }
 }
