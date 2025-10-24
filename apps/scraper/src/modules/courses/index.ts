@@ -6,10 +6,12 @@ import type {
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type * as z from "zod/mini";
 
-export type CoursePrerequisite = Omit<
-  z.infer<typeof ZUpsertPrerequisites>[number],
-  "courseId"
->;
+type PrerequisiteItem = z.infer<typeof ZUpsertPrerequisites>[number];
+
+export type CoursePrerequisite =
+  | Omit<Extract<PrerequisiteItem, { type: "required" }>, "courseId">
+  | Omit<Extract<PrerequisiteItem, { type: "alternative" }>, "courseId">
+  | Omit<Extract<PrerequisiteItem, { type: "options" }>, "courseId">;
 
 export async function discoverCourses(url: string): Promise<string[]> {
   // TODO: implement this function

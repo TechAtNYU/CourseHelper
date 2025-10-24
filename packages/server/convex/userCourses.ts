@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { omit, pick } from "convex-helpers";
+import { omit } from "convex-helpers";
+import { getOneFrom } from "convex-helpers/server/relationships";
 import { partial } from "convex-helpers/validators";
 import { protectedMutation, protectedQuery } from "./helpers/auth";
 import { userCourses } from "./schemas/courses";
@@ -7,26 +8,27 @@ import { userCourses } from "./schemas/courses";
 export const getUserCourses = protectedQuery({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
+    const userCourses = await ctx.db
       .query("userCourses")
       .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
       .collect();
-  },
-});
 
-export const getUserCoursesByTerm = protectedQuery({
-  args: pick(userCourses, ["term", "year"]),
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("userCourses")
-      .withIndex("by_user", (q) => q.eq("userId", ctx.user.subject))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("term"), args.term),
-          q.eq(q.field("year"), args.year),
-        ),
-      )
-      .collect();
+    return await Promise.all(
+      userCourses.map(async (userCourse) => {
+        const course = await getOneFrom(
+          ctx.db,
+          "courses",
+          "by_course_code",
+          userCourse.courseCode,
+          "code",
+        );
+
+        return {
+          ...userCourse,
+          course,
+        };
+      }),
+    );
   },
 });
 
@@ -43,7 +45,7 @@ export const createUserCourse = protectedMutation({
 export const updateUserCourse = protectedMutation({
   args: {
     id: v.id("userCourses"),
-    ...partial(omit(userCourses, ["userId", "courseId"])),
+    ...partial(omit(userCourses, ["userId", "courseCode"])),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;

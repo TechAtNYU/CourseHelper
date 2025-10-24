@@ -1,7 +1,3 @@
-import type {
-  ZUpsertPrerequisites,
-  ZUpsertRequirements,
-} from "@dev-team-fall-25/server/convex/http";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import * as z from "zod/mini";
@@ -185,7 +181,10 @@ export default {
               case "program": {
                 const res = await scrapeProgram(job.url, db, env);
 
-                const programId = await convex.upsertProgram(res.program);
+                const programId = await convex.upsertProgramWithRequirements({
+                  ...res.program,
+                  requirements: res.requirements,
+                });
 
                 if (!programId) {
                   throw new JobError(
@@ -193,38 +192,21 @@ export default {
                     "validation",
                   );
                 }
-
-                // it is safe to assert the type here because the data will be validated before sending the request
-                const newRequirements = res.requirements.map((req) => ({
-                  ...req,
-                  programId: programId,
-                })) as z.infer<typeof ZUpsertRequirements>;
-
-                if (res.requirements.length > 0) {
-                  await convex.upsertRequirements(newRequirements);
-                }
                 break;
               }
               case "course": {
                 const res = await scrapeCourse(job.url, db, env);
 
-                const courseId = await convex.upsertCourse(res.course);
+                const courseId = await convex.upsertCourseWithPrerequisites({
+                  ...res.course,
+                  prerequisites: res.prerequisites,
+                });
 
                 if (!courseId) {
                   throw new JobError(
                     "Failed to upsert course: no ID returned",
                     "validation",
                   );
-                }
-
-                // it is safe to assert the type here because the data will be validated before sending the request
-                const newPrerequisites = res.prerequisites.map((prereq) => ({
-                  ...prereq,
-                  courseId: courseId,
-                })) as z.infer<typeof ZUpsertPrerequisites>;
-
-                if (res.prerequisites.length > 0) {
-                  await convex.upsertPrerequisites(newPrerequisites);
                 }
                 break;
               }
