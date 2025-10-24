@@ -1,5 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
@@ -19,6 +20,14 @@ export default async function Layout({
   }
 
   const user = await currentUser();
+
+  // Simple onboarding check - redirect if no student record
+  // For now, we'll check if user has completed onboarding by checking a simple flag
+  const hasCompletedOnboarding = user?.publicMetadata?.onboarding_completed;
+
+  if (!hasCompletedOnboarding) {
+    redirect("/onboarding");
+  }
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>

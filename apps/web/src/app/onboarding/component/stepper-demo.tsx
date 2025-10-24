@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import { defineStepper } from "@/components/ui/stepper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -194,10 +196,33 @@ const FormStepperComponent = () => {
     resolver: zodResolver(methods.current.schema),
   });
 
-  const onSubmit = (values: z.infer<typeof methods.current.schema>) => {
-    alert(
-      `Form values for step ${methods.current.id}: ${JSON.stringify(values)}`,
-    );
+  const { user } = useUser();
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof methods.current.schema>) => {
+    // If this is the last step, mark onboarding as complete
+    if (methods.current.id === "complete") {
+      try {
+        // Update user metadata to mark onboarding as complete
+        await user?.update({
+          publicMetadata: {
+            ...user.publicMetadata,
+            onboarding_completed: true,
+          },
+        });
+
+        // Redirect to dashboard
+        router.push("/dashboard");
+      } catch (error) {
+        console.error("Error completing onboarding:", error);
+        alert("Error completing onboarding. Please try again.");
+      }
+    } else {
+      // For other steps, just show the values
+      alert(
+        `Form values for step ${methods.current.id}: ${JSON.stringify(values)}`,
+      );
+    }
   };
 
   return (
