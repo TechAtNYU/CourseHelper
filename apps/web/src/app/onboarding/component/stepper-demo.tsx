@@ -8,82 +8,72 @@ import { useRouter } from "next/navigation";
 import { defineStepper } from "@/components/ui/stepper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import FileUploadButton from "@/modules/report-parsing/components/file-upload-button";
+import SelectMajor from "./select-major";
 
-const shippingSchema = z.object({
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  postalCode: z.string().min(5, "Postal code is required"),
+const academicInfoSchema = z.object({
+  major: z.string().min(1, "Major is required"),
+  minor: z.string().optional(),
 });
 
-const paymentSchema = z.object({
-  cardNumber: z.string().min(16, "Card number is required"),
-  expirationDate: z.string().min(5, "Expiration date is required"),
-  cvv: z.string().min(3, "CVV is required"),
+const extensionSchema = z.object({
+  // TODO: Make this required when Chrome extension is implemented
+  extensionInstalled: z.boolean().optional(),
 });
 
-type ShippingFormValues = z.infer<typeof shippingSchema>;
-type PaymentFormValues = z.infer<typeof paymentSchema>;
+const reportSchema = z.object({
+  reportUploaded: z
+    .boolean()
+    .refine((val) => val === true, "Please upload your degree progress report"),
+});
 
-const ShippingForm = () => {
+type AcademicInfoFormValues = z.infer<typeof academicInfoSchema>;
+type ExtensionFormValues = z.infer<typeof extensionSchema>;
+type ReportFormValues = z.infer<typeof reportSchema>;
+
+const AcademicInfoForm = () => {
   const {
-    register,
     formState: { errors },
-  } = useFormContext<ShippingFormValues>();
+    setValue,
+    watch,
+  } = useFormContext<AcademicInfoFormValues>();
+
+  const majorValue = watch("major");
+  const minorValue = watch("minor");
 
   return (
     <div className="space-y-4 text-start">
       <div className="space-y-2">
-        <label
-          htmlFor={register("address").name}
-          className="block text-sm font-medium text-primary"
-        >
-          Address
-        </label>
-        <Input
-          id={register("address").name}
-          {...register("address")}
-          className="block w-full rounded-md border p-2"
+        <SelectMajor
+          value={majorValue}
+          onValueChange={(value) => {
+            console.log("Major selected:", value);
+            setValue("major", value);
+          }}
+          placeholder="Select your major"
+          label="Major"
+          required={true}
         />
-        {errors.address && (
+        {errors.major && (
           <span className="text-sm text-destructive">
-            {errors.address.message}
+            {"Please select your major"}
           </span>
         )}
       </div>
       <div className="space-y-2">
-        <label
-          htmlFor={register("city").name}
-          className="block text-sm font-medium text-primary"
-        >
-          City
-        </label>
-        <Input
-          id={register("city").name}
-          {...register("city")}
-          className="block w-full rounded-md border p-2"
+        <SelectMajor
+          value={minorValue}
+          onValueChange={(value) => {
+            console.log("Minor selected:", value);
+            setValue("minor", value);
+          }}
+          placeholder="Select your minor (optional)"
+          label="Minor"
+          required={false}
         />
-        {errors.city && (
+        {errors.minor && (
           <span className="text-sm text-destructive">
-            {errors.city.message}
-          </span>
-        )}
-      </div>
-      <div className="space-y-2">
-        <label
-          htmlFor={register("postalCode").name}
-          className="block text-sm font-medium text-primary"
-        >
-          Postal Code
-        </label>
-        <Input
-          id={register("postalCode").name}
-          {...register("postalCode")}
-          className="block w-full rounded-md border p-2"
-        />
-        {errors.postalCode && (
-          <span className="text-sm text-destructive">
-            {errors.postalCode.message}
+            {"Please select your minor (optional)"}
           </span>
         )}
       </div>
@@ -91,86 +81,121 @@ const ShippingForm = () => {
   );
 };
 
-function PaymentForm() {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<PaymentFormValues>();
+function ExtensionForm() {
+  return (
+    <div className="space-y-4 text-start">
+      <div className="space-y-4">
+        {/* TODO: Implement Chrome extension installation flow */}
+        <div className="rounded-lg border p-4 bg-gray-50">
+          <h3 className="font-semibold text-gray-900 mb-2">
+            Chrome Extension (Coming Soon)
+          </h3>
+          <p className="text-sm text-gray-700 mb-4">
+            The Chrome extension will help you automatically track courses and
+            prerequisites while browsing your university's course catalog.
+          </p>
+          <div className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md inline-block">
+            Extension installation
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="flex items-center space-x-2">
+            <input type="checkbox" defaultChecked={true} className="rounded" />
+            <span className="text-sm font-medium text-primary">
+              Continue to next step (Chrome extension coming soon)
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReportUploadForm() {
+  const { setValue } = useFormContext<ReportFormValues>();
+
+  const handleFileUploaded = (file: File | null) => {
+    setValue("reportUploaded", file !== null);
+
+    if (file) {
+      console.log("Degree report uploaded:", file.name);
+      // Could show a success message here
+    } else {
+      console.log("Degree report removed");
+    }
+  };
 
   return (
     <div className="space-y-4 text-start">
-      <div className="space-y-2">
-        <label
-          htmlFor={register("cardNumber").name}
-          className="block text-sm font-medium text-primary"
-        >
-          Card Number
-        </label>
-        <Input
-          id={register("cardNumber").name}
-          {...register("cardNumber")}
-          className="block w-full rounded-md border p-2"
-        />
-        {errors.cardNumber && (
-          <span className="text-sm text-destructive">
-            {errors.cardNumber.message}
-          </span>
-        )}
-      </div>
-      <div className="space-y-2">
-        <label
-          htmlFor={register("expirationDate").name}
-          className="block text-sm font-medium text-primary"
-        >
-          Expiration Date
-        </label>
-        <Input
-          id={register("expirationDate").name}
-          {...register("expirationDate")}
-          className="block w-full rounded-md border p-2"
-        />
-        {errors.expirationDate && (
-          <span className="text-sm text-destructive">
-            {errors.expirationDate.message}
-          </span>
-        )}
-      </div>
-      <div className="space-y-2">
-        <label
-          htmlFor={register("cvv").name}
-          className="block text-sm font-medium text-primary"
-        >
-          CVV
-        </label>
-        <Input
-          id={register("cvv").name}
-          {...register("cvv")}
-          className="block w-full rounded-md border p-2"
-        />
-        {errors.cvv && (
-          <span className="text-sm text-destructive">{errors.cvv.message}</span>
-        )}
+      <div className="space-y-4">
+        <div className="rounded-lg border p-4 bg-gray-50">
+          <h3 className="font-semibold text-black mb-2">
+            Upload Your Degree Progress Report
+          </h3>
+          <p className="text-sm text-black mb-4">
+            Upload your degree progress report (PDF) so we can help you track
+            your academic progress and suggest courses.
+          </p>
+
+          <div className="space-y-4">
+            <FileUploadButton
+              maxSizeMB={20}
+              onFileUploaded={handleFileUploaded}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 function CompleteComponent() {
-  return <div className="text-center">Thank you! Your order is complete.</div>;
+  return (
+    <div className="text-center space-y-4">
+      <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+        <svg
+          className="w-8 h-8 text-green-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      </div>
+      <h2 className="text-2xl font-bold">Onboarding Complete!</h2>
+      <p className="text-muted-foreground">
+        Welcome to CourseHelper! You can now access your dashboard and start
+        managing your courses.
+      </p>
+    </div>
+  );
 }
 
 const { Stepper, useStepper } = defineStepper(
   {
-    id: "shipping",
-    title: "Shipping",
-    schema: shippingSchema,
-    Component: ShippingForm,
+    id: "academic-info",
+    title: "Academic Information",
+    schema: academicInfoSchema,
+    Component: AcademicInfoForm,
   },
   {
-    id: "payment",
-    title: "Payment",
-    schema: paymentSchema,
-    Component: PaymentForm,
+    id: "extension",
+    title: "Chrome Extension",
+    schema: extensionSchema,
+    Component: ExtensionForm,
+  },
+  {
+    id: "report",
+    title: "Degree Report",
+    schema: reportSchema,
+    Component: ReportUploadForm,
   },
   {
     id: "complete",
@@ -205,8 +230,8 @@ const FormStepperComponent = () => {
       try {
         // Update user metadata to mark onboarding as complete
         await user?.update({
-          publicMetadata: {
-            ...user.publicMetadata,
+          unsafeMetadata: {
+            ...user.unsafeMetadata,
             onboarding_completed: true,
           },
         });
@@ -215,13 +240,8 @@ const FormStepperComponent = () => {
         router.push("/dashboard");
       } catch (error) {
         console.error("Error completing onboarding:", error);
-        alert("Error completing onboarding. Please try again.");
       }
     } else {
-      // For other steps, just show the values
-      alert(
-        `Form values for step ${methods.current.id}: ${JSON.stringify(values)}`,
-      );
     }
   };
 
@@ -245,8 +265,9 @@ const FormStepperComponent = () => {
           ))}
         </Stepper.Navigation>
         {methods.switch({
-          shipping: ({ Component }) => <Component />,
-          payment: ({ Component }) => <Component />,
+          "academic-info": ({ Component }) => <Component />,
+          extension: ({ Component }) => <Component />,
+          report: ({ Component }) => <Component />,
           complete: ({ Component }) => <Component />,
         })}
         <Stepper.Controls>

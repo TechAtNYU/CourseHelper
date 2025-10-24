@@ -23,7 +23,7 @@ export default async function Layout({
 
   // Simple onboarding check - redirect if no student record
   // For now, we'll check if user has completed onboarding by checking a simple flag
-  const hasCompletedOnboarding = user?.publicMetadata?.onboarding_completed;
+  const hasCompletedOnboarding = user?.unsafeMetadata?.onboarding_completed;
 
   if (!hasCompletedOnboarding) {
     redirect("/onboarding");

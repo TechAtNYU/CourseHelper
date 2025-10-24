@@ -12,10 +12,12 @@ import { parseCourseHistory } from "../utils/parse-course-history";
 
 type FileUploadButtonProps = {
   maxSizeMB?: number;
+  onFileUploaded?: (file: File | null) => void;
 };
 
 export default function FileUploadButton({
   maxSizeMB = 20,
+  onFileUploaded,
 }: FileUploadButtonProps) {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +64,7 @@ export default function FileUploadButton({
     // So file is valid
     setError(null);
     setFile(f);
+    onFileUploaded?.(f);
 
     try {
       const historyText = await extractCourseHistory(f);
@@ -75,6 +78,7 @@ export default function FileUploadButton({
   function handleRemoveFile() {
     setFile(null);
     setError(null);
+    onFileUploaded?.(null);
     if (inputRef.current) inputRef.current.value = "";
   }
 
