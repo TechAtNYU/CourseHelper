@@ -33,5 +33,8 @@
     "esbuild",
     "sharp",
     "workerd"
-  ]
+  ],
+  "dependencies": {
+    "@stepperize/react": "^5.1.9"
+  }
 }
