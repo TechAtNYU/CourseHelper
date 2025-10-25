@@ -12,6 +12,7 @@
     "check:types": "tsc -noEmit"
   },
   "dependencies": {
+    "@dev-team-fall-25/server": "workspace:*",
     "@clerk/chrome-extension": "^2.7.7",
     "convex": "^1.28.0",
     "plasmo": "0.90.5",

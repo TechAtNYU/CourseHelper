@@ -117,7 +117,7 @@ function parseCourse(row: HTMLTableRowElement) {
 
 // Helper function to parse term string like "Spring 2025" into year and term
 function parseTermString(
-  termString: string
+  termString: string,
 ): { year: number; term: string } | null {
   const termMatch = termString.match(/^(\w+)\s+(\d{4})$/);
   if (!termMatch) return null;
@@ -174,7 +174,7 @@ function parseGradesTranscript(gradesContainer: Element) {
           if (courseCode && title) {
             // Parse course code to extract program and number
             const codeMatch = courseCode.match(
-              /^([A-Z]+-[A-Z]+)\s*-\s*(\d+|[A-Z]+)$/
+              /^([A-Z]+-[A-Z]+)\s*-\s*(\d+|[A-Z]+)$/,
             );
             let program = "";
             let catalogNumber = "";
@@ -219,7 +219,7 @@ function parseGradesTranscript(gradesContainer: Element) {
 
 function waitForTable(
   selector: string,
-  callback: (table: HTMLTableElement) => void
+  callback: (table: HTMLTableElement) => void,
 ) {
   const observer = new MutationObserver(() => {
     const table = document.querySelector<HTMLTableElement>(selector);
@@ -271,7 +271,7 @@ function parseCourseSearch(course: HTMLElement) {
           .replace("Select Class #", "")
           .trim() || "";
       let isSaved = savedCourseSearch.some(
-        (course) => course.classNumber === number
+        (course) => course.classNumber === number,
       );
       if (isSaved) {
         saveCourseButton.className =
@@ -290,11 +290,11 @@ function parseCourseSearch(course: HTMLElement) {
 
         let courseTitleElement =
           course.firstElementChild?.firstElementChild?.firstElementChild?.firstElementChild?.querySelector(
-            "b"
+            "b",
           );
 
         let courseSectionInfo = course.querySelector(
-          '[id^="COURSE' + number + 'nyu"]'
+          '[id^="COURSE' + number + 'nyu"]',
         ) as HTMLElement;
 
         let sectionTopic =
@@ -425,7 +425,7 @@ const gradesObserver = new MutationObserver(() => {
 const courseSearchObserver = new MutationObserver(() => {
   courseSearchObserver.disconnect();
   const courses = document.querySelectorAll(
-    '[id^="win0divSELECT_COURSE_row$"]'
+    '[id^="win0divSELECT_COURSE_row$"]',
   );
   courses.forEach((course) => {
     if (!course.classList.contains("extension-modified")) {

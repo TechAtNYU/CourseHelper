@@ -25,7 +25,7 @@ function CourseDisplay() {
         console.log("Enrolled courses:", enrolled);
         console.log("Completed courses:", completed);
         console.log("Course search saved:", courseSearchSaved);
-      }
+      },
     );
   }, []);
 

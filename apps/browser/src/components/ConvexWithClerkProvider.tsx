@@ -7,8 +7,7 @@ const PUBLISHABLE_KEY = process.env
 const SYNC_HOST = process.env.PLASMO_PUBLIC_CLERK_SYNC_HOST as string;
 
 const convex = new ConvexReactClient(
-  process.env.PLASMO_PUBLIC_CONVEX_URL ||
-    "https://discrete-mustang-41.convex.cloud"
+  process.env.PLASMO_PUBLIC_CONVEX_URL as string,
 );
 
 const ConvexWithClerkProvider = ({ children }) => {
