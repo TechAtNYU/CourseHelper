@@ -12,6 +12,7 @@
     "check:types": "tsc -noEmit"
   },
   "dependencies": {
+    "@dev-team-fall-25/server": "workspace:*",
     "@clerk/chrome-extension": "^2.7.7",
     "convex": "^1.28.0",
     "plasmo": "0.90.5",
@@ -30,11 +31,15 @@
   "manifest": {
     "permissions": [
       "cookies",
-      "storage"
+      "storage",
+      "activeTab",
+      "sidePanel"
     ],
     "host_permissions": [
       "$PLASMO_PUBLIC_CLERK_SYNC_HOST/*",
-      "$CLERK_FRONTEND_API/*"
+      "$CLERK_FRONTEND_API/*",
+      "https://sis.nyu.edu/*",
+      "https://albert.nyu.edu/*"
     ]
   }
 }
