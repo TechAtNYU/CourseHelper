@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import {
     PlusIcon
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
     CalendarDndProvider,
     EventDialog,
@@ -106,6 +106,25 @@ export function EventCalendar({
     // fallback if no classes are passed
     return [];
   });
+
+  const hasLoaded = useRef(false);
+
+  useEffect(() => {
+    console.log("ADDING CLASS")
+    if (hasLoaded.current) return; // skip if already ran
+    hasLoaded.current = true;
+    // Automatically add all initial classes on mount
+    initialClasses.forEach((cls) => {
+      addClassToCalendar(
+        handleEventSave, 
+        cls.title, 
+        cls.times, 
+        cls.color as EventColor, 
+        false, 
+        cls.description
+      );
+    });
+  }, []);
   
   const handleEventSelect = (event: CalendarEvent) => {
     console.log("Event selected:", event); // Debug log
@@ -223,7 +242,7 @@ export function EventCalendar({
               Spring 2026
             </h2>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             {/* <Button
               className="max-[479px]:aspect-square max-[479px]:p-0!"
               size="sm"
@@ -240,7 +259,7 @@ export function EventCalendar({
               <span className="max-sm:sr-only">New event</span>
             </Button> */}
 
-             <div className="flex items-center gap-2">
+             {/* <div className="flex items-center gap-2">
               {classes.map((cls) => {
 
                 return (
@@ -283,7 +302,7 @@ export function EventCalendar({
               })}
             </div>
 
-          </div>
+          </div> */} 
         </div>
 
         <div className="flex flex-1 flex-col">

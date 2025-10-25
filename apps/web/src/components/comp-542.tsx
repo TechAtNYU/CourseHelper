@@ -22,7 +22,7 @@ export default function Schedule({ classes: initialClasses }: ScheduleProps) {
   const [classes, setClasses] = useState<Class[]>(initialClasses);
 
   const handleEventAdd = (event: CalendarEvent) => {
-    setEvents([...events, event]);
+    setEvents((prev) => [...prev, event]);
   };
 
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {

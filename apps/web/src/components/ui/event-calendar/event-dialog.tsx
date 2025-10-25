@@ -33,44 +33,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { TimeSlot, CalendarEvent, EventColor } from "./types";
 import { DefaultEndHour, DefaultStartHour, EndHour, StartHour } from "./constants";
-
-export function addBasicAlgorithms(onSave: (event: CalendarEvent) => void) {
-  const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 = Sunday, 3 = Wednesday
-  const daysUntilWednesday = (3 - dayOfWeek + 7) % 7;
-  const wednesday = new Date(today);
-  wednesday.setDate(today.getDate() + daysUntilWednesday);
-
-  const thursday = new Date(today);
-  thursday.setDate(today.getDate() + 1);
-
-  const start = new Date(wednesday);
-  start.setHours(9, 15, 0, 0);
-
-  const end = new Date(wednesday);
-  end.setHours(10, 15, 0, 0);
-
-  const start2 = new Date(thursday);
-  start2.setHours(9, 15, 0, 0);
-
-  const end2 = new Date(thursday);
-  end2.setHours(10, 15, 0, 0);
-
-  const eventTitle = "Basic Algorithms";
-
-  onSave({
-    id: "",
-    title: eventTitle,
-    description: "Lecture on basic algorithms",
-    timeSlots: [{ start: start, end: end }, { start: start2, end: end2 }],
-    // start,
-    // end,
-    allDay: false,
-    location: "Room 101",
-    color: "emerald" as EventColor,
-  });
-}
-
 import { startOfWeek, addDays } from "date-fns";
 
 export function addClassToCalendar(
