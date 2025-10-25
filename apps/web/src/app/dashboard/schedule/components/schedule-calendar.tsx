@@ -13,11 +13,6 @@ export interface ScheduleCalendarProps {
 
 const allColors: EventColor[] = ["sky", "amber", "violet", "rose", "emerald", "orange", "teal", "lime", "indigo", "fuchsia", "pink", "cyan"];
 
-  const pickColor = (): EventColor => {
-    const randomIndex = Math.floor(Math.random() * allColors.length);
-    return allColors[randomIndex];
-  };
-
 interface Class {
   id: string; // unique identifier
   title: string;
@@ -27,37 +22,34 @@ interface Class {
   description: string;
 }
 
-
 export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
-  // TODO: implement the component to display all the classes
+  let colorIndex = 0; // start at 0
+
   const transformedClasses: Class[] = classes
     .filter((c) => c.courseOffering !== null)
     .map((c) => {
       const offering = c.courseOffering!;
-      const startTime=offering.startTime.split(":")[0]+" "+offering.startTime.split(":")[1]
-      const endTime=offering.endTime.split(":")[0]+" "+offering.endTime.split(":")[1]
-      
-      console.log(offering.startTime)
-      console.log(startTime)
+      const startTime = offering.startTime.split(":")[0] + " " + offering.startTime.split(":")[1];
+      const endTime = offering.endTime.split(":")[0] + " " + offering.endTime.split(":")[1];
+
       // Format times like "Monday 9 15 11 15"
       const times = offering.days.map((day) => {
         const dayName = day.charAt(0).toUpperCase() + day.slice(1);
         return `${dayName} ${startTime} ${endTime}`;
       });
 
+      const color = allColors[colorIndex % allColors.length];
+      colorIndex++; 
+
       return {
         id: offering._id,
         title: `${offering.courseCode} - ${offering.title}`,
-        color: pickColor(),
+        color,
         times,
         selected: false,
         description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
       };
     });
-  console.log(transformedClasses)
-  return (
-    <>
-      <Schedule classes={transformedClasses} />
-    </>
-  );
+
+  return <Schedule classes={transformedClasses} />;
 }
