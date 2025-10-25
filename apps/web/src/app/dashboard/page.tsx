@@ -1,7 +1,7 @@
-import FileUploadButton from "@/modules/report-parsing/components/file-upload-button";
+import FileUpload from "@/modules/report-parsing/components/file-upload";
 
 const HomePage = () => {
-  return <FileUploadButton />;
+  return <FileUpload />;
 };
 
 export default HomePage;

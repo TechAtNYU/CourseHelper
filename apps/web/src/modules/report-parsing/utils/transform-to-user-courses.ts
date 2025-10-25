@@ -1,3 +1,5 @@
+import type { Grade, Term, UserCourse } from "../types";
+
 interface ParsedCourse {
   term: string;
   subject: string;
@@ -7,30 +9,6 @@ interface ParsedCourse {
   units: string;
   type: string;
   meta?: Record<string, string>;
-}
-
-type Term = "spring" | "summer" | "fall" | "j-term";
-type Grade =
-  | "a"
-  | "a-"
-  | "b+"
-  | "b"
-  | "b-"
-  | "c+"
-  | "c"
-  | "c-"
-  | "d+"
-  | "d"
-  | "p"
-  | "f"
-  | "w";
-
-interface UserCourse {
-  courseCode: string;
-  title: string;
-  year: number;
-  term: Term;
-  grade?: Grade;
 }
 
 /**

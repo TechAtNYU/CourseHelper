@@ -44,7 +44,6 @@ export type FileUploadActions = {
   removeFile: (id: string) => void;
   clearFiles: () => void;
   clearErrors: () => void;
-  setErrors: (errors: string[]) => void;
   handleDragEnter: (e: DragEvent<HTMLElement>) => void;
   handleDragLeave: (e: DragEvent<HTMLElement>) => void;
   handleDragOver: (e: DragEvent<HTMLElement>) => void;
@@ -293,6 +292,7 @@ export const useFileUpload = (
         return {
           ...prev,
           files: newFiles,
+          errors: [],
         };
       });
     },
@@ -303,13 +303,6 @@ export const useFileUpload = (
     setState((prev) => ({
       ...prev,
       errors: [],
-    }));
-  }, []);
-
-  const setErrors = useCallback((errors: string[]) => {
-    setState((prev) => ({
-      ...prev,
-      errors,
     }));
   }, []);
 
@@ -396,7 +389,6 @@ export const useFileUpload = (
       removeFile,
       clearFiles,
       clearErrors,
-      setErrors,
       handleDragEnter,
       handleDragLeave,
       handleDragOver,
