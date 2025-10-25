@@ -8,6 +8,7 @@ import {
   isDegreeProgressReport,
 } from "../utils/extract-pdf-text";
 import { parseCourseHistory } from "../utils/parse-course-history";
+import { transformToUserCourses } from "../utils/transform-to-user-courses";
 
 type FileUploadButtonProps = {
   maxSizeMB?: number;
@@ -57,8 +58,11 @@ export default function FileUploadButton({
       // Extract and parse course history
       try {
         const historyText = await extractCourseHistory(file);
-        const result = parseCourseHistory(historyText);
-        console.log("Parsed courses:", result);
+        const parsedCourses = parseCourseHistory(historyText);
+        const userCourses = transformToUserCourses(parsedCourses);
+        console.log("User courses:", userCourses);
+
+        // TODO: Save userCourses to database
       } catch (err) {
         console.error("Error parsing PDF:", err);
         setErrors(["Error parsing course history from PDF."]);
@@ -72,14 +76,15 @@ export default function FileUploadButton({
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        {/* Drop area */}
-        <button
-          type="button"
+        {/* biome-ignore lint/a11y/useSemanticElements: change div to button will cause hydration error */}
+        <div
+          role="button"
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           data-dragging={isDragging || undefined}
+          tabIndex={0}
           className="w-full relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-input p-4 transition-colors has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50"
         >
           <input
@@ -125,7 +130,7 @@ export default function FileUploadButton({
               </Button>
             </div>
           )}
-        </button>
+        </div>
 
         {hasFile && (
           <div className="absolute top-4 right-4">
