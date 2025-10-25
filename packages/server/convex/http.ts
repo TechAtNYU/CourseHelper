@@ -156,7 +156,7 @@ export const ZUpsertCourseOffering = z.object({
   section: z.string(),
   year: z.number(),
   term: z.enum(["spring", "summer", "fall", "j-term"]),
-  instructor: z.string(),
+  instructor: z.array(z.string()),
   location: z.string(),
   days: z.array(
     z.enum([
@@ -171,9 +171,9 @@ export const ZUpsertCourseOffering = z.object({
   ),
   startTime: z.string(),
   endTime: z.string(),
-  status: z.enum(["open", "closed", "waitlist", "enrolled"]),
+  status: z.enum(["open", "closed", "waitlist"]),
   waitlistNum: z.optional(z.number()),
-  isCorequisite: z.boolean(),
+  isCorequisite: z._default(z.boolean(), false),
   corequisiteOf: z.optional(z.number()),
 });
 
