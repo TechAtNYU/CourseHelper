@@ -36,6 +36,6 @@
   ],
   "vars": {
     "SCRAPING_BASE_URL": "https://bulletins.nyu.edu/",
-    "CONVEX_SITE_URL": "https://bulletins.nyu.edu/",
+    "CONVEX_BASE_URL": "http://127.0.0.1:3210",
   },
 }
