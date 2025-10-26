@@ -19,7 +19,7 @@ type SelectMajorProps = {
   required?: boolean;
 };
 
-const majors = [
+const programs = [
   "Computer Science",
   "Mathematics",
   "Physics",
@@ -57,8 +57,8 @@ export default function SelectMajor({
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Majors</SelectLabel>
-            {majors.map((major) => (
+            <SelectLabel>Programs</SelectLabel>
+            {programs.map((major) => (
               <SelectItem key={major} value={major}>
                 {major}
               </SelectItem>

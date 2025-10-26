@@ -12,7 +12,7 @@ import FileUploadButton from "@/modules/report-parsing/components/file-upload-bu
 import SelectMajor from "./select-major";
 
 const academicInfoSchema = z.object({
-  major: z.string().min(1, "Major is required"),
+  major: z.string().min(1, "Program is required"),
   minor: z.string().optional(),
 });
 
@@ -39,7 +39,6 @@ const AcademicInfoForm = () => {
   } = useFormContext<AcademicInfoFormValues>();
 
   const majorValue = watch("major");
-  const minorValue = watch("minor");
 
   return (
     <div className="space-y-4 text-start">
@@ -47,33 +46,16 @@ const AcademicInfoForm = () => {
         <SelectMajor
           value={majorValue}
           onValueChange={(value) => {
-            console.log("Major selected:", value);
+            console.log("Programselected:", value);
             setValue("major", value);
           }}
-          placeholder="Select your major"
-          label="Major"
+          placeholder="Select your program"
+          label="Program"
           required={true}
         />
         {errors.major && (
           <span className="text-sm text-destructive">
-            {"Please select your major"}
-          </span>
-        )}
-      </div>
-      <div className="space-y-2">
-        <SelectMajor
-          value={minorValue}
-          onValueChange={(value) => {
-            console.log("Minor selected:", value);
-            setValue("minor", value);
-          }}
-          placeholder="Select your minor (optional)"
-          label="Minor"
-          required={false}
-        />
-        {errors.minor && (
-          <span className="text-sm text-destructive">
-            {"Please select your minor (optional)"}
+            {"Please select your program"}
           </span>
         )}
       </div>
@@ -225,23 +207,10 @@ const FormStepperComponent = () => {
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof methods.current.schema>) => {
-    // If this is the last step, mark onboarding as complete
-    if (methods.current.id === "complete") {
-      try {
-        // Update user metadata to mark onboarding as complete
-        await user?.update({
-          unsafeMetadata: {
-            ...user.unsafeMetadata,
-            onboarding_completed: true,
-          },
-        });
-
-        // Redirect to dashboard
-        router.push("/dashboard");
-      } catch (error) {
-        console.error("Error completing onboarding:", error);
-      }
-    } else {
+    if (methods.current.id !== "complete") {
+      console.log(
+        `Form values for step ${methods.current.id}: ${JSON.stringify(values)}`,
+      );
     }
   };
 
@@ -271,21 +240,40 @@ const FormStepperComponent = () => {
           complete: ({ Component }) => <Component />,
         })}
         <Stepper.Controls>
-          {!methods.isLast && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={methods.prev}
-              disabled={methods.isFirst}
-            >
-              Previous
-            </Button>
-          )}
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={methods.prev}
+            disabled={methods.isFirst}
+          >
+            Previous
+          </Button>
           <Button
             type="submit"
-            onClick={() => {
+            onClick={async () => {
               if (methods.isLast) {
-                return methods.reset();
+                // Complete onboarding and go to dashboard
+                const valid = await form.trigger();
+                if (!valid) return;
+
+                try {
+                  const values = form.getValues();
+                  console.log("Completing onboarding with values:", values);
+
+                  // Update user metadata to mark onboarding as complete
+                  await user?.update({
+                    unsafeMetadata: {
+                      ...user.unsafeMetadata,
+                      onboarding_completed: true,
+                    },
+                  });
+
+                  // Redirect to dashboard
+                  router.push("/dashboard");
+                } catch (error) {
+                  console.error("Error completing onboarding:", error);
+                }
+                return;
               }
               methods.beforeNext(async () => {
                 const valid = await form.trigger();
@@ -294,7 +282,7 @@ const FormStepperComponent = () => {
               });
             }}
           >
-            {methods.isLast ? "Reset" : "Next"}
+            {methods.isLast ? "Complete Onboarding" : "Next"}
           </Button>
         </Stepper.Controls>
       </form>
