@@ -5,24 +5,23 @@ import { Form } from "@/components/ui/form";
 import { defineStepper } from "@/components/ui/stepper";
 import { useUser } from "@clerk/nextjs";
 import { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { Doc } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
-import { FunctionReturnType } from "convex/server";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   AcademicInfoForm,
+  AcademicInfoFormValues,
   academicInfoSchema,
 } from "./stepper-pages/academic-info-form";
+import { ExtensionForm, extensionSchema } from "./stepper-pages/extention-form";
 import {
   reportSchema,
   ReportUploadForm,
 } from "./stepper-pages/report-upload-form";
-import { ExtensionForm, extensionSchema } from "./stepper-pages/extention-form";
-import { students } from "@dev-team-fall-25/server/convex/schemas/students";
-import { Doc } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 
 function CompleteComponent() {
   return (
@@ -53,26 +52,7 @@ function CompleteComponent() {
 }
 
 // TODO: after the scraper is impelmented, get programs from the backend instead
-const programs: FunctionReturnType<typeof api.programs.getPrograms> = [
-  "Computer Science",
-  "Mathematics",
-  "Statistics",
-  "Data Science",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "Engineering",
-  "Business Administration",
-  "Finance",
-  "Economics",
-  "Psychology",
-  "English",
-  "History",
-  "Political Science",
-  "Art",
-  "Music",
-  "Other",
-];
+const programs: Doc<"programs">[] = [];
 
 const { Stepper, useStepper } = defineStepper(
   {
@@ -113,7 +93,7 @@ export function OnboardingStepper(props: OnboardingStepperProps) {
   );
 }
 
-const OnboardingStepperContent = ({}: OnboardingStepperProps) => {
+const OnboardingStepperContent = ({ student }: OnboardingStepperProps) => {
   const methods = useStepper();
 
   const form = useForm({
@@ -223,6 +203,7 @@ const OnboardingStepperContent = ({}: OnboardingStepperProps) => {
                       year: academicInfo.expectedGraduationDate.year,
                       term: academicInfo.expectedGraduationDate.term,
                     },
+                    isOnboarded: true,
                   });
 
                   // Update user metadata to mark onboarding as complete
@@ -240,7 +221,7 @@ const OnboardingStepperContent = ({}: OnboardingStepperProps) => {
                 }
               } else {
                 // For non-last steps, just move to the next step
-                await methods.next();
+                methods.next();
               }
             }}
           >
