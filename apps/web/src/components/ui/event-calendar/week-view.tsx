@@ -314,6 +314,13 @@ export function WeekView({
             className="border-border/70 relative grid auto-cols-fr border-r last:border-r-0"
             data-today={isToday(day) || undefined}
           >
+            {hours.map((hour) => (
+              <div
+                key={hour.toString()}
+                className="border-border/70 relative min-h-[var(--week-cells-height)] border-b last:border-b-0"
+              />
+            ))}
+            
             {/* Positioned events */}
             {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
               
