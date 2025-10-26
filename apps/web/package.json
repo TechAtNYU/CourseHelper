@@ -13,7 +13,7 @@
   "packageManager": "bun@1.2.23",
   "dependencies": {
     "@clerk/nextjs": "^6.33.7",
-    "@dev-team-fall-25/server": "workspace:*",
+    "@albert-plus/server": "workspace:*",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
