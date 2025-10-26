@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import type { ChangeEvent } from "react";
 import { useRef, useState } from "react";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   extractCourseHistory,
@@ -13,15 +14,22 @@ import { parseCourseHistory } from "../utils/parse-course-history";
 type FileUploadButtonProps = {
   maxSizeMB?: number;
   onFileUploaded?: (file: File | null) => void;
+  initialFile?: File | null;
 };
 
 export default function FileUploadButton({
   maxSizeMB = 20,
   onFileUploaded,
+  initialFile,
 }: FileUploadButtonProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(initialFile || null);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Update state when initialFile prop changes (for controlled behavior)
+  React.useEffect(() => {
+    setFile(initialFile || null);
+  }, [initialFile]);
 
   async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];

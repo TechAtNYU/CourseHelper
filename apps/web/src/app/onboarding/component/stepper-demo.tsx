@@ -86,6 +86,8 @@ const reportSchema = z.object({
   reportUploaded: z
     .boolean()
     .refine((val) => val === true, "Please upload your degree progress report"),
+  reportFile: z.any().optional(), // File instance
+  reportFileName: z.string().optional(),
 });
 
 type AcademicInfoFormValues = z.infer<typeof academicInfoSchema>;
@@ -95,26 +97,6 @@ const AcademicInfoForm = () => {
   const { control, setValue, watch } = useFormContext<AcademicInfoFormValues>();
 
   const programsValue = watch("programs") || [];
-  const startingYear = watch("startingDate.year");
-  const startingTerm = watch("startingDate.term");
-  const gradYear = watch("expectedGraduationDate.year");
-  const gradTerm = watch("expectedGraduationDate.term");
-
-  // Set default values if not present
-  React.useEffect(() => {
-    if (!startingYear) {
-      setValue("startingDate.year", new Date().getFullYear());
-    }
-    if (!startingTerm) {
-      setValue("startingDate.term", "fall");
-    }
-    if (!gradYear) {
-      setValue("expectedGraduationDate.year", new Date().getFullYear() + 4);
-    }
-    if (!gradTerm) {
-      setValue("expectedGraduationDate.term", "spring");
-    }
-  }, [setValue, startingYear, startingTerm, gradYear, gradTerm]);
 
   return (
     <div className="space-y-6 text-start">
@@ -296,20 +278,25 @@ function ExtensionForm() {
 }
 
 function ReportUploadForm() {
-  const { setValue } = useFormContext<ReportFormValues>();
+  const { setValue, watch } = useFormContext<ReportFormValues>();
 
   const handleFileUploaded = (file: File | null) => {
     setValue("reportUploaded", file !== null);
 
     if (file) {
+      setValue("reportFile", file);
+      setValue("reportFileName", file.name);
       console.log("Degree report uploaded:", file.name);
-      <p className="text-sm font-medium text-red-500">
-        You have uploaded your degree progress report.
-      </p>;
     } else {
+      setValue("reportFile", undefined);
+      setValue("reportFileName", undefined);
       console.log("Degree report removed");
     }
   };
+
+  const isUploaded = watch("reportUploaded");
+  const uploadedFileName = watch("reportFileName");
+  const reportFile = watch("reportFile");
 
   return (
     <div className="space-y-4 text-start">
@@ -327,7 +314,14 @@ function ReportUploadForm() {
             <FileUploadButton
               maxSizeMB={20}
               onFileUploaded={handleFileUploaded}
+              initialFile={reportFile}
             />
+            {isUploaded && uploadedFileName && (
+              <p className="text-sm font-medium text-green-600">
+                You have uploaded your degree progress report (
+                {uploadedFileName}).
+              </p>
+            )}
           </div>
         </div>
       </div>
