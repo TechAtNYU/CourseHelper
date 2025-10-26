@@ -1,6 +1,6 @@
 "use client";
 
-import { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { api } from "@albert-plus/server/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { FileTextIcon, UploadIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
