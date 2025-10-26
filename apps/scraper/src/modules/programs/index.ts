@@ -14,8 +14,8 @@ export type ProgramRequirement =
   | Omit<Extract<RequirementItem, { type: "options" }>, "programId">;
 
 export async function discoverPrograms(url: string): Promise<string[]> {
-  const nyu_url = "https://bulletins.nyu.edu/";
-  const res = await fetch(nyu_url);
+  url = "https://bulletins.nyu.edu/";
+  const res = await fetch(url);
   console.log("Status:", res.status);
   const html = await res.text();
   console.log(html.slice(0, 500));
