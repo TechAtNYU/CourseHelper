@@ -88,7 +88,9 @@ export const getProgramWithGroupedRequirements = protectedQuery({
 
       if ("creditsRequired" in req && req.creditsRequired) {
         // CASE: Options type with creditsRequired
-        const uniquePrefixes = [...new Set(courses.map(c => c.split(" ")[0]))];
+        const uniquePrefixes = [
+          ...new Set(courses.map((c) => c.split(" ")[0])),
+        ];
 
         if (uniquePrefixes.length === 1) {
           // All same prefix - assign all credits to that one prefix
@@ -97,7 +99,7 @@ export const getProgramWithGroupedRequirements = protectedQuery({
             groupedRequirements[prefix] = { credits: 0, courses: [] };
           }
           groupedRequirements[prefix].credits += req.creditsRequired;
-          groupedRequirements[prefix].courses.push(courses); 
+          groupedRequirements[prefix].courses.push(courses);
         } else {
           // Mixed prefixes - assign to "Other" category
           if (!groupedRequirements.Other) {
@@ -110,7 +112,13 @@ export const getProgramWithGroupedRequirements = protectedQuery({
         // CASE: Required/Alternative type - calculate actual credits per course
         for (const courseCode of courses) {
           const prefix = courseCode.split(" ")[0];
-          const course = await getOneFrom(ctx.db, "courses", "by_course_code", courseCode, "code");
+          const course = await getOneFrom(
+            ctx.db,
+            "courses",
+            "by_course_code",
+            courseCode,
+            "code",
+          );
           const credits = course ? course.credits : 4;
 
           if (!groupedRequirements[prefix]) {

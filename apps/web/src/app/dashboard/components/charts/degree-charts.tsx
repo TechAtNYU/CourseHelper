@@ -57,7 +57,7 @@ export function ProgramRequirementsChart({
       )) {
         // Check if the course code is in any of the nested course arrays
         const isInRequirement = data.courses.some((courseGroup) =>
-          courseGroup.includes(userCourse.courseCode)
+          courseGroup.includes(userCourse.courseCode),
         );
 
         if (isInRequirement) {
@@ -97,13 +97,14 @@ export function ProgramRequirementsChart({
     0,
   );
 
-  const totalCompletedCredits = Object.values(completedCreditsByCategory).reduce(
-    (sum, credits) => sum + credits,
-    0,
-  );
+  const totalCompletedCredits = Object.values(
+    completedCreditsByCategory,
+  ).reduce((sum, credits) => sum + credits, 0);
 
   const overallPercentage =
-    totalCredits > 0 ? Math.round((totalCompletedCredits / totalCredits) * 100) : 0;
+    totalCredits > 0
+      ? Math.round((totalCompletedCredits / totalCredits) * 100)
+      : 0;
 
   return (
     <Card>
@@ -115,7 +116,8 @@ export function ProgramRequirementsChart({
               {program.name} - Total: {totalCredits} credits
               {showProgress && (
                 <span className="ml-2 font-semibold text-foreground">
-                  • {overallPercentage}% Complete ({totalCompletedCredits}/{totalCredits} credits)
+                  • {overallPercentage}% Complete ({totalCompletedCredits}/
+                  {totalCredits} credits)
                 </span>
               )}
             </CardDescription>
@@ -180,75 +182,71 @@ export function ProgramRequirementsChart({
                 bottom: 20,
               }}
             >
-                <YAxis
-                  dataKey="category"
-                  type="category"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  width={140}
-                  tick={{ fontSize: 12 }}
-                />
-                <XAxis dataKey="credits" type="number" hide />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="rounded-lg border bg-background p-2 shadow-sm">
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex flex-col">
-                              <span className="text-[0.70rem] uppercase text-muted-foreground">
-                                Category
-                              </span>
-                              <span className="font-bold text-muted-foreground">
-                                {data.category}
-                              </span>
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="text-[0.70rem] uppercase text-muted-foreground">
-                                Completed
-                              </span>
-                              <span className="font-bold text-muted-foreground">
-                                {data.completedCredits} / {data.credits} credits
-                              </span>
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="text-[0.70rem] uppercase text-muted-foreground">
-                                Progress
-                              </span>
-                              <span className="font-bold text-muted-foreground">
-                                {data.percentage}%
-                              </span>
-                            </div>
+              <YAxis
+                dataKey="category"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                width={140}
+                tick={{ fontSize: 12 }}
+              />
+              <XAxis dataKey="credits" type="number" hide />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="rounded-lg border bg-background p-2 shadow-sm">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="flex flex-col">
+                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                              Category
+                            </span>
+                            <span className="font-bold text-muted-foreground">
+                              {data.category}
+                            </span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                              Completed
+                            </span>
+                            <span className="font-bold text-muted-foreground">
+                              {data.completedCredits} / {data.credits} credits
+                            </span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                              Progress
+                            </span>
+                            <span className="font-bold text-muted-foreground">
+                              {data.percentage}%
+                            </span>
                           </div>
                         </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Bar
-                  dataKey="completedCredits"
-                  stackId="stack"
-                  fill="#3b82f6"
-                />
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Bar dataKey="completedCredits" stackId="stack" fill="#3b82f6" />
 
-                <Bar
-                  dataKey="remainingCredits"
-                  stackId="stack"
-                  fill="hsl(var(--muted))"
-                  radius={[0, 4, 4, 0]}
-                >
-                  <LabelList
-                    dataKey="credits"
-                    position="right"
-                    offset={8}
-                    className="fill-foreground"
-                    fontSize={12}
-                  />
-                </Bar>
-              </BarChart>
+              <Bar
+                dataKey="remainingCredits"
+                stackId="stack"
+                fill="hsl(var(--muted))"
+                radius={[0, 4, 4, 0]}
+              >
+                <LabelList
+                  dataKey="credits"
+                  position="right"
+                  offset={8}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
           </div>
         )}
       </CardContent>

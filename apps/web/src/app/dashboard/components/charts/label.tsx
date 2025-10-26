@@ -12,10 +12,7 @@ export function ChartOverlayToggle({
 }: ChartOverlayToggleProps) {
   return (
     <div className="flex items-center space-x-2">
-      <Checkbox
-        checked={showProgress}
-        onCheckedChange={onToggle}
-      />
+      <Checkbox checked={showProgress} onCheckedChange={onToggle} />
       <Label htmlFor="overlay" className="cursor-pointer">
         Overlay Taken Courses
       </Label>
