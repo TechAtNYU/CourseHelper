@@ -30,19 +30,19 @@ export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
 
     const slots: { start: Date; end: Date }[] = [];
 
-    // Map weekday names to 0-6 offset from start of week (Monday = 0)
+    // Map weekday names to 0-6 offset from start of week (Sunday = 0)
     const weekdayMap: Record<string, number> = {
-      Monday: 0,
-      Tuesday: 1,
-      Wednesday: 2,
-      Thursday: 3,
-      Friday: 4,
-      Saturday: 5,
-      Sunday: 6,
+      Sunday: 0,
+      Monday: 1,
+      Tuesday: 2,
+      Wednesday: 3,
+      Thursday: 4,
+      Friday: 5,
+      Saturday: 6,
     };
 
-    // Get the start of the current week (Monday)
-    const startOfCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 1 }); // Monday = 0
+    // Get the start of the current week (Sunday)
+    const startOfCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 0 }); // Sunday = 0
 
     for (const slot of times) {
       const parts = slot.split(" ");
