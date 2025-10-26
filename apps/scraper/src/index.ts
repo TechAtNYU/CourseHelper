@@ -49,6 +49,10 @@ export default {
       isMajorsEnabled = data.isMajorsEnabled;
       isCoursesEnabled = data.isCoursesEnabled;
     } else {
+      console.log(
+        "cron: about to fetch flags from Convex",
+        env.CONVEX_SITE_URL
+      );
       const [isScrapingMajors, isScrapingCourses] = await Promise.all([
         convex.getAppConfig({ key: "is_scraping_majors" }),
         convex.getAppConfig({ key: "is_scraping_courses" }),
