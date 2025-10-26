@@ -16,6 +16,13 @@ import {
   AcademicInfoForm,
   academicInfoSchema,
 } from "./stepper-pages/academic-info-form";
+import {
+  reportSchema,
+  ReportUploadForm,
+} from "./stepper-pages/report-upload-form";
+import { ExtensionForm, extensionSchema } from "./stepper-pages/extention-form";
+import { students } from "@dev-team-fall-25/server/convex/schemas/students";
+import { Doc } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 
 function CompleteComponent() {
   return (
@@ -94,15 +101,19 @@ const { Stepper, useStepper } = defineStepper(
   },
 );
 
-export function StepperWithForm() {
+interface OnboardingStepperProps {
+  student: Doc<"students"> | null;
+}
+
+export function OnboardingStepper(props: OnboardingStepperProps) {
   return (
     <Stepper.Provider>
-      <FormStepperComponent />
+      <OnboardingStepperContent {...props} />
     </Stepper.Provider>
   );
 }
 
-const FormStepperComponent = () => {
+const OnboardingStepperContent = ({}: OnboardingStepperProps) => {
   const methods = useStepper();
 
   const form = useForm({
