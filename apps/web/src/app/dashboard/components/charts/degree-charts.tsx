@@ -140,188 +140,130 @@ export function ProgramRequirementsChart({
       </CardHeader>
       <CardContent>
         {!showProgress && (
-          <ChartContainer config={chartConfig} className="h-[400px] w-full">
-            <BarChart
-              accessibilityLayer
-              data={chartData}
-              layout="vertical"
-              margin={{
-                left: 20,
-                right: 16,
-              }}
-            >
-              <YAxis
-                dataKey="category"
-                type="category"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                width={150}
-                hide
-              />
-              <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
-              <Bar
-                dataKey="credits"
-                radius={4}
-                barSize={100}
-                fill="hsl(var(--muted))"
+          <div className="w-full">
+            <ChartContainer config={chartConfig} className="h-[400px] w-full">
+              <BarChart
+                accessibilityLayer
+                data={chartData}
+                layout="vertical"
+                margin={{
+                  left: 0,
+                  right: 16,
+                }}
               >
-                <LabelList
+                <YAxis
                   dataKey="category"
-                  position="insideLeft"
-                  offset={8}
-                  className="fill-white"
-                  fontSize={12}
+                  type="category"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  width={140}
                 />
-                <LabelList
+                <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
+                <Bar
                   dataKey="credits"
-                  position="right"
-                  offset={8}
-                  className="fill-foreground"
-                  fontSize={12}
-                />
-              </Bar>
-            </BarChart>
-          </ChartContainer>
+                  radius={4}
+                  barSize={100}
+                  fill="hsl(var(--muted))"
+                >
+                  <LabelList
+                    dataKey="credits"
+                    position="right"
+                    offset={8}
+                    className="fill-foreground"
+                    fontSize={12}
+                  />
+                </Bar>
+              </BarChart>
+            </ChartContainer>
+          </div>
         )}
 
         {showProgress && (
-          <ChartContainer config={chartConfig} className="h-[400px] w-full">
-            <BarChart
-              accessibilityLayer
-              data={chartData}
-              layout="vertical"
-              margin={{
-                left: 20,
-                right: 16,
-              }}
-            >
-              <YAxis
-                dataKey="category"
-                type="category"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                width={150}
-                hide
-              />
-              <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
-              <Tooltip
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    return (
-                      <div className="rounded-lg border bg-background p-2 shadow-sm">
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="flex flex-col">
-                            <span className="text-[0.70rem] uppercase text-muted-foreground">
-                              Category
-                            </span>
-                            <span className="font-bold text-muted-foreground">
-                              {data.category}
-                            </span>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-[0.70rem] uppercase text-muted-foreground">
-                              Completed
-                            </span>
-                            <span className="font-bold text-muted-foreground">
-                              {data.completedCredits} / {data.credits} credits
-                            </span>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-[0.70rem] uppercase text-muted-foreground">
-                              Progress
-                            </span>
-                            <span className="font-bold text-muted-foreground">
-                              {data.percentage}%
-                            </span>
+          <div className="w-full">
+            <ChartContainer config={chartConfig} className="h-[400px] w-full">
+              <BarChart
+                accessibilityLayer
+                data={chartData}
+                layout="vertical"
+                margin={{
+                  left: 0,
+                  right: 16,
+                }}
+              >
+                <YAxis
+                  dataKey="category"
+                  type="category"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  width={140}
+                />
+                <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="rounded-lg border bg-background p-2 shadow-sm">
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="flex flex-col">
+                              <span className="text-[0.70rem] uppercase text-muted-foreground">
+                                Category
+                              </span>
+                              <span className="font-bold text-muted-foreground">
+                                {data.category}
+                              </span>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-[0.70rem] uppercase text-muted-foreground">
+                                Completed
+                              </span>
+                              <span className="font-bold text-muted-foreground">
+                                {data.completedCredits} / {data.credits} credits
+                              </span>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-[0.70rem] uppercase text-muted-foreground">
+                                Progress
+                              </span>
+                              <span className="font-bold text-muted-foreground">
+                                {data.percentage}%
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Bar
-                dataKey="completedCredits"
-                stackId="stack"
-                barSize={100}
-                fill="#3b82f6"
-                radius={[4, 0, 0, 4]}
-              >
-                <LabelList
-                  dataKey="category"
-                  position="insideLeft"
-                  offset={8}
-                  className="fill-white"
-                  fontSize={12}
-                  content={(props: any) => {
-                    const { x, y, value, width } = props;
-                    // Only show if this bar has width
-                    if (!width || width <= 0) {
-                      return null;
+                      );
                     }
-                    return (
-                      <text
-                        x={Number(x) + 8}
-                        y={Number(y) + Number(props.height || 0) / 2}
-                        fill="white"
-                        fontSize={12}
-                        textAnchor="start"
-                        dominantBaseline="middle"
-                      >
-                        {value}
-                      </text>
-                    );
+                    return null;
                   }}
                 />
-              </Bar>
+                <Bar
+                  dataKey="completedCredits"
+                  stackId="stack"
+                  barSize={100}
+                  fill="#3b82f6"
+                  radius={[4, 0, 0, 4]}
+                />
 
-              <Bar
-                dataKey="remainingCredits"
-                stackId="stack"
-                barSize={100}
-                fill="hsl(var(--muted))"
-                radius={[0, 4, 4, 0]}
-              >
-                <LabelList
-                  dataKey="category"
-                  position="insideLeft"
-                  offset={8}
-                  className="fill-white"
-                  fontSize={12}
-                  content={(props: any) => {
-                    const { x, y, value, payload } = props;
-                    // Only show if completed credits is 0 (blue bar has no width)
-                    if (payload?.completedCredits > 0) {
-                      return null;
-                    }
-                    return (
-                      <text
-                        x={Number(x) + 8}
-                        y={Number(y) + Number(props.height || 0) / 2}
-                        fill="white"
-                        fontSize={12}
-                        textAnchor="start"
-                        dominantBaseline="middle"
-                      >
-                        {value}
-                      </text>
-                    );
-                  }}
-                />
-                <LabelList
-                  dataKey="credits"
-                  position="right"
-                  offset={8}
-                  className="fill-foreground"
-                  fontSize={12}
-                />
-              </Bar>
-            </BarChart>
-          </ChartContainer>
+                <Bar
+                  dataKey="remainingCredits"
+                  stackId="stack"
+                  barSize={100}
+                  fill="hsl(var(--muted))"
+                  radius={[0, 4, 4, 0]}
+                >
+                  <LabelList
+                    dataKey="credits"
+                    position="right"
+                    offset={8}
+                    className="fill-foreground"
+                    fontSize={12}
+                  />
+                </Bar>
+              </BarChart>
+            </ChartContainer>
+          </div>
         )}
       </CardContent>
     </Card>
