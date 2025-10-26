@@ -20,7 +20,7 @@ type FileUploadButtonProps = {
   maxSizeMB?: number;
 };
 
-export default function FileUploadButton({
+export default function DegreeProgreeUpload({
   maxSizeMB = 20,
 }: FileUploadButtonProps) {
   const maxSize = maxSizeMB * 1024 * 1024;

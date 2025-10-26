@@ -1,7 +1,7 @@
-import FileUpload from "@/modules/report-parsing/components/file-upload";
+import DegreeProgreeUpload from "@/modules/report-parsing/components/degree-progress-upload";
 
 const HomePage = () => {
-  return <FileUpload />;
+  return <DegreeProgreeUpload />;
 };
 
 export default HomePage;
