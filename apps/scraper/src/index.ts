@@ -146,6 +146,7 @@ export default {
             switch (job.jobType) {
               case "discover-programs": {
                 const programUrls = await discoverPrograms(job.url);
+                console.log("discovered programs");
                 const newJobs = await db
                   .insert(jobs)
                   .values(
@@ -163,6 +164,7 @@ export default {
               }
               case "discover-courses": {
                 const courseUrls = await discoverCourses(job.url);
+                console.log("discovered courses");
                 const newJobs = await db
                   .insert(jobs)
                   .values(

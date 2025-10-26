@@ -33,20 +33,18 @@ export async function scrapeProgram(
   const base = "https://bulletins.nyu.edu/";
   let target: URL;
 
-  // Defaults so we ALWAYS return something
   let program: z.infer<typeof ZUpsertProgram> = {
     name: "Unknown Program",
-    level: "undergraduate", // fallback
+    level: "undergraduate",
     programUrl: url,
   };
   let requirements: ProgramRequirement[] = [];
 
   try {
-    // Build a safe absolute URL
     try {
       target = new URL(url, base);
     } catch {
-      target = new URL(url); // if already absolute
+      target = new URL(url);
     }
 
     console.log("Fetching:", target.toString());
@@ -54,11 +52,8 @@ export async function scrapeProgram(
     console.log("Status:", res.status);
 
     const html = await res.text();
+    console.log("Content from website:\n", html);
 
-    // Print RAW HTML content
-    console.log("Raw content from website:\n", html);
-
-    // Very light title extraction for a nicer name
     const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
     const title =
       (titleMatch?.[1] ?? "").trim() ||
@@ -67,20 +62,14 @@ export async function scrapeProgram(
       ) ||
       "Unknown Program";
 
-    // Build the program object to match ZUpsertProgram
     program = {
       name: title,
-      level: "undergraduate", // TODO: derive if you can
+      level: "undergraduate",
       programUrl: target.toString(),
     };
-
-    // Keep requirements empty for now
     requirements = [];
   } catch (err) {
     console.error("Error scraping program:", err);
-    // program + requirements already hold safe defaults
   }
-
-  // Single, unconditional return so TS knows all paths return
   return { program, requirements };
 }
