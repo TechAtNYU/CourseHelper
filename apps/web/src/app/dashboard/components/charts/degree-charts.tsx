@@ -97,6 +97,14 @@ export function ProgramRequirementsChart({
     0,
   );
 
+  const totalCompletedCredits = Object.values(completedCreditsByCategory).reduce(
+    (sum, credits) => sum + credits,
+    0,
+  );
+
+  const overallPercentage =
+    totalCredits > 0 ? Math.round((totalCompletedCredits / totalCredits) * 100) : 0;
+
   return (
     <Card>
       <CardHeader>
@@ -105,6 +113,11 @@ export function ProgramRequirementsChart({
             <CardTitle>Program Requirements by Subject</CardTitle>
             <CardDescription>
               {program.name} - Total: {totalCredits} credits
+              {showProgress && (
+                <span className="ml-2 font-semibold text-foreground">
+                  • {overallPercentage}% Complete ({totalCompletedCredits}/{totalCredits} credits)
+                </span>
+              )}
             </CardDescription>
           </div>
           <ChartOverlayToggle
@@ -123,7 +136,8 @@ export function ProgramRequirementsChart({
               height={400}
               margin={{
                 left: 0,
-                right: 16,
+                right: 40,
+                bottom: 20,
               }}
             >
               <YAxis
@@ -135,11 +149,10 @@ export function ProgramRequirementsChart({
                 width={140}
                 tick={{ fontSize: 12 }}
               />
-              <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
+              <XAxis dataKey="credits" type="number" hide />
               <Bar
                 dataKey="credits"
                 radius={[0, 4, 4, 0]}
-                barSize={100}
                 fill="hsl(var(--muted))"
               >
                 <LabelList
@@ -163,7 +176,8 @@ export function ProgramRequirementsChart({
               height={400}
               margin={{
                 left: 0,
-                right: 16,
+                right: 40,
+                bottom: 20,
               }}
             >
                 <YAxis
@@ -175,7 +189,7 @@ export function ProgramRequirementsChart({
                   width={140}
                   tick={{ fontSize: 12 }}
                 />
-                <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
+                <XAxis dataKey="credits" type="number" hide />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
@@ -217,14 +231,12 @@ export function ProgramRequirementsChart({
                 <Bar
                   dataKey="completedCredits"
                   stackId="stack"
-                  barSize={100}
                   fill="#3b82f6"
                 />
 
                 <Bar
                   dataKey="remainingCredits"
                   stackId="stack"
-                  barSize={100}
                   fill="hsl(var(--muted))"
                   radius={[0, 4, 4, 0]}
                 >
