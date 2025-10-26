@@ -102,8 +102,8 @@ export function ProgramRequirementsChart({
   }
 
   // Transform the data for the chart
-  const chartData = Object.entries(program.requirementsByCategory).map(
-    ([prefix, data]) => {
+  const chartData = Object.entries(program.requirementsByCategory)
+    .map(([prefix, data]) => {
       const completed = completedCreditsByCategory[prefix] || 0;
       const percentage =
         data.credits > 0 ? Math.round((completed / data.credits) * 100) : 0;
@@ -114,8 +114,14 @@ export function ProgramRequirementsChart({
         remainingCredits: data.credits - completed,
         percentage,
       };
-    },
-  );
+    })
+    .sort((a, b) => {
+      // "Other" should always be at the bottom
+      if (a.category === "Other") return 1;
+      if (b.category === "Other") return -1;
+      // Otherwise, maintain alphabetical order
+      return a.category.localeCompare(b.category);
+    });
 
   const totalCredits = Object.values(program.requirementsByCategory).reduce(
     (sum, data) => sum + data.credits,
