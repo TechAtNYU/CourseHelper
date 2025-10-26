@@ -2,8 +2,8 @@
 
 import type { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
-import Schedule from "@/components/comp-542";
-import { EventColor } from "@/components/ui/event-calendar/types";
+import { addDays, startOfWeek } from "date-fns";
+import { allClassColors, Calendar, type Class } from "./calendar";
 
 export interface ScheduleCalendarProps {
   classes: FunctionReturnType<
@@ -11,45 +11,71 @@ export interface ScheduleCalendarProps {
   >;
 }
 
-const allColors: EventColor[] = ["sky", "amber", "violet", "rose", "emerald", "orange", "teal", "lime", "indigo", "fuchsia", "pink", "cyan"];
-
-interface Class {
-  id: string; // unique identifier
-  title: string;
-  color: string;
-  times: string[]; // e.g. ["Monday 9 15 11 15"]
-  selected: boolean;
-  description: string;
-}
-
 export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
   let colorIndex = 0; // start at 0
 
-  const transformedClasses: Class[] = classes
-    .filter((c) => c.courseOffering !== null)
-    .map((c) => {
-      const offering = c.courseOffering!;
-      const startTime = offering.startTime.split(":")[0] + " " + offering.startTime.split(":")[1];
-      const endTime = offering.endTime.split(":")[0] + " " + offering.endTime.split(":")[1];
+  const transformedClasses: Class[] = classes.map((c) => {
+    const offering = c.courseOffering;
+    const startTime = `${offering.startTime.split(":")[0]} ${offering.startTime.split(":")[1]}`;
+    const endTime = `${offering.endTime.split(":")[0]} ${offering.endTime.split(":")[1]}`;
 
-      // Format times like "Monday 9 15 11 15"
-      const times = offering.days.map((day) => {
-        const dayName = day.charAt(0).toUpperCase() + day.slice(1);
-        return `${dayName} ${startTime} ${endTime}`;
-      });
-
-      const color = allColors[colorIndex % allColors.length];
-      colorIndex++; 
-
-      return {
-        id: offering._id,
-        title: `${offering.courseCode} - ${offering.title}`,
-        color,
-        times,
-        selected: false,
-        description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
-      };
+    // Format times like "Monday 9 15 11 15"
+    const times = offering.days.map((day) => {
+      const dayName = day.charAt(0).toUpperCase() + day.slice(1);
+      return `${dayName} ${startTime} ${endTime}`;
     });
 
-  return <Schedule classes={transformedClasses} />;
+    const color = allClassColors[colorIndex % allClassColors.length];
+    colorIndex++;
+
+    const slots: { start: Date; end: Date }[] = [];
+
+    // Map weekday names to 0-6 offset from start of week (Monday = 0)
+    const weekdayMap: Record<string, number> = {
+      Monday: 0,
+      Tuesday: 1,
+      Wednesday: 2,
+      Thursday: 3,
+      Friday: 4,
+      Saturday: 5,
+      Sunday: 6,
+    };
+
+    // Get the start of the current week (Monday)
+    const startOfCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 1 }); // Monday = 0
+
+    for (const slot of times) {
+      const parts = slot.split(" ");
+      const day = parts[0];
+      const startHour = Number(parts[1]);
+      const startMinute = Number(parts[2]);
+      const endHour = Number(parts[3]);
+      const endMinute = Number(parts[4]);
+
+      const dayOffset = weekdayMap[day];
+      if (dayOffset === undefined) {
+        throw new Error(`Invalid day: ${day}`);
+      }
+
+      const date = addDays(startOfCurrentWeek, dayOffset);
+
+      const start = new Date(date);
+      start.setHours(startHour, startMinute, 0, 0);
+
+      const end = new Date(date);
+      end.setHours(endHour, endMinute, 0, 0);
+
+      slots.push({ start, end });
+    }
+
+    return {
+      id: offering._id,
+      title: `${offering.courseCode} - ${offering.title}`,
+      color,
+      times: slots,
+      description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
+    };
+  });
+
+  return <Calendar classes={transformedClasses} />;
 }

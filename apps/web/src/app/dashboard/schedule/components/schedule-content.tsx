@@ -12,6 +12,5 @@ interface ScheduleContentProps {
 
 export function ScheduleContent({ preloadedClasses }: ScheduleContentProps) {
   const classes = usePreloadedQuery(preloadedClasses);
-  console.log(preloadedClasses)
   return <ScheduleCalendar classes={classes} />;
 }
