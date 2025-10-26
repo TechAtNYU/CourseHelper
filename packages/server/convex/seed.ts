@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
 import { internalMutation } from "./_generated/server";
 import {
   additionalMockPrograms,
@@ -23,7 +24,7 @@ export const seedMockData = internalMutation({
     console.log("Starting to seed mock data...");
 
     // Insert courses
-    const courseIds = [];
+    const courseIds: Id<"courses">[] = [];
     for (const course of mockCoursesData) {
       const courseId = await ctx.runMutation(
         internal.courses.upsertCourseInternal,
@@ -34,7 +35,7 @@ export const seedMockData = internalMutation({
     console.log(`Created ${mockCoursesData.length} courses`);
 
     // Insert the main Computer Science (BA) program
-    const programId = await ctx.runMutation(
+    const programId: Id<"programs"> = await ctx.runMutation(
       internal.programs.upsertProgramInternal,
       mockProgramsData.program,
     );
@@ -61,7 +62,7 @@ export const seedMockData = internalMutation({
     }
 
     // Insert additional programs
-    const additionalProgramIds = [];
+    const additionalProgramIds: Id<"programs">[] = [];
     for (const program of additionalMockPrograms) {
       const id = await ctx.runMutation(
         internal.programs.upsertProgramInternal,
@@ -76,7 +77,7 @@ export const seedMockData = internalMutation({
     );
 
     // Insert user courses (if userId is provided)
-    const userCourseIds = [];
+    const userCourseIds: Id<"userCourses">[] = [];
     if (args.userId) {
       for (const userCourse of mockUserCoursesData) {
         const userCourseId = await ctx.db.insert("userCourses", {

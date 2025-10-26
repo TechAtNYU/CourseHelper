@@ -57,19 +57,16 @@ export const ZUpsertProgramWithRequirements = z.object({
       z.object({
         isMajor: z.boolean(),
         type: z.literal("required"),
-        category: z.string(),
         courses: z.array(z.string()),
       }),
       z.object({
         isMajor: z.boolean(),
         type: z.literal("alternative"),
-        category: z.string(),
         courses: z.array(z.string()),
       }),
       z.object({
         isMajor: z.boolean(),
         type: z.literal("options"),
-        category: z.string(),
         courses: z.array(z.string()),
         courseLevels: z.array(
           z.object({
@@ -92,7 +89,6 @@ export const ZUpsertRequirements = z.array(
       ),
       isMajor: z.boolean(),
       type: z.literal("required"),
-      category: z.string(),
       courses: z.array(z.string()),
     }),
     z.object({
@@ -102,7 +98,6 @@ export const ZUpsertRequirements = z.array(
       ),
       isMajor: z.boolean(),
       type: z.literal("alternative"),
-      category: z.string(),
       courses: z.array(z.string()),
     }),
     z.object({
@@ -112,7 +107,6 @@ export const ZUpsertRequirements = z.array(
       ),
       isMajor: z.boolean(),
       type: z.literal("options"),
-      category: z.string(),
       courses: z.array(z.string()),
       courseLevels: z.array(
         z.object({

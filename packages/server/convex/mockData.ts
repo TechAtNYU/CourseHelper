@@ -11,20 +11,11 @@ export const mockProgramsData = {
   },
 };
 
-/**
- * Categories for course requirements (similar to NYU CS curriculum):
- * - Computer Science: All CS courses including core, theory, systems, and electives
- * - Mathematics: Pure math courses
- * - Natural Science: Physics, Chemistry, Biology
- * - General Education: Non-CS/Math/Science requirements
- */
-
 export const mockRequirementsData = [
   // Computer Science Requirements
   {
     type: "required" as const,
     isMajor: true,
-    category: "Computer Science",
     courses: [
       "CSCI-UA 101", // Intro to Computer Science
       "CSCI-UA 102", // Data Structures
@@ -39,7 +30,6 @@ export const mockRequirementsData = [
   {
     type: "required" as const,
     isMajor: true,
-    category: "Mathematics",
     courses: [
       "MATH-UA 120", // Discrete Mathematics
       "MATH-UA 121", // Calculus I
@@ -51,7 +41,6 @@ export const mockRequirementsData = [
   {
     type: "alternative" as const,
     isMajor: true,
-    category: "Mathematics",
     courses: [
       "MATH-UA 140", // Linear Algebra
       "MATH-UA 325", // Analysis
@@ -62,7 +51,6 @@ export const mockRequirementsData = [
   {
     type: "options" as const,
     isMajor: true,
-    category: "Computer Science",
     courses: [
       "CSCI-UA 467", // Intro to Machine Learning
       "CSCI-UA 473", // Fundamentals of AI
@@ -89,7 +77,6 @@ export const mockRequirementsData = [
   {
     type: "required" as const,
     isMajor: false,
-    category: "Natural Science",
     courses: [
       "PHYS-UA 11", // General Physics I
       "CHEM-UA 125", // General Chemistry I
@@ -100,7 +87,6 @@ export const mockRequirementsData = [
   {
     type: "alternative" as const,
     isMajor: false,
-    category: "Natural Science",
     courses: [
       "PHYS-UA 91", // Physics Lab
       "CHEM-UA 127", // Chemistry Lab
@@ -112,7 +98,6 @@ export const mockRequirementsData = [
   {
     type: "required" as const,
     isMajor: false,
-    category: "General Education",
     courses: [
       "EXPOS-UA 1", // Writing the Essay
     ],
@@ -122,7 +107,6 @@ export const mockRequirementsData = [
   {
     type: "options" as const,
     isMajor: false,
-    category: "General Education",
     courses: [
       "PHIL-UA 101", // Introduction to Philosophy
       "HIST-UA 101", // World History
@@ -177,17 +161,6 @@ export const additionalMockPrograms = [
       "https://www.stern.nyu.edu/programs-admissions/undergraduate/academics/minors",
   },
 ];
-
-/**
- * Course categories breakdown for charts:
- * This can be used to visualize distribution of requirements
- */
-export const categoryStats = {
-  "Computer Science": 10, // 6 required + 4 electives (average)
-  Mathematics: 4, // 3 required + 1 alternative
-  "Natural Science": 3,
-  "General Education": 3,
-};
 
 /**
  * Mock courses data

@@ -16,9 +16,7 @@ export default defineSchema({
       searchField: "name",
     }),
   requirements: defineTable(requirements)
-    .index("by_program", ["programId"])
-    .index("by_category", ["category"])
-    .index("by_program_and_category", ["programId", "category"]),
+    .index("by_program", ["programId"]),
   courses: defineTable(courses)
     .index("by_course_code", ["code"])
     .index("by_level", ["level"])

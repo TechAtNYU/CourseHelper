@@ -6,11 +6,13 @@ interface ChartOverlayToggleProps {
   onToggle: (checked: boolean) => void;
 }
 
-export function ChartOverlayToggle({ showProgress, onToggle }: ChartOverlayToggleProps) {
+export function ChartOverlayToggle({
+  showProgress,
+  onToggle,
+}: ChartOverlayToggleProps) {
   return (
     <div className="flex items-center space-x-2">
       <Checkbox
-        id="overlay"
         checked={showProgress}
         onCheckedChange={onToggle}
       />

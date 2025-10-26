@@ -80,42 +80,46 @@ export const getProgramWithGroupedRequirements = protectedQuery({
     // Calculate total credits for each category
     const groupedRequirements: Record<
       string,
-      { credits: number; courses: string[] }
+      { credits: number; courses: string[][] }
     > = {};
 
     for (const req of requirements) {
-      const { programId, category, courses, ...rest } = req;
-      let totalCredits = 0;
+      const { courses } = req;
 
-      // Check if this is an "options" type with creditsRequired
       if ("creditsRequired" in req && req.creditsRequired) {
-        totalCredits = req.creditsRequired;
+        // CASE: Options type with creditsRequired
+        const uniquePrefixes = [...new Set(courses.map(c => c.split(" ")[0]))];
+
+        if (uniquePrefixes.length === 1) {
+          // All same prefix - assign all credits to that one prefix
+          const prefix = uniquePrefixes[0];
+          if (!groupedRequirements[prefix]) {
+            groupedRequirements[prefix] = { credits: 0, courses: [] };
+          }
+          groupedRequirements[prefix].credits += req.creditsRequired;
+          groupedRequirements[prefix].courses.push(courses); 
+        } else {
+          // Mixed prefixes - assign to "Other" category
+          if (!groupedRequirements.Other) {
+            groupedRequirements.Other = { credits: 0, courses: [] };
+          }
+          groupedRequirements.Other.credits += req.creditsRequired;
+          groupedRequirements.Other.courses.push(courses);
+        }
       } else {
-        // Calculate credits from actual courses
+        // CASE: Required/Alternative type - calculate actual credits per course
         for (const courseCode of courses) {
-          const course = await getOneFrom(
-            ctx.db,
-            "courses",
-            "by_course_code",
-            courseCode,
-            "code",
-          );
-          if (course) {
-            totalCredits += course.credits;
+          const prefix = courseCode.split(" ")[0];
+          const course = await getOneFrom(ctx.db, "courses", "by_course_code", courseCode, "code");
+          const credits = course ? course.credits : 4;
+
+          if (!groupedRequirements[prefix]) {
+            groupedRequirements[prefix] = { credits: 0, courses: [] };
           }
-          // TODO: better error handling if course doesn't exist
-          else {
-            totalCredits += 4;
-          }
+          groupedRequirements[prefix].credits += credits;
+          groupedRequirements[prefix].courses.push([courseCode]);
         }
       }
-
-      // Add to grouped requirements
-      if (!groupedRequirements[category]) {
-        groupedRequirements[category] = { credits: 0, courses: [] };
-      }
-      groupedRequirements[category].credits += totalCredits;
-      groupedRequirements[category].courses.push(...courses);
     }
 
     return {

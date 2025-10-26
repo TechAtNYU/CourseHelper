@@ -3,16 +3,7 @@
 import { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useState } from "react";
-import { ChartOverlayToggle } from "./label";
-import {
-  Bar,
-  BarChart,
-  LabelList,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-
+import { Bar, BarChart, LabelList, Tooltip, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -20,39 +11,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  type ChartConfig,
-  ChartContainer,
-} from "@/components/ui/chart";
+import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { ChartOverlayToggle } from "./label";
 
 const chartConfig = {
   credits: {
     label: "Credits",
   },
-  "Computer Science": {
+  "CSCI-UA": {
     label: "Computer Science",
     color: "hsl(var(--chart-1))",
   },
-  Mathematics: {
+  "MATH-UA": {
     label: "Mathematics",
     color: "hsl(var(--chart-2))",
   },
-  "Natural Science": {
-    label: "Natural Science",
+  "PHYS-UA": {
+    label: "Physics",
     color: "hsl(var(--chart-3))",
   },
-  "General Education": {
-    label: "General Education",
+  "CHEM-UA": {
+    label: "Chemistry",
     color: "hsl(var(--chart-4))",
+  },
+  "EXPOS-UA": {
+    label: "Writing",
+    color: "hsl(var(--chart-5))",
+  },
+  Other: {
+    label: "Other Requirements",
+    color: "hsl(var(--muted))",
   },
 } satisfies ChartConfig;
 
 interface ProgramRequirementsChartProps {
   programName: string;
-  userID: string;
 }
 
-export function ProgramRequirementsChart({ programName, userID }: ProgramRequirementsChartProps) {
+export function ProgramRequirementsChart({
+  programName,
+}: ProgramRequirementsChartProps) {
   const program = useQuery(api.programs.getProgramWithGroupedRequirements, {
     name: programName,
   });
@@ -85,10 +83,18 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
   const completedCreditsByCategory: Record<string, number> = {};
   if (userCourses) {
     for (const userCourse of userCourses) {
-      for (const [category, data] of Object.entries(program.requirementsByCategory)) {
-        if (data.courses.includes(userCourse.courseCode)) {
-          completedCreditsByCategory[category] =
-            (completedCreditsByCategory[category] || 0) + (userCourse.course?.credits || 0);
+      for (const [prefix, data] of Object.entries(
+        program.requirementsByCategory,
+      )) {
+        // Check if the course code is in any of the nested course arrays
+        const isInRequirement = data.courses.some((courseGroup) =>
+          courseGroup.includes(userCourse.courseCode)
+        );
+
+        if (isInRequirement) {
+          completedCreditsByCategory[prefix] =
+            (completedCreditsByCategory[prefix] || 0) +
+            (userCourse.course?.credits || 0);
           break;
         }
       }
@@ -97,11 +103,12 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
 
   // Transform the data for the chart
   const chartData = Object.entries(program.requirementsByCategory).map(
-    ([category, data]) => {
-      const completed = completedCreditsByCategory[category] || 0;
-      const percentage = data.credits > 0 ? Math.round((completed / data.credits) * 100) : 0;
+    ([prefix, data]) => {
+      const completed = completedCreditsByCategory[prefix] || 0;
+      const percentage =
+        data.credits > 0 ? Math.round((completed / data.credits) * 100) : 0;
       return {
-        category,
+        category: prefix,
         credits: data.credits,
         completedCredits: completed,
         remainingCredits: data.credits - completed,
@@ -120,7 +127,7 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle>Program Requirements by Category</CardTitle>
+            <CardTitle>Program Requirements by Subject</CardTitle>
             <CardDescription>
               {program.name} - Total: {totalCredits} credits
             </CardDescription>
@@ -252,7 +259,7 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
                   fontSize={12}
                   content={(props: any) => {
                     const { x, y, value, width } = props;
-                    // Only show if there are completed credits (width > 0)
+                    // Only show if this bar has width
                     if (!width || width <= 0) {
                       return null;
                     }
@@ -287,8 +294,8 @@ export function ProgramRequirementsChart({ programName, userID }: ProgramRequire
                   fontSize={12}
                   content={(props: any) => {
                     const { x, y, value, payload } = props;
-                    // Only show if there are NO completed credits
-                    if (payload?.completedCredits && payload.completedCredits > 0) {
+                    // Only show if completed credits is 0 (blue bar has no width)
+                    if (payload?.completedCredits > 0) {
                       return null;
                     }
                     return (
