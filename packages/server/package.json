@@ -1,5 +1,5 @@
 {
-  "name": "@dev-team-fall-25/server",
+  "name": "@albert-plus/server",
   "type": "module",
   "private": true,
   "scripts": {

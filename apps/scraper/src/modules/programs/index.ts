@@ -2,7 +2,7 @@
 import type {
   ZUpsertProgram,
   ZUpsertRequirements,
-} from "@dev-team-fall-25/server/convex/http";
+} from "@albert-plus/server/convex/http";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type * as z from "zod/mini";
 

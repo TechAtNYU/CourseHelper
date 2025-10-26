@@ -1,20 +1,22 @@
-name: chrome
-
+name: "browser"
 on:
   push:
     branches:
       - main
     paths:
-      - "apps/chrome/**"
+      - "apps/browser/**"
       - "packages/server/**"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: deploy-chrome
+    environment: deploy-browser
     defaults:
       run:
-        working-directory: ./apps/chrome
+        working-directory: ./apps/browser
+    env:
+      CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+      PLASMO_PUBLIC_CLERK_SYNC_HOST: ${{ secrets.PLASMO_PUBLIC_CLERK_SYNC_HOST }}
 
     steps:
       - name: 💾 Checkout code
@@ -29,6 +31,9 @@ jobs:
       - name: 🛠️ Build the Chrome Extension
         run: bun run build
 
+      - name: 🛠️ Package the extension into a zip artifact
+        run: bun run package
+
       - name: 🚀 Upload to Chrome Web Store
         uses: mobilefirstllc/cws-publish@latest
         with:
@@ -37,4 +42,4 @@ jobs:
           client_secret: ${{ secrets.SECRET }}
           refresh_token: ${{ secrets.TOKEN }}
           extension_id: "bbhdnidgcmmpihfimomooiaojnaeedlj"
-          zip_file: "./apps/chrome/release/release.zip"
+          zip_file: "./apps/browser/build/chrome-mv3-prod.zip"
