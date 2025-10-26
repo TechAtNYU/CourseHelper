@@ -1,5 +1,20 @@
 [
   {
+    "courseCode": "CSCI-UA  480",
+    "classNumber": 1,
+    "title": "Special Topics:",
+    "section": "051",
+    "year": 2025,
+    "term": "fall",
+    "instructor": ["Patil", "Zahran"],
+    "location": "Online",
+    "days": ["tuesday", "thursday"],
+    "startTime": "14:00",
+    "endTime": "15:15",
+    "status": "closed",
+    "isCorequisite": false
+  },
+  {
     "courseCode": "CORE-UA 214",
     "classNumber": 2,
     "title": "Physical Science: How Things Work",
@@ -70,7 +85,7 @@
     "term": "fall",
     "instructor": ["Wu", "Zeidenberg"],
     "location": "181 Mercer St (Paulson Center) Room 323",
-    "days": ["friday"],
+    "days": ["monday", "wednesday"],
     "startTime": "15:30",
     "endTime": "16:45",
     "status": "closed",
