@@ -9,11 +9,28 @@ import { defineStepper } from "@/components/ui/stepper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import FileUploadButton from "@/modules/report-parsing/components/file-upload-button";
-import SelectMajor from "./select-major";
+import MultipleSelector from "@/components/ui/multiselect";
+
+const programs = [
+  "Computer Science",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "Engineering",
+  "Business Administration",
+  "Economics",
+  "Psychology",
+  "English",
+  "History",
+  "Political Science",
+  "Art",
+  "Music",
+  "Other",
+];
 
 const academicInfoSchema = z.object({
-  major: z.string().min(1, "Program is required"),
-  minor: z.string().optional(),
+  programs: z.array(z.string()).min(1, "At least one program is required"),
 });
 
 const extensionSchema = z.object({
@@ -38,24 +55,33 @@ const AcademicInfoForm = () => {
     watch,
   } = useFormContext<AcademicInfoFormValues>();
 
-  const majorValue = watch("major");
+  const programsValue = watch("programs") || [];
 
   return (
     <div className="space-y-4 text-start">
       <div className="space-y-2">
-        <SelectMajor
-          value={majorValue}
-          onValueChange={(value) => {
-            console.log("Programselected:", value);
-            setValue("major", value);
+        <p className="text-sm font-medium text-gray-700">
+          Please select your program (major and minor)
+        </p>
+        <MultipleSelector
+          value={programsValue.map((p) => ({ value: p, label: p }))}
+          onChange={(options) => {
+            const values = options.map((opt) => opt.value);
+            console.log("Programs selected:", values);
+            setValue("programs", values);
           }}
-          placeholder="Select your program"
-          label="Program"
-          required={true}
+          defaultOptions={programs.map((p) => ({ value: p, label: p }))}
+          placeholder="Select your programs"
+          commandProps={{
+            label: "Select programs",
+          }}
+          emptyIndicator={
+            <p className="text-center text-sm">No programs found</p>
+          }
         />
-        {errors.major && (
+        {errors.programs && (
           <span className="text-sm text-destructive">
-            {"Please select your program"}
+            {errors.programs.message}
           </span>
         )}
       </div>
@@ -102,7 +128,9 @@ function ReportUploadForm() {
 
     if (file) {
       console.log("Degree report uploaded:", file.name);
-      // Could show a success message here
+      <p className="text-sm font-medium text-red-500">
+        You have uploaded your degree progress report.
+      </p>;
     } else {
       console.log("Degree report removed");
     }
