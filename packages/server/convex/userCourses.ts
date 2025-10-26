@@ -72,7 +72,7 @@ export const deleteUserCourse = protectedMutation({
   },
 });
 
-export const batchImportUserCourses = protectedMutation({
+export const importUserCourses = protectedMutation({
   args: {
     courses: v.array(v.object(omit(userCourses, ["userId"]))),
   },

@@ -27,7 +27,7 @@ export default function DegreeProgreeUpload({
   const [parsedCourses, setParsedCourses] = useState<UserCourse[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  const batchImport = useMutation(api.userCourses.batchImportUserCourses);
+  const batchImport = useMutation(api.userCourses.importUserCourses);
   const [
     { files, isDragging, errors },
     {
