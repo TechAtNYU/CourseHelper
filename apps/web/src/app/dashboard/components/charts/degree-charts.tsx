@@ -11,38 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { ChartOverlayToggle } from "./label";
-
-const chartConfig = {
-  credits: {
-    label: "Credits",
-  },
-  "CSCI-UA": {
-    label: "Computer Science",
-    color: "hsl(var(--chart-1))",
-  },
-  "MATH-UA": {
-    label: "Mathematics",
-    color: "hsl(var(--chart-2))",
-  },
-  "PHYS-UA": {
-    label: "Physics",
-    color: "hsl(var(--chart-3))",
-  },
-  "CHEM-UA": {
-    label: "Chemistry",
-    color: "hsl(var(--chart-4))",
-  },
-  "EXPOS-UA": {
-    label: "Writing",
-    color: "hsl(var(--chart-5))",
-  },
-  Other: {
-    label: "Other Requirements",
-    color: "hsl(var(--muted))",
-  },
-} satisfies ChartConfig;
 
 interface ProgramRequirementsChartProps {
   programName: string;
@@ -146,57 +115,57 @@ export function ProgramRequirementsChart({
       </CardHeader>
       <CardContent>
         {!showProgress && (
-          <div className="w-full">
-            <ChartContainer config={chartConfig} className="h-[400px] w-full">
-              <BarChart
-                accessibilityLayer
-                data={chartData}
-                layout="vertical"
-                margin={{
-                  left: 0,
-                  right: 16,
-                }}
+          <div className="w-full h-[400px]">
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              width={800}
+              height={400}
+              margin={{
+                left: 0,
+                right: 16,
+              }}
+            >
+              <YAxis
+                dataKey="category"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                width={140}
+                tick={{ fontSize: 12 }}
+              />
+              <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
+              <Bar
+                dataKey="credits"
+                radius={[0, 4, 4, 0]}
+                barSize={100}
+                fill="hsl(var(--muted))"
               >
-                <YAxis
-                  dataKey="category"
-                  type="category"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  width={140}
-                />
-                <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
-                <Bar
+                <LabelList
                   dataKey="credits"
-                  radius={4}
-                  barSize={100}
-                  fill="hsl(var(--muted))"
-                >
-                  <LabelList
-                    dataKey="credits"
-                    position="right"
-                    offset={8}
-                    className="fill-foreground"
-                    fontSize={12}
-                  />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
+                  position="right"
+                  offset={8}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
           </div>
         )}
 
         {showProgress && (
-          <div className="w-full">
-            <ChartContainer config={chartConfig} className="h-[400px] w-full">
-              <BarChart
-                accessibilityLayer
-                data={chartData}
-                layout="vertical"
-                margin={{
-                  left: 0,
-                  right: 16,
-                }}
-              >
+          <div className="w-full h-[400px]">
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              width={800}
+              height={400}
+              margin={{
+                left: 0,
+                right: 16,
+              }}
+            >
                 <YAxis
                   dataKey="category"
                   type="category"
@@ -204,6 +173,7 @@ export function ProgramRequirementsChart({
                   tickMargin={10}
                   axisLine={false}
                   width={140}
+                  tick={{ fontSize: 12 }}
                 />
                 <XAxis dataKey="credits" type="number" hide domain={[0, 75]} />
                 <Tooltip
@@ -249,7 +219,6 @@ export function ProgramRequirementsChart({
                   stackId="stack"
                   barSize={100}
                   fill="#3b82f6"
-                  radius={[4, 0, 0, 4]}
                 />
 
                 <Bar
@@ -268,7 +237,6 @@ export function ProgramRequirementsChart({
                   />
                 </Bar>
               </BarChart>
-            </ChartContainer>
           </div>
         )}
       </CardContent>
