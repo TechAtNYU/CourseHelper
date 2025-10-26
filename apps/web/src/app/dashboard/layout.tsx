@@ -1,8 +1,10 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { fetchProtectedQuery } from "@/lib/convex";
 
 export default async function Layout({
   children,
@@ -14,6 +16,7 @@ export default async function Layout({
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
   const { isAuthenticated, redirectToSignIn } = await auth();
+  const student = await fetchProtectedQuery(api.students.getCurrentStudent);
 
   if (!isAuthenticated) {
     redirectToSignIn();
@@ -21,11 +24,7 @@ export default async function Layout({
 
   const user = await currentUser();
 
-  // Simple onboarding check - redirect if no student record
-  // For now, we'll check if user has completed onboarding by checking a simple flag
-  const hasCompletedOnboarding = user?.unsafeMetadata?.onboarding_completed;
-
-  if (!hasCompletedOnboarding) {
+  if (student == null) {
     redirect("/onboarding");
   }
 
