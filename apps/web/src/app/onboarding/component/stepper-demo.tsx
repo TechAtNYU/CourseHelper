@@ -141,9 +141,13 @@ const AcademicInfoForm = () => {
                     min="2000"
                     max="2100"
                     {...field}
-                    onChange={(e) =>
-                      field.onChange(Number.parseInt(e.target.value))
-                    }
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(
+                        value === "" ? undefined : Number.parseInt(value, 10),
+                      );
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -200,9 +204,15 @@ const AcademicInfoForm = () => {
                         min="2000"
                         max="2100"
                         {...field}
-                        onChange={(e) =>
-                          field.onChange(Number.parseInt(e.target.value))
-                        }
+                        value={field.value ?? ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          field.onChange(
+                            value === ""
+                              ? undefined
+                              : Number.parseInt(value, 10),
+                          );
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -252,9 +262,7 @@ function ExtensionForm() {
       <div className="space-y-4">
         {/* TODO: Implement Chrome extension installation flow */}
         <div className="rounded-lg border p-4 bg-gray-50">
-          <h3 className="font-semibold text-gray-900 mb-2">
-            Chrome Extension (Coming Soon)
-          </h3>
+          <h3 className="font-semibold text-gray-900 mb-2">Chrome Extension</h3>
           <p className="text-sm text-gray-700 mb-4">
             The Chrome extension will help you automatically track courses and
             prerequisites while browsing your university's course catalog.
@@ -262,15 +270,6 @@ function ExtensionForm() {
           <div className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md inline-block">
             Extension installation
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="flex items-center space-x-2">
-            <input type="checkbox" defaultChecked={true} className="rounded" />
-            <span className="text-sm font-medium text-primary">
-              Continue to next step (Chrome extension coming soon)
-            </span>
-          </label>
         </div>
       </div>
     </div>
@@ -316,12 +315,6 @@ function ReportUploadForm() {
               onFileUploaded={handleFileUploaded}
               initialFile={reportFile}
             />
-            {isUploaded && uploadedFileName && (
-              <p className="text-sm font-medium text-green-600">
-                You have uploaded your degree progress report (
-                {uploadedFileName}).
-              </p>
-            )}
           </div>
         </div>
       </div>
@@ -459,16 +452,18 @@ const FormStepperComponent = () => {
           </Button>
           <Button
             type="submit"
-            onClick={async () => {
+            onClick={async (e) => {
+              e.preventDefault();
+
+              const valid = await form.trigger();
+              if (!valid) return;
+
+              // Submit the current form to save this step's data
+              await form.handleSubmit(onSubmit)();
+
               if (methods.isLast) {
                 // Complete onboarding and go to dashboard
-                const valid = await form.trigger();
-                if (!valid) return;
-
                 try {
-                  const values = form.getValues();
-                  console.log("Completing onboarding with values:", values);
-
                   // Get programs data from the first step
                   const academicInfo = allStepsData["academic-info"] as
                     | AcademicInfoFormValues
@@ -515,13 +510,10 @@ const FormStepperComponent = () => {
                 } catch (error) {
                   console.error("Error completing onboarding:", error);
                 }
-                return;
+              } else {
+                // For non-last steps, just move to the next step
+                await methods.next();
               }
-              methods.beforeNext(async () => {
-                const valid = await form.trigger();
-                if (!valid) return false;
-                return true;
-              });
             }}
           >
             {methods.isLast ? "Complete Onboarding" : "Next"}
