@@ -24,7 +24,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.2.6",
     "@crxjs/vite-plugin": "^2.2.0",
-    "@dev-team-fall-25/server": "workspace:*",
+    "@albert-plus/server": "workspace:*",
     "@types/chrome": "^0.1.24",
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.2",
