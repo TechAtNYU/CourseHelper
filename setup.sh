@@ -4,7 +4,7 @@ set -e
 
 SOURCE_FILE="./packages/server/.env.local"
 WEB_DEST_FILE="./apps/web/.env.local"
-CHROME_DEST_FILE="./apps/chrome/.env"
+CHROME_DEST_FILE="./apps/browser/.env.development"
 
 echo "Copying and modifying environment file for web app..."
 echo "Source: $SOURCE_FILE"
@@ -19,10 +19,10 @@ echo "Copying and modifying environment file for chrome extension..."
 echo "Source: $SOURCE_FILE"
 echo "Destination: $CHROME_DEST_FILE"
 
-sed 's/^CONVEX_URL=/VITE_CONVEX_URL=/' "$SOURCE_FILE" > "$CHROME_DEST_FILE"
+sed 's/^CONVEX_URL=/PLASMO_PUBLIC_CONVEX_URL=/' "$SOURCE_FILE" > "$CHROME_DEST_FILE"
 
 echo "Successfully copied $SOURCE_FILE to $CHROME_DEST_FILE"
-echo "Changed CONVEX_URL to VITE_CONVEX_URL"
+echo "Changed CONVEX_URL to PLASMO_PUBLIC_CONVEX_URL"
 
 SCRAPER_DEST_FILE="./apps/scraper/.env"
 

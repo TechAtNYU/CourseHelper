@@ -36,7 +36,9 @@ export default defineSchema({
       searchField: "title",
       filterFields: ["isCorequisite", "term", "year"],
     }),
-  userCourses: defineTable(userCourses).index("by_user", ["userId"]),
+  userCourses: defineTable(userCourses)
+    .index("by_user", ["userId"])
+    .index("by_user_course_term", ["userId", "courseCode", "year", "term"]),
   userCourseOfferings: defineTable(userCourseOfferings).index("by_user", [
     "userId",
   ]),
