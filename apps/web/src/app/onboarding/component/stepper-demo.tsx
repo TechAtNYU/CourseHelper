@@ -1,24 +1,45 @@
 "use client";
 
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useMutation } from "convex/react";
+import { api } from "@dev-team-fall-25/server/convex/_generated/api";
 import { defineStepper } from "@/components/ui/stepper";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import FileUploadButton from "@/modules/report-parsing/components/file-upload-button";
 import MultipleSelector from "@/components/ui/multiselect";
 
 const programs = [
   "Computer Science",
   "Mathematics",
+  "Statistics",
+  "Data Science",
   "Physics",
   "Chemistry",
   "Biology",
   "Engineering",
   "Business Administration",
+  "Finance",
   "Economics",
   "Psychology",
   "English",
@@ -29,12 +50,35 @@ const programs = [
   "Other",
 ];
 
-const academicInfoSchema = z.object({
-  programs: z.array(z.string()).min(1, "At least one program is required"),
-});
+const academicInfoSchema = z
+  .object({
+    programs: z.array(z.string()).min(1, "At least one program is required"),
+    startingDate: z.object({
+      year: z.number().min(2000).max(2100),
+      term: z.enum(["spring", "fall"]),
+    }),
+    expectedGraduationDate: z.object({
+      year: z.number().min(2000).max(2100),
+      term: z.enum(["spring", "fall"]),
+    }),
+  })
+  .refine(
+    (data) => {
+      const startValue =
+        data.startingDate.year + (data.startingDate.term === "fall" ? 1 : 0.5);
+      const gradValue =
+        data.expectedGraduationDate.year +
+        (data.expectedGraduationDate.term === "fall" ? 1 : 0.5);
+      return gradValue > startValue;
+    },
+    {
+      message: "Expected graduation date must be after the starting date",
+      path: ["expectedGraduationDate"],
+    },
+  );
 
 const extensionSchema = z.object({
-  // TODO: Make this required when Chrome extension is implemented
+  // optional chrome extension
   extensionInstalled: z.boolean().optional(),
 });
 
@@ -45,20 +89,36 @@ const reportSchema = z.object({
 });
 
 type AcademicInfoFormValues = z.infer<typeof academicInfoSchema>;
-type ExtensionFormValues = z.infer<typeof extensionSchema>;
 type ReportFormValues = z.infer<typeof reportSchema>;
 
 const AcademicInfoForm = () => {
-  const {
-    formState: { errors },
-    setValue,
-    watch,
-  } = useFormContext<AcademicInfoFormValues>();
+  const { control, setValue, watch } = useFormContext<AcademicInfoFormValues>();
 
   const programsValue = watch("programs") || [];
+  const startingYear = watch("startingDate.year");
+  const startingTerm = watch("startingDate.term");
+  const gradYear = watch("expectedGraduationDate.year");
+  const gradTerm = watch("expectedGraduationDate.term");
+
+  // Set default values if not present
+  React.useEffect(() => {
+    if (!startingYear) {
+      setValue("startingDate.year", new Date().getFullYear());
+    }
+    if (!startingTerm) {
+      setValue("startingDate.term", "fall");
+    }
+    if (!gradYear) {
+      setValue("expectedGraduationDate.year", new Date().getFullYear() + 4);
+    }
+    if (!gradTerm) {
+      setValue("expectedGraduationDate.term", "spring");
+    }
+  }, [setValue, startingYear, startingTerm, gradYear, gradTerm]);
 
   return (
-    <div className="space-y-4 text-start">
+    <div className="space-y-6 text-start">
+      {/* Programs Selection */}
       <div className="space-y-2">
         <p className="text-sm font-medium text-gray-700">
           Please select your program (major and minor)
@@ -79,12 +139,127 @@ const AcademicInfoForm = () => {
             <p className="text-center text-sm">No programs found</p>
           }
         />
-        {errors.programs && (
-          <span className="text-sm text-destructive">
-            {errors.programs.message}
-          </span>
-        )}
       </div>
+
+      {/* Starting Date */}
+      <div className="space-y-2">
+        <FormLabel className="text-sm font-medium text-gray-700">
+          When did you start your program?
+        </FormLabel>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={control}
+            name="startingDate.year"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Year</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min="2000"
+                    max="2100"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(Number.parseInt(e.target.value))
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="startingDate.term"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Term</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select term" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fall">Fall</SelectItem>
+                      <SelectItem value="spring">Spring</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
+      {/* Expected Graduation Date */}
+      <FormField
+        control={control}
+        name="expectedGraduationDate"
+        render={({ fieldState }) => (
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-gray-700">
+              When do you expect to graduate?
+            </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={control}
+                name="expectedGraduationDate.year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Year</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="2000"
+                        max="2100"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(Number.parseInt(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="expectedGraduationDate.term"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Term</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select term" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="spring">Spring</SelectItem>
+                          <SelectItem value="fall">Fall</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            {fieldState.error && (
+              <p className="text-sm text-destructive">
+                {fieldState.error.message}
+              </p>
+            )}
+          </div>
+        )}
+      />
     </div>
   );
 };
@@ -196,16 +371,16 @@ const { Stepper, useStepper } = defineStepper(
     Component: AcademicInfoForm,
   },
   {
-    id: "extension",
-    title: "Chrome Extension",
-    schema: extensionSchema,
-    Component: ExtensionForm,
-  },
-  {
     id: "report",
     title: "Degree Report",
     schema: reportSchema,
     Component: ReportUploadForm,
+  },
+  {
+    id: "extension",
+    title: "Chrome Extension",
+    schema: extensionSchema,
+    Component: ExtensionForm,
   },
   {
     id: "complete",
@@ -233,8 +408,20 @@ const FormStepperComponent = () => {
 
   const { user } = useUser();
   const router = useRouter();
+  const upsertStudent = useMutation(api.students.upsertCurrentStudent);
+
+  // Track data across all steps
+  const [allStepsData, setAllStepsData] = React.useState<
+    Record<string, unknown>
+  >({});
 
   const onSubmit = async (values: z.infer<typeof methods.current.schema>) => {
+    // Store this step's data
+    setAllStepsData((prev) => ({
+      ...prev,
+      [methods.current.id]: values,
+    }));
+
     if (methods.current.id !== "complete") {
       console.log(
         `Form values for step ${methods.current.id}: ${JSON.stringify(values)}`,
@@ -263,8 +450,8 @@ const FormStepperComponent = () => {
         </Stepper.Navigation>
         {methods.switch({
           "academic-info": ({ Component }) => <Component />,
-          extension: ({ Component }) => <Component />,
           report: ({ Component }) => <Component />,
+          extension: ({ Component }) => <Component />,
           complete: ({ Component }) => <Component />,
         })}
         <Stepper.Controls>
@@ -287,6 +474,39 @@ const FormStepperComponent = () => {
                 try {
                   const values = form.getValues();
                   console.log("Completing onboarding with values:", values);
+
+                  // Get programs data from the first step
+                  const academicInfo = allStepsData["academic-info"] as
+                    | AcademicInfoFormValues
+                    | undefined;
+                  console.log("Collected academic info:", academicInfo);
+
+                  if (!academicInfo) {
+                    console.error("Academic info not found");
+                    return;
+                  }
+
+                  // TODO: Convert program names to program IDs
+                  // For now, we'll use an empty array until we implement program lookup
+                  // The academic info data contains the program names selected by the user
+                  // We need to look up these programs in the database and get their IDs
+
+                  // Save student data to Convex
+                  // Note: This requires program IDs, not names.
+                  // We're using the actual dates collected from the form
+                  await upsertStudent({
+                    // TODO: Map program names to program IDs
+                    // For now using empty array - will be populated once we add program lookup
+                    programs: [],
+                    startingDate: {
+                      year: academicInfo.startingDate.year,
+                      term: academicInfo.startingDate.term,
+                    },
+                    expectedGraduationDate: {
+                      year: academicInfo.expectedGraduationDate.year,
+                      term: academicInfo.expectedGraduationDate.term,
+                    },
+                  });
 
                   // Update user metadata to mark onboarding as complete
                   await user?.update({
