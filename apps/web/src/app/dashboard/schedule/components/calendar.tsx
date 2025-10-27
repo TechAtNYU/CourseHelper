@@ -4,21 +4,11 @@ import { cn } from "@/lib/utils";
 import { WeekView } from "./week-view";
 
 export const EventHeight = 24;
-
-// Vertical gap between events in pixels - controls spacing in month view
 export const EventGap = 4;
-
-// Height of hour cells in week and day views - controls the scale of time display
 export const WeekCellsHeight = 64;
-
-// Number of days to show in the agenda view
 export const AgendaDaysToShow = 30;
-
-// Start and end hours for the week and day views
 export const StartHour = 7;
 export const EndHour = 22;
-
-// Default start and end times
 export const DefaultStartHour = 9; // 9 AM
 export const DefaultEndHour = 10; // 10 AM
 
@@ -28,7 +18,7 @@ export interface TimeSlot {
 }
 
 export interface Class {
-  id: string; // unique identifier
+  id: string;
   title: string;
   color: string;
   times: TimeSlot[];
@@ -81,20 +71,14 @@ export function Calendar({ className, classes }: EventCalendarProps) {
         } as React.CSSProperties
       }
     >
-      <div
-        className={cn(
-          "flex items-center justify-between p-2 sm:p-4",
-          className,
-        )}
-      >
-        <div className="flex items-center gap-1 sm:gap-4">
-          {/* TODO: fix this so it is not hard coded */}
-          <h2 className="text-sm font-semibold sm:text-lg md:text-xl">
-            Spring 2026
-          </h2>
-        </div>
+      {/* Header */}
+      <div className={cn("p-2 sm:p-4", className)}>
+        <h2 className="w-full text-center text-sm font-semibold sm:text-lg md:text-xl">
+          Spring 2026
+        </h2>
       </div>
 
+      {/* Week view */}
       <div className="flex flex-1 flex-col">
         <WeekView classes={classes} />
       </div>
