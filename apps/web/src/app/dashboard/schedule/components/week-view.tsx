@@ -176,53 +176,66 @@ export function WeekView({ classes }: WeekViewProps) {
         ))}
       </div>
 
-      <div className="grid flex-1 grid-cols-8 overflow-hidden">
-        <div className="border-border/70 grid auto-cols-fr border-r">
-          {hours.map((hour, index) => (
-            <div
-              key={hour.toString()}
-              className="border-border/70 relative min-h-[var(--week-cells-height)] border-b last:border-b-0"
-            >
-              {index > 0 && (
-                <span className="bg-background text-muted-foreground/70 absolute -top-3 left-0 flex h-6 w-16 max-w-full items-center justify-end pe-2 text-[10px] sm:pe-4 sm:text-xs">
-                  {format(hour, "h a")}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {days.map((day, dayIndex) => (
+      <div className="grid flex-1 grid-cols-8 relative overflow-hidden">
+      {/* Left column: hour labels */}
+      <div className="border-border/70 grid border-r relative">
+        {hours.map((hour, index) => (
           <div
-            key={day.toString()}
-            className="border-border/70 relative grid auto-cols-fr border-r last:border-r-0"
-            data-today={isToday(day) || undefined}
+            key={hour.toString()}
+            className="relative min-h-[var(--week-cells-height)]"
           >
-            {/* Positioned events */}
-            {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
-              <div
-                key={positionedEvent.event.id}
-                className="absolute z-10 px-0.5"
-                style={{
-                  top: `${positionedEvent.top}px`,
-                  height: `${positionedEvent.height}px`,
-                  left: `${positionedEvent.left * 100}%`,
-                  width: `${positionedEvent.width * 100}%`,
-                  zIndex: positionedEvent.zIndex,
-                }}
-              >
-                <div className="size-full">
-                  <EventItem
-                    event={positionedEvent.event}
-                    timeSlotIndex={positionedEvent.timeSlotIndex}
-                    showTime
-                  />
-                </div>
-              </div>
-            ))}
+            {/* Hour label */}
+            <span className="absolute right-0 top-0 text-xs text-muted-foreground pe-2">
+              {format(hour, "h a")}
+            </span>
+
+            {/* Small horizontal line inside left column */}
+            <div className="absolute left-0 right-0 h-[1px] bg-border" />
           </div>
         ))}
       </div>
+
+      {/* Day columns */}
+      {days.map((day, dayIndex) => (
+        <div
+          key={day.toString()}
+          className="border-border/70 relative border-r last:border-r-0"
+          data-today={isToday(day) || undefined}
+        >
+          {/* Full-width horizontal lines for day cells */}
+          {hours.map((hour, index) => (
+            <div
+              key={hour.toString()}
+              className="absolute left-0 right-0 h-[1px] bg-border"
+              style={{ top: `${index * WeekCellsHeight}px` }}
+            />
+          ))}
+
+          {/* Positioned events */}
+          {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
+            <div
+              key={positionedEvent.event.id}
+              className="absolute z-10 px-0.5"
+              style={{
+                top: `${positionedEvent.top}px`,
+                height: `${positionedEvent.height}px`,
+                left: `${positionedEvent.left * 100}%`,
+                width: `${positionedEvent.width * 100}%`,
+                zIndex: positionedEvent.zIndex,
+              }}
+            >
+              <EventItem
+                event={positionedEvent.event}
+                timeSlotIndex={positionedEvent.timeSlotIndex}
+                showTime
+              />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+
+
     </div>
   );
 }
