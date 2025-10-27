@@ -62,14 +62,13 @@ export async function scrapeProgram(
       "Unknown Program";
 
     program = {
-      name: "example",
+      name: title,
       level: "undergraduate",
-      programUrl: "test",
+      programUrl: target.toString(),
     };
     requirements = [];
   } catch (err) {
     console.error("Error scraping program:", err);
   }
-  return {program, ["required"]};
-  // return { program, requirements };
+  return { program, requirements };
 }
