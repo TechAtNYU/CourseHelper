@@ -143,7 +143,7 @@ export function EventItem({
 
   function getCourseCode(title: string) {
     const parts = title.split(" ");
-    return parts[0];
+    return parts[0]+" "+parts[1];
   }
 
   const displayEnd = useMemo(() => {
