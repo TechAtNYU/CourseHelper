@@ -1,8 +1,8 @@
 "use client";
 
+import { api } from "@albert-plus/server/convex/_generated/api";
+import type { Doc } from "@albert-plus/server/convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
-import { api } from "@dev-team-fall-25/server/convex/_generated/api";
-import type { Doc } from "@dev-team-fall-25/server/convex/_generated/dataModel";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
