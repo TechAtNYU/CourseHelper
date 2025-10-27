@@ -18,7 +18,7 @@ export async function discoverPrograms(url: string): Promise<string[]> {
   const res = await fetch(url);
   console.log("Status:", res.status);
   const html = await res.text();
-  return [html.slice(0, 500)];
+  return [];
 }
 
 export async function scrapeProgram(
@@ -62,13 +62,14 @@ export async function scrapeProgram(
       "Unknown Program";
 
     program = {
-      name: title,
+      name: "example",
       level: "undergraduate",
-      programUrl: target.toString(),
+      programUrl: "test",
     };
     requirements = [];
   } catch (err) {
     console.error("Error scraping program:", err);
   }
-  return { program, requirements };
+  return {program, ["required"]};
+  // return { program, requirements };
 }
