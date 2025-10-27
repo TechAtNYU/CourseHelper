@@ -18,8 +18,7 @@ export async function discoverPrograms(url: string): Promise<string[]> {
   const res = await fetch(url);
   console.log("Status:", res.status);
   const html = await res.text();
-  console.log(html.slice(0, 500));
-  return [];
+  return [html.slice(0, 500)];
 }
 
 export async function scrapeProgram(
