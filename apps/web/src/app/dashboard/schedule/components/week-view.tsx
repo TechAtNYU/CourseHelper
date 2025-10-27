@@ -198,7 +198,23 @@ export function WeekView({ classes }: WeekViewProps) {
             className="border-border/70 relative grid auto-cols-fr border-r last:border-r-0"
             data-today={isToday(day) || undefined}
           >
-            {/* Positioned events */}
+            {/* {hours.map((hour, index) => (
+              <div
+                key={hour.toString()}
+                // className="border-border/70 relative min-h-[var(--week-cells-height)/2] border-b last:border-b-0"
+                // className="absolute left-0 right-0 h-[1px] bg-border"
+                className="border-border/70 relative border-b last:border-b-0"
+                style={{ minHeight: "calc(var(--week-cells-height) / 2)" }}
+                // style={{ top: `${index * WeekCellsHeight}px` }}
+              />
+            ))} */}
+            {hours.map((hour, index) => (
+              <div
+                key={hour.toString()}
+                className="border-border/70 relative border-b last:border-b-0"
+                // style={{ minHeight: "calc(var(--week-cells-height) / 2)" }}
+              />
+            ))}
             {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
               <div
                 key={positionedEvent.event.id}
