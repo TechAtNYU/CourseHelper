@@ -1,12 +1,10 @@
 "use client";
 
-import type { DraggableAttributes } from "@dnd-kit/core";
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { differenceInMinutes, format, getMinutes } from "date-fns";
 import { useMemo } from "react";
 
 import { cn } from "@/lib/utils";
-import type { Class, EventColor } from "../calendar";
+import { Class, EventColor } from "../schedule-calendar";
 
 // Using date-fns format with custom formatting:
 // 'h' - hours (1-12)
@@ -79,8 +77,6 @@ interface EventWrapperProps {
   className?: string;
   children: React.ReactNode;
   currentTime?: Date;
-  dndListeners?: SyntheticListenerMap;
-  dndAttributes?: DraggableAttributes;
   onMouseDown?: (e: React.MouseEvent) => void;
   onTouchStart?: (e: React.TouchEvent) => void;
 }

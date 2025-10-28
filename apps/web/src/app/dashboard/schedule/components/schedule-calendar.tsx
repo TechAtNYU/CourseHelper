@@ -1,14 +1,58 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import type { api } from "@albert-plus/server/convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import { addDays, startOfWeek } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  allClassColors,
-  Calendar,
-  type Class,
-} from "./schedule-calendar/calendar";
+import { WeekView } from "./schedule-calendar/week-view";
+
+export const EventHeight = 24;
+export const EventGap = 4;
+export const WeekCellsHeight = 64;
+export const StartHour = 7;
+export const EndHour = 22;
+
+export interface TimeSlot {
+  start: Date;
+  end: Date;
+}
+
+export interface Class {
+  id: string;
+  title: string;
+  color: string;
+  times: TimeSlot[];
+  description: string;
+}
+
+export type EventColor =
+  | "sky"
+  | "amber"
+  | "violet"
+  | "rose"
+  | "emerald"
+  | "orange"
+  | "teal"
+  | "lime"
+  | "cyan"
+  | "fuchsia"
+  | "indigo"
+  | "pink";
+
+export const allClassColors: EventColor[] = [
+  "sky",
+  "amber",
+  "violet",
+  "rose",
+  "emerald",
+  "orange",
+  "teal",
+  "lime",
+  "indigo",
+  "fuchsia",
+  "pink",
+  "cyan",
+];
 
 export interface ScheduleCalendarProps {
   classes:
@@ -87,5 +131,20 @@ export function ScheduleCalendar({ classes, title }: ScheduleCalendarProps) {
     };
   });
 
-  return <Calendar classes={transformedClasses} title={title} />;
+  return (
+    <div
+      className="flex flex-col rounded-lg border has-data-[slot=month-view]:flex-1"
+      style={
+        {
+          "--event-height": `${EventHeight}px`,
+          "--event-gap": `${EventGap}px`,
+          "--week-cells-height": `${WeekCellsHeight}px`,
+        } as React.CSSProperties
+      }
+    >
+      <div className="flex flex-1 flex-col">
+        <WeekView classes={transformedClasses} />
+      </div>
+    </div>
+  );
 }

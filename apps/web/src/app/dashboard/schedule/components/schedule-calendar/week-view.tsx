@@ -22,7 +22,7 @@ import {
   StartHour,
   type TimeSlot,
   WeekCellsHeight,
-} from "./calendar";
+} from "../schedule-calendar";
 import { EventItem } from "./event-item";
 
 interface WeekViewProps {
