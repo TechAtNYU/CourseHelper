@@ -11,7 +11,7 @@ export const getCourseOfferingById = protectedQuery({
   },
 });
 
-export const getCourseOfferingsByCourseTerm = protectedQuery({
+export const getCourseOfferingsByCourseCodes = protectedQuery({
   args: {
     courseCodes: v.array(v.string()),
     term: v.union(

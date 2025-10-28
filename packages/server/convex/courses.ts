@@ -105,6 +105,8 @@ export const upsertCourseInternal = internalMutation({
   },
 });
 
+// WARN: we might not need this see other functions I added in courseOfferings
+
 export const getAllCoursesWithOfferings = protectedQuery({
   args: {
     term: v.union(
