@@ -1,17 +1,18 @@
-import { api } from "@dev-team-fall-25/server/convex/_generated/api";
-import { preloadQuery } from "convex/nextjs";
-import { getAuthToken } from "@/lib/convex";
-import PlanContent from "./components/plan-content";
+"use client";
 
-const PlanPage = async () => {
-  const token = await getAuthToken();
-  const preloadedCourses = await preloadQuery(
+import { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { useConvexAuth, useQuery } from "convex/react";
+import PlanTable from "./components/plan-table";
+
+const PlanPage = () => {
+  const { isAuthenticated } = useConvexAuth();
+
+  const courses = useQuery(
     api.userCourses.getUserCourses,
-    {},
-    { token },
+    isAuthenticated ? {} : "skip",
   );
 
-  return <PlanContent preloadedCourses={preloadedCourses} />;
+  return <PlanTable courses={courses} />;
 };
 
 export default PlanPage;

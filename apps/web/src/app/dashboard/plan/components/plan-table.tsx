@@ -6,7 +6,7 @@ import type { FunctionReturnType } from "convex/server";
 import _ from "lodash";
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -19,7 +19,9 @@ import {
 } from "@/components/ui/table";
 
 interface PlanTableProps {
-  courses: FunctionReturnType<typeof api.userCourses.getUserCourses>;
+  courses:
+    | FunctionReturnType<typeof api.userCourses.getUserCourses>
+    | undefined;
 }
 
 export default function PlanTable({ courses }: PlanTableProps) {
@@ -28,11 +30,13 @@ export default function PlanTable({ courses }: PlanTableProps) {
   const [courseSearch, setCourseSearch] = useState<string>("");
   const [creditFilter, setCreditFilter] = useState<number | null>(null);
 
+  const courseSearchId = useId();
+
   // Get unique credit values from all courses
   // used by the credits filter
   const availableCredits = useMemo(() => {
     const credits = new Set<number>();
-    courses.forEach((userCourse) => {
+    courses?.forEach((userCourse) => {
       if (userCourse.course) {
         credits.add(userCourse.course.credits);
       }
@@ -42,7 +46,7 @@ export default function PlanTable({ courses }: PlanTableProps) {
 
   // Filter courses based on all filters
   const filteredData = useMemo(() => {
-    return courses.filter((userCourse) => {
+    return courses?.filter((userCourse) => {
       if (!userCourse.course) return false;
 
       const matchesSearch =
@@ -60,7 +64,7 @@ export default function PlanTable({ courses }: PlanTableProps) {
   // Get unique years from the filtered data
   const years = useMemo(() => {
     const yearSet = new Set<number>();
-    filteredData.forEach((userCourse) => {
+    filteredData?.forEach((userCourse) => {
       yearSet.add(userCourse.year);
     });
     return Array.from(yearSet).sort((a, b) => a - b);
@@ -73,7 +77,7 @@ export default function PlanTable({ courses }: PlanTableProps) {
       Map<(typeof allTerms)[number], typeof filteredData>
     >();
 
-    filteredData.forEach((userCourse) => {
+    filteredData?.forEach((userCourse) => {
       if (!map.has(userCourse.year)) {
         map.set(userCourse.year, new Map());
       }
@@ -103,16 +107,21 @@ export default function PlanTable({ courses }: PlanTableProps) {
     });
   }, [allTerms, years, yearTermMap]);
 
+  if (!courses) {
+    // TODO add skeletons for the page
+    return <></>;
+  }
+
   return (
     <div className="space-y-3 overflow-x-auto">
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-end">
         {/* Course search */}
         <div className="w-64 flex flex-col space-y-1">
-          <Label htmlFor="course-search">Search</Label>
+          <Label htmlFor={courseSearchId}>Search</Label>
           <div className="relative">
             <Input
-              id="course-search"
+              id={courseSearchId}
               className="peer ps-9"
               value={courseSearch}
               onChange={(e) => setCourseSearch(e.target.value)}
@@ -168,7 +177,7 @@ export default function PlanTable({ courses }: PlanTableProps) {
             {years.map((year) => {
               const totalCredits = _.sumBy(
                 _.flatten(Array.from(yearTermMap.get(year)?.values() || [])),
-                (c) => c.course?.credits || 0,
+                (c) => c?.course?.credits || 0,
               );
 
               return (
