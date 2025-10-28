@@ -6,7 +6,7 @@ import { differenceInMinutes, format, getMinutes } from "date-fns";
 import { useMemo } from "react";
 
 import { cn } from "@/lib/utils";
-import type { Class, EventColor } from "./calendar";
+import type { Class, EventColor } from "../calendar";
 
 // Using date-fns format with custom formatting:
 // 'h' - hours (1-12)

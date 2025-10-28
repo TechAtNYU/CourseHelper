@@ -4,7 +4,11 @@ import type { api } from "@albert-plus/server/convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import { addDays, startOfWeek } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
-import { allClassColors, Calendar, type Class } from "./calendar";
+import {
+  allClassColors,
+  Calendar,
+  type Class,
+} from "./schedule-calendar/calendar";
 
 export interface ScheduleCalendarProps {
   classes:
