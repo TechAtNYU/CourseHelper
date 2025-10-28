@@ -1,14 +1,14 @@
 "use client";
 
+import { api } from "@albert-plus/server/convex/_generated/api";
+import { useConvexAuth, useQuery } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
 import {
-  Term,
+  type Term,
   useCurrentTerm,
   useCurrentYear,
 } from "@/components/AppConfigProvider";
 import { formatTermTitle } from "@/utils/format-term";
-import { api } from "@albert-plus/server/convex/_generated/api";
-import { useConvexAuth, useQuery } from "convex/react";
-import { FunctionReturnType } from "convex/server";
 import { ScheduleCalendar } from "./components/schedule-calendar";
 
 function getUserClassesByTerm(

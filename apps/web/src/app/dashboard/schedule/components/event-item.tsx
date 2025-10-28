@@ -143,7 +143,7 @@ export function EventItem({
 
   function getCourseCode(title: string) {
     const parts = title.split(" ");
-    return parts[0]+" "+parts[1];
+    return parts[0] + " " + parts[1];
   }
 
   const displayEnd = useMemo(() => {
@@ -205,8 +205,8 @@ export function EventItem({
           </div>
           {/* <div className="font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-[115px]">{getDisplayTitle(event.title)}</div> */}
           <div className="truncate font-normal opacity-70 sm:text-[11px]">
-              {getCourseCode(event.title)}
-            </div>
+            {getCourseCode(event.title)}
+          </div>
           {showTime && (
             <div className="truncate font-normal opacity-70 sm:text-[11px]">
               {getEventTime()}

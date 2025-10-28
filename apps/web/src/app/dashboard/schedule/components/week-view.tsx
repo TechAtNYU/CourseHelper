@@ -198,7 +198,6 @@ export function WeekView({ classes }: WeekViewProps) {
             className="border-border/70 relative grid auto-cols-fr border-r last:border-r-0"
             data-today={isToday(day) || undefined}
           >
-            
             {hours.map((hour, index) => (
               <div
                 key={hour.toString()}
