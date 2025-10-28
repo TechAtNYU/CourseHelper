@@ -22,6 +22,10 @@ export const getUserCourseOfferings = protectedQuery({
           "classNumber",
         );
 
+        if (!courseOffering) {
+          throw new Error("Course offering not found");
+        }
+
         return {
           ...userOffering,
           courseOffering,

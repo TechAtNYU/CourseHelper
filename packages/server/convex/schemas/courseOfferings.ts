@@ -12,8 +12,8 @@ const courseOfferings = {
     v.literal("fall"),
     v.literal("j-term"),
   ),
-  instructor: v.string(),
-  location: v.string(),
+  instructor: v.array(v.string()),
+  location: v.optional(v.string()),
   days: v.array(
     v.union(
       v.literal("monday"),
@@ -31,7 +31,6 @@ const courseOfferings = {
     v.literal("open"),
     v.literal("closed"),
     v.literal("waitlist"),
-    v.literal("enrolled"),
   ),
   waitlistNum: v.optional(v.number()),
   isCorequisite: v.boolean(),

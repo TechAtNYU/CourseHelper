@@ -1,8 +1,8 @@
 {
   "name": "browser",
-  "displayName": "Browser",
+  "displayName": "AlbertPlus",
   "version": "0.0.1",
-  "description": "A course registration companion for Albert",
+  "description": "A NYU course registration companion for Albert",
   "author": "Tech@NYU <hello@techatnyu.org>",
   "scripts": {
     "dev": "doppler run -- plasmo dev",
@@ -12,8 +12,8 @@
     "check:types": "tsc -noEmit"
   },
   "dependencies": {
-    "@dev-team-fall-25/server": "workspace:*",
-    "@clerk/chrome-extension": "^2.7.7",
+    "@albert-plus/server": "workspace:*",
+    "@clerk/chrome-extension": "^2.7.8",
     "convex": "^1.28.0",
     "plasmo": "0.90.5",
     "react": "19.2.0",
@@ -21,8 +21,9 @@
     "tailwindcss": "3.4.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.0",
     "@types/chrome": "0.1.24",
-    "@types/node": "24.8.1",
+    "@types/node": "^24.9.1",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "postcss": "8.5.6",
