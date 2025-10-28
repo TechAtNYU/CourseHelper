@@ -1,4 +1,4 @@
-import { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { api } from "@albert-plus/server/convex/_generated/api";
 import { preloadQuery } from "convex/nextjs";
 import { getAuthToken } from "@/lib/convex";
 import { AuthenticatedContent } from "../components/authenticated-content";
