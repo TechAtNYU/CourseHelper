@@ -35,7 +35,7 @@ export default async function Layout({
         />
         <SidebarInset>
           {header}
-          <main className="p-6 space-y-6">{children}</main>
+          <main className="flex-1  p-6 space-y-6">{children}</main>
         </SidebarInset>
       </SidebarProvider>
     </AppConfigProvider>
