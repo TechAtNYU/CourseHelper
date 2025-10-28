@@ -4,16 +4,21 @@ import type { api } from "@albert-plus/server/convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import { addDays, startOfWeek } from "date-fns";
 import { allClassColors, Calendar, type Class } from "./calendar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface ScheduleCalendarProps {
-  classes: FunctionReturnType<
-    typeof api.userCourseOfferings.getUserCourseOfferings
-  >;
-  title: string;
+  classes:
+    | FunctionReturnType<typeof api.userCourseOfferings.getUserCourseOfferings>
+    | undefined;
+  title: string | undefined;
 }
 
 export function ScheduleCalendar({ classes, title }: ScheduleCalendarProps) {
-  let colorIndex = 0; // start at 0
+  if (!classes || !title) {
+    return <Skeleton className="h-full w-full rounded-lg" />;
+  }
+
+  let colorIndex = 0;
 
   const transformedClasses: Class[] = classes.map((c) => {
     const offering = c.courseOffering;
