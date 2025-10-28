@@ -2,6 +2,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppConfigSync } from "@/modules/app-configs/AppConfigSync";
 
 export default async function Layout({
   children,
@@ -22,6 +23,7 @@ export default async function Layout({
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
+      <AppConfigSync />
       <AppSidebar
         user={{
           name: user?.fullName || user?.username || "Unknown User",
