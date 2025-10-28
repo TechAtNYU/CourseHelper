@@ -1,6 +1,6 @@
 "use client";
 
-import type { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import type { api } from "@albert-plus/server/convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import { addDays, startOfWeek } from "date-fns";
 import { allClassColors, Calendar, type Class } from "./calendar";
@@ -9,9 +9,10 @@ export interface ScheduleCalendarProps {
   classes: FunctionReturnType<
     typeof api.userCourseOfferings.getUserCourseOfferings
   >;
+  title: string;
 }
 
-export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
+export function ScheduleCalendar({ classes, title }: ScheduleCalendarProps) {
   let colorIndex = 0; // start at 0
 
   const transformedClasses: Class[] = classes.map((c) => {
@@ -77,5 +78,5 @@ export function ScheduleCalendar({ classes }: ScheduleCalendarProps) {
     };
   });
 
-  return <Calendar classes={transformedClasses} />;
+  return <Calendar classes={transformedClasses} title={title} />;
 }

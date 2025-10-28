@@ -1,20 +1,15 @@
 "use client";
 
-import type { api } from "@albert-plus/server/convex/_generated/api";
-import { type Preloaded, usePreloadedQuery } from "convex/react";
-import type { FunctionReturnType } from "convex/server";
 import {
   type Term,
   useCurrentTerm,
   useCurrentYear,
 } from "@/components/AppConfigProvider";
+import { formatTermTitle } from "@/utils/format-term";
+import type { api } from "@albert-plus/server/convex/_generated/api";
+import { type Preloaded, usePreloadedQuery } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
 import { ScheduleCalendar } from "./schedule-calendar";
-
-interface ScheduleContentProps {
-  preloadedClasses: Preloaded<
-    typeof api.userCourseOfferings.getUserCourseOfferings
-  >;
-}
 
 function getUserClassesByTerm(
   classes: FunctionReturnType<
@@ -31,7 +26,13 @@ function getUserClassesByTerm(
   });
 }
 
-export function ScheduleContent({ preloadedClasses }: ScheduleContentProps) {
+interface ScheduleProps {
+  preloadedClasses: Preloaded<
+    typeof api.userCourseOfferings.getUserCourseOfferings
+  >;
+}
+
+export function Schedule({ preloadedClasses }: ScheduleProps) {
   const currentYear = useCurrentYear();
   const currentTerm = useCurrentTerm();
 
@@ -41,5 +42,7 @@ export function ScheduleContent({ preloadedClasses }: ScheduleContentProps) {
     currentTerm,
   );
 
-  return <ScheduleCalendar classes={classes} />;
+  const title = formatTermTitle(currentTerm, currentYear) || "";
+
+  return <ScheduleCalendar classes={classes} title={title} />;
 }

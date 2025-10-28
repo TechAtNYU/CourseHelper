@@ -57,9 +57,10 @@ export const allClassColors: EventColor[] = [
 export interface EventCalendarProps {
   className?: string;
   classes: Class[];
+  title: string;
 }
 
-export function Calendar({ className, classes }: EventCalendarProps) {
+export function Calendar({ className, classes, title }: EventCalendarProps) {
   return (
     <div
       className="flex flex-col rounded-lg border has-data-[slot=month-view]:flex-1"
@@ -74,7 +75,7 @@ export function Calendar({ className, classes }: EventCalendarProps) {
       {/* Header */}
       <div className={cn("p-2 sm:p-4", className)}>
         <h2 className="w-full text-center text-sm font-semibold sm:text-lg md:text-xl">
-          Spring 2026
+          {title}
         </h2>
       </div>
 

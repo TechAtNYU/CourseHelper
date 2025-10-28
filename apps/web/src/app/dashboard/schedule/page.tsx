@@ -1,8 +1,7 @@
+import { getAuthToken } from "@/lib/convex";
 import { api } from "@albert-plus/server/convex/_generated/api";
 import { preloadQuery } from "convex/nextjs";
-import { getAuthToken } from "@/lib/convex";
-import { AuthenticatedContent } from "../components/authenticated-content";
-import { ScheduleContent } from "./components/schedule-content";
+import { Schedule } from "./components/schedule";
 
 const SchedulePage = async () => {
   const token = await getAuthToken();
@@ -12,11 +11,7 @@ const SchedulePage = async () => {
     { token },
   );
 
-  return (
-    <AuthenticatedContent>
-      <ScheduleContent preloadedClasses={preloadedClasses} />
-    </AuthenticatedContent>
-  );
+  return <Schedule preloadedClasses={preloadedClasses} />;
 };
 
 export default SchedulePage;
