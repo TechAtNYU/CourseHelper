@@ -2,7 +2,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppConfigSync } from "@/modules/app-configs/AppConfigSync";
+import { AppConfigProvider } from "@/modules/app-configs/AppConfigProvider";
 
 export default async function Layout({
   children,
@@ -22,21 +22,22 @@ export default async function Layout({
   const user = await currentUser();
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
-      <AppConfigSync />
-      <AppSidebar
-        user={{
-          name: user?.fullName || user?.username || "Unknown User",
-          email: user?.primaryEmailAddress?.emailAddress || "",
-          avatar: user?.imageUrl || "",
-          initial: `${user?.firstName?.[0]}${user?.lastName?.[0]}` || "UU",
-          isAdmin: Boolean(user?.publicMetadata?.is_admin),
-        }}
-      />
-      <SidebarInset>
-        {header}
-        <main className="p-6 space-y-6">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+    <AppConfigProvider>
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <AppSidebar
+          user={{
+            name: user?.fullName || user?.username || "Unknown User",
+            email: user?.primaryEmailAddress?.emailAddress || "",
+            avatar: user?.imageUrl || "",
+            initial: `${user?.firstName?.[0]}${user?.lastName?.[0]}` || "UU",
+            isAdmin: Boolean(user?.publicMetadata?.is_admin),
+          }}
+        />
+        <SidebarInset>
+          {header}
+          <main className="p-6 space-y-6">{children}</main>
+        </SidebarInset>
+      </SidebarProvider>
+    </AppConfigProvider>
   );
 }
