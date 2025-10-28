@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@albert-plus/server/convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 import { createContext, type ReactNode, useContext, useMemo } from "react";
 
 export type Term = "spring" | "summer" | "fall" | "j-term";
@@ -28,7 +28,11 @@ function parseYear(value: string | undefined): number | null {
 }
 
 export function AppConfigProvider({ children }: { children: ReactNode }) {
-  const configs = useQuery(api.appConfigs.getAllAppConfigs);
+  const { isAuthenticated } = useConvexAuth();
+  const configs = useQuery(
+    api.appConfigs.getAllAppConfigs,
+    isAuthenticated ? {} : "skip",
+  );
 
   const value = useMemo((): AppConfig => {
     if (!configs) {
