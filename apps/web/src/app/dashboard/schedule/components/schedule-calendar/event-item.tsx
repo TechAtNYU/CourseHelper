@@ -4,7 +4,7 @@ import { differenceInMinutes, format, getMinutes } from "date-fns";
 import { useMemo } from "react";
 
 import { cn } from "@/lib/utils";
-import { Class, EventColor } from "../schedule-calendar";
+import type { Class, EventColor } from "../schedule-calendar";
 
 // Using date-fns format with custom formatting:
 // 'h' - hours (1-12)
@@ -139,7 +139,7 @@ export function EventItem({
 
   function getCourseCode(title: string) {
     const parts = title.split(" ");
-    return parts[0] + " " + parts[1];
+    return `${parts[0]} ${parts[1]}`;
   }
 
   const displayEnd = useMemo(() => {

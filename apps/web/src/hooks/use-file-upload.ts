@@ -51,7 +51,7 @@ export type FileUploadActions = {
   getInputProps: (
     props?: InputHTMLAttributes<HTMLInputElement>,
   ) => InputHTMLAttributes<HTMLInputElement> & {
-    // Use `any` here to avoid cross-React ref type conflicts across packages
+    // biome-ignore lint/suspicious/noExplicitAny: cross-React ref type conflicts across packages
     ref: any;
   };
 };
@@ -372,7 +372,7 @@ export const useFileUpload = (
         onChange: handleFileChange,
         accept: props.accept || accept,
         multiple: props.multiple !== undefined ? props.multiple : multiple,
-        // Cast to `any` to prevent mismatched React ref type errors across workspaces
+        // biome-ignore lint/suspicious/noExplicitAny: mismatched React ref type errors across workspaces
         ref: inputRef as any,
       };
     },

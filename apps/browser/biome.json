@@ -3,7 +3,7 @@
   "$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
   "extends": "//",
   "files": {
-    "includes": ["**", "!build", "!src/components/ui"]
+    "includes": ["**", "!!build", "!src/components/ui", "!!.plasmo"]
   },
   "linter": {
     "rules": {

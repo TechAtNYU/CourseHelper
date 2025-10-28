@@ -1,9 +1,9 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import type { api } from "@albert-plus/server/convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import { addDays, startOfWeek } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 import { WeekView } from "./schedule-calendar/week-view";
 
 export const EventHeight = 24;
