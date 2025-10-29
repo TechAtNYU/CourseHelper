@@ -9,13 +9,11 @@ export interface CourseWithOfferings extends Course {
 }
 
 export interface FilterState {
-  searchInput: string;
   creditFilter: number | null;
   selectedDays: DayOptionValue[];
 }
 
 export type FilterAction =
-  | { type: "SET_SEARCH"; payload: string }
   | { type: "SET_CREDIT"; payload: number | null }
   | { type: "SET_DAYS"; payload: DayOptionValue[] }
   | { type: "RESET_FILTERS" };

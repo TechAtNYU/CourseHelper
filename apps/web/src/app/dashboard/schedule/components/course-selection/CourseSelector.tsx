@@ -2,28 +2,41 @@
 import { api } from "@albert-plus/server/convex/_generated/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useMutation, useQuery } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
 import { ConvexError } from "convex/values";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CourseCard, CourseFilters } from "./components";
 import { useCourseExpansion, useCourseFiltering } from "./hooks";
-import type { Course, CourseOffering } from "./types";
+import type { CourseOffering } from "./types";
+
+type CourseOfferingWithCourse = FunctionReturnType<
+  typeof api.courseOfferings.getCourseOfferings
+>["page"][number];
 
 interface CourseSelectorComponentProps {
-  courses: Course[];
-  courseOfferings: CourseOffering[];
+  courseOfferingsWithCourses: CourseOfferingWithCourse[];
   onHover: (course: CourseOffering | null) => void;
+  onSearchChange: (search: string) => void;
+  searchQuery: string;
+  loadMore: (numItems: number) => void;
+  status: "LoadingFirstPage" | "CanLoadMore" | "LoadingMore" | "Exhausted";
+  isSearching?: boolean;
 }
 
 const CourseSelector = ({
-  courses,
-  courseOfferings,
+  courseOfferingsWithCourses,
   onHover,
+  onSearchChange,
+  searchQuery,
+  loadMore,
+  status,
+  isSearching = false,
 }: CourseSelectorComponentProps) => {
   const { filterState, dispatch, filteredData, availableCredits } =
-    useCourseFiltering(courses, courseOfferings);
-  const { searchInput, creditFilter, selectedDays } = filterState;
+    useCourseFiltering(courseOfferingsWithCourses);
+  const { creditFilter, selectedDays } = filterState;
 
   const { toggleCourseExpansion, isExpanded } = useCourseExpansion();
 
@@ -89,10 +102,8 @@ const CourseSelector = ({
     <div className="flex flex-col gap-4 w-full md:max-w-[350px] h-full">
       <div className="flex-shrink-0">
         <CourseFilters
-          searchInput={searchInput}
-          onSearchChange={(value) =>
-            dispatch({ type: "SET_SEARCH", payload: value })
-          }
+          searchInput={searchQuery}
+          onSearchChange={onSearchChange}
           creditFilter={creditFilter}
           onCreditFilterChange={(credit) =>
             dispatch({ type: "SET_CREDIT", payload: credit })
@@ -105,7 +116,7 @@ const CourseSelector = ({
         />
       </div>
 
-      {filteredData.length === 0 && (
+      {filteredData.length === 0 && !isSearching && (
         <div className="flex flex-col space-y-4 items-center justify-center h-full">
           <p className="text-gray-500">No courses found.</p>
           <Button
@@ -116,6 +127,12 @@ const CourseSelector = ({
           >
             Reset Filters
           </Button>
+        </div>
+      )}
+
+      {filteredData.length === 0 && isSearching && (
+        <div className="flex flex-col space-y-4 items-center justify-center h-full">
+          <p className="text-gray-500">Searching...</p>
         </div>
       )}
 
@@ -151,6 +168,19 @@ const CourseSelector = ({
           })}
         </div>
       </div>
+
+      {status === "CanLoadMore" && (
+        <div className="flex justify-center py-4 flex-shrink-0">
+          <Button onClick={() => loadMore(200)} variant="outline">
+            Load More
+          </Button>
+        </div>
+      )}
+      {status === "LoadingMore" && (
+        <div className="flex justify-center py-4 flex-shrink-0">
+          <p className="text-gray-500">Loading more courses...</p>
+        </div>
+      )}
     </div>
   );
 };

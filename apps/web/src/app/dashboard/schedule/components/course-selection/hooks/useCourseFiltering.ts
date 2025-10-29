@@ -1,16 +1,15 @@
+import type { api } from "@albert-plus/server/convex/_generated/api";
+import type { FunctionReturnType } from "convex/server";
 import { groupBy } from "lodash";
 import { useMemo, useReducer } from "react";
-import { useDebounce } from "@/hooks/use-debounce";
 import { DEFAULT_SELECTED_DAYS } from "../components/DaysOfWeek";
-import type {
-  Course,
-  CourseOffering,
-  FilterAction,
-  FilterState,
-} from "../types";
+import type { FilterAction, FilterState } from "../types";
+
+type CourseOfferingWithCourse = FunctionReturnType<
+  typeof api.courseOfferings.getCourseOfferings
+>["page"][number];
 
 const initialFilterState: FilterState = {
-  searchInput: "",
   creditFilter: null,
   selectedDays: DEFAULT_SELECTED_DAYS,
 };
@@ -20,8 +19,6 @@ const filterReducer = (
   action: FilterAction,
 ): FilterState => {
   switch (action.type) {
-    case "SET_SEARCH":
-      return { ...state, searchInput: action.payload };
     case "SET_CREDIT":
       return { ...state, creditFilter: action.payload };
     case "SET_DAYS":
@@ -34,40 +31,40 @@ const filterReducer = (
 };
 
 export const useCourseFiltering = (
-  courses: Course[],
-  courseOfferings: CourseOffering[],
+  courseOfferingsWithCourses: CourseOfferingWithCourse[],
 ) => {
   const [filterState, dispatch] = useReducer(filterReducer, initialFilterState);
-  const { searchInput, creditFilter, selectedDays } = filterState;
-
-  const debouncedSearch = useDebounce(searchInput, 300);
+  const { creditFilter, selectedDays } = filterState;
 
   // Group course offerings by course code
   const coursesWithOfferings = useMemo(() => {
-    const offeringsByCode = groupBy(courseOfferings, "courseCode");
+    const offeringsByCode = groupBy(courseOfferingsWithCourses, "courseCode");
 
-    return courses.map((course) => ({
-      ...course,
-      offerings: offeringsByCode[course.code] || [],
+    const uniqueCourses = new Map<string, CourseOfferingWithCourse["course"]>();
+    courseOfferingsWithCourses.forEach((offering) => {
+      if (offering.course && !uniqueCourses.has(offering.courseCode)) {
+        uniqueCourses.set(offering.courseCode, offering.course);
+      }
+    });
+
+    return Array.from(uniqueCourses.entries()).map(([code, course]) => ({
+      ...course!,
+      offerings: offeringsByCode[code] || [],
     }));
-  }, [courses, courseOfferings]);
+  }, [courseOfferingsWithCourses]);
 
   // Get unique credits for filter buttons
   const availableCredits = useMemo(() => {
-    const credits = new Set(courses.map((course) => course.credits));
+    const credits = new Set(
+      coursesWithOfferings
+        .map((course) => course.credits)
+        .filter((credit) => credit !== undefined),
+    );
     return Array.from(credits).sort((a, b) => a - b);
-  }, [courses]);
+  }, [coursesWithOfferings]);
 
   const filteredData = useMemo(() => {
     let filtered = coursesWithOfferings;
-
-    if (debouncedSearch) {
-      filtered = filtered.filter(
-        (course) =>
-          course.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-          course.code.toLowerCase().includes(debouncedSearch.toLowerCase()),
-      );
-    }
 
     if (creditFilter !== null) {
       filtered = filtered.filter((course) => course.credits === creditFilter);
@@ -83,8 +80,11 @@ export const useCourseFiltering = (
 
     filtered = filtered
       .map((course) => {
-        const offerings = course.offerings.filter((offering) =>
-          offering.days.some((day) => selectedDaySet.has(day.toLowerCase())),
+        const offerings = course.offerings.filter(
+          (offering: CourseOfferingWithCourse) =>
+            offering.days.some((day: string) =>
+              selectedDaySet.has(day.toLowerCase()),
+            ),
         );
 
         return {
@@ -95,7 +95,7 @@ export const useCourseFiltering = (
       .filter((course) => course.offerings.length > 0);
 
     return filtered;
-  }, [coursesWithOfferings, debouncedSearch, creditFilter, selectedDays]);
+  }, [coursesWithOfferings, creditFilter, selectedDays]);
 
   return {
     filterState,

@@ -1,5 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import type { Doc } from "./_generated/dataModel";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { courseOfferings } from "./schemas/courseOfferings";
@@ -102,24 +103,64 @@ export const getCourseOfferings = protectedQuery({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, { query, paginationOpts, term, year }) => {
-    const result = query
-      ? await ctx.db
-          .query("courseOfferings")
-          .withSearchIndex("search_title", (q) =>
-            q
-              .search("title", query)
-              .eq("isCorequisite", false)
-              .eq("term", term)
-              .eq("year", year),
-          )
-          .paginate(paginationOpts)
-      : await ctx.db
-          .query("courseOfferings")
-          .withIndex("by_term_year", (q) =>
-            q.eq("isCorequisite", false).eq("term", term).eq("year", year),
-          )
-          .order("desc")
-          .paginate(paginationOpts);
+    let result: {
+      page: Doc<"courseOfferings">[];
+      isDone: boolean;
+      continueCursor: string;
+    };
+
+    if (query) {
+      const titleResults = await ctx.db
+        .query("courseOfferings")
+        .withSearchIndex("search_title", (q) =>
+          q
+            .search("title", query)
+            .eq("isCorequisite", false)
+            .eq("term", term)
+            .eq("year", year),
+        )
+        .collect();
+
+      // also search in course code
+      const allOfferings = await ctx.db
+        .query("courseOfferings")
+        .withIndex("by_term_year", (q) =>
+          q.eq("isCorequisite", false).eq("term", term).eq("year", year),
+        )
+        .collect();
+
+      const codeResults = allOfferings.filter((offering) =>
+        offering.courseCode.toLowerCase().includes(query.toLowerCase()),
+      );
+
+      const combinedMap = new Map();
+      [...titleResults, ...codeResults].forEach((offering) => {
+        combinedMap.set(offering._id, offering);
+      });
+
+      const combinedResults = Array.from(combinedMap.values());
+
+      // manually paginate combined results
+      const startIndex = paginationOpts.cursor
+        ? combinedResults.findIndex((r) => r._id === paginationOpts.cursor) + 1
+        : 0;
+      const endIndex = startIndex + paginationOpts.numItems;
+      const page = combinedResults.slice(startIndex, endIndex);
+
+      result = {
+        page,
+        isDone: endIndex >= combinedResults.length,
+        continueCursor: page.length > 0 ? page[page.length - 1]._id : "",
+      };
+    } else {
+      result = await ctx.db
+        .query("courseOfferings")
+        .withIndex("by_term_year", (q) =>
+          q.eq("isCorequisite", false).eq("term", term).eq("year", year),
+        )
+        .order("desc")
+        .paginate(paginationOpts);
+    }
 
     const courseCodes = [...new Set(result.page.map((o) => o.courseCode))];
 

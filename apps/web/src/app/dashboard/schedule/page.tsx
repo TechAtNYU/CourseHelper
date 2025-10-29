@@ -1,9 +1,9 @@
 "use client";
 
 import { api } from "@albert-plus/server/convex/_generated/api";
-import { useConvexAuth, useQuery } from "convex/react";
+import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CourseSelector } from "@/app/dashboard/schedule/components/course-selection";
 import CourseSelectorSkeleton from "@/app/dashboard/schedule/components/course-selection/components/CourseSelectorSkeleton";
 import type { CourseOffering } from "@/app/dashboard/schedule/components/course-selection/types";
@@ -13,8 +13,13 @@ import {
   useCurrentTerm,
   useCurrentYear,
 } from "@/components/AppConfigProvider";
+import { useDebounce } from "@/hooks/use-debounce";
 import { formatTermTitle } from "@/utils/format-term";
 import { ScheduleCalendar } from "./components/schedule-calendar";
+
+type CourseOfferingWithCourse = FunctionReturnType<
+  typeof api.courseOfferings.getCourseOfferings
+>["page"][number];
 
 function getUserClassesByTerm(
   classes:
@@ -41,24 +46,57 @@ const SchedulePage = () => {
   const [mobileView, setMobileView] = useState<"selector" | "calendar">(
     "selector",
   );
+  const [searchInput, setSearchInput] = useState<string>("");
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  // Keep track of displayed results to prevent flashing when searching
+  const [displayedResults, setDisplayedResults] = useState<
+    CourseOfferingWithCourse[]
+  >([]);
+  const prevSearchRef = useRef(debouncedSearch);
 
   const allClasses = useQuery(
     api.userCourseOfferings.getUserCourseOfferings,
     isAuthenticated ? {} : "skip",
   );
 
-  const courseData = useQuery(
-    api.courseOfferings.getCourseOfferingsWithCourses,
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.courseOfferings.getCourseOfferings,
     isAuthenticated && currentTerm && currentYear
-      ? { term: currentTerm, year: currentYear }
+      ? {
+          term: currentTerm,
+          year: currentYear,
+          query: debouncedSearch || undefined,
+        }
       : "skip",
+    { initialNumItems: 500 },
   );
+
+  // Update displayed results when new results are loaded (including empty results)
+  useEffect(() => {
+    if (status !== "LoadingFirstPage") {
+      setDisplayedResults(results);
+      prevSearchRef.current = debouncedSearch;
+    }
+  }, [results, debouncedSearch, status]);
 
   const title = formatTermTitle(currentTerm, currentYear);
 
   const classes = getUserClassesByTerm(allClasses, currentYear, currentTerm);
 
-  if (!courseData) return <CourseSelectorSkeleton />;
+  const isSearching =
+    status === "LoadingFirstPage" &&
+    prevSearchRef.current !== debouncedSearch &&
+    prevSearchRef.current !== "";
+
+  // Only show skeleton on true initial load (not when searching)
+  if (
+    status === "LoadingFirstPage" &&
+    displayedResults.length === 0 &&
+    !isSearching
+  ) {
+    return <CourseSelectorSkeleton />;
+  }
 
   return (
     <div className="flex flex-col gap-4 h-full w-full">
@@ -72,9 +110,13 @@ const SchedulePage = () => {
         {mobileView === "selector" ? (
           <div className="h-full overflow-y-auto">
             <CourseSelector
-              courses={courseData.courses}
-              courseOfferings={courseData.courseOfferings}
+              courseOfferingsWithCourses={displayedResults}
               onHover={setHoveredCourse}
+              onSearchChange={setSearchInput}
+              searchQuery={searchInput}
+              loadMore={loadMore}
+              status={status}
+              isSearching={isSearching}
             />
           </div>
         ) : (
@@ -92,9 +134,13 @@ const SchedulePage = () => {
       <div className="hidden md:flex gap-4 h-full w-full">
         <div className="w-[350px] h-full overflow-y-auto">
           <CourseSelector
-            courses={courseData.courses}
-            courseOfferings={courseData.courseOfferings}
+            courseOfferingsWithCourses={displayedResults}
             onHover={setHoveredCourse}
+            onSearchChange={setSearchInput}
+            searchQuery={searchInput}
+            loadMore={loadMore}
+            status={status}
+            isSearching={isSearching}
           />
         </div>
 
