@@ -23,6 +23,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     avatar: string;
     initial: string;
     isAdmin: boolean;
+    userId?: string;
   };
 }
 
