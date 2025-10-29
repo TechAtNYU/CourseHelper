@@ -1,22 +1,22 @@
 /**
  * Comprehensive Database Seeding Script for AlbertPlus
- * 
+ *
  * This script seeds all tables in the Convex database with sample data.
  * It handles dependencies between tables and ensures data integrity.
- * 
+ *
  * Usage:
  *   node seed.js
- * 
+ *
  * Requirements:
  *   - Convex CLI installed and configured
  *   - Valid Convex deployment URL
  */
 
 import { ConvexHttpClient } from "convex/browser";
-import { api } from "../convex/_generated/api.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { api } from "../convex/_generated/api.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +26,8 @@ const __dirname = path.dirname(__filename);
 // ============================================================================
 
 // Your Convex deployment URL
-const CONVEX_URL = process.env.CONVEX_URL || "https://your-deployment.convex.cloud";
+const CONVEX_URL =
+  process.env.CONVEX_URL || "https://your-deployment.convex.cloud";
 
 // User ID for testing - all user-specific data will be created for this user
 // Replace with your actual Clerk user ID or test user ID
@@ -61,7 +62,10 @@ async function seedAppConfigs() {
       });
       console.log(`  ✓ Created config: ${config.key}`);
     } catch (error) {
-      console.error(`  ✗ Failed to create config ${config.key}:`, error.message);
+      console.error(
+        `  ✗ Failed to create config ${config.key}:`,
+        error.message,
+      );
     }
   }
 }
@@ -84,7 +88,10 @@ async function seedPrograms() {
       programMap.set(program.name, programId);
       console.log(`  ✓ Created program: ${program.name} (${programId})`);
     } catch (error) {
-      console.error(`  ✗ Failed to create program ${program.name}:`, error.message);
+      console.error(
+        `  ✗ Failed to create program ${program.name}:`,
+        error.message,
+      );
     }
   }
 
@@ -113,7 +120,10 @@ async function seedCourses() {
       courseMap.set(course.code, courseId);
       console.log(`  ✓ Created course: ${course.code} - ${course.title}`);
     } catch (error) {
-      console.error(`  ✗ Failed to create course ${course.code}:`, error.message);
+      console.error(
+        `  ✗ Failed to create course ${course.code}:`,
+        error.message,
+      );
     }
   }
 
@@ -148,7 +158,10 @@ async function seedPrerequisites(courseMap) {
       await client.mutation(api.prerequisites.create, prerequisiteData);
       console.log(`  ✓ Created prerequisite for: ${prereq.courseCode}`);
     } catch (error) {
-      console.error(`  ✗ Failed to create prerequisite for ${prereq.courseCode}:`, error.message);
+      console.error(
+        `  ✗ Failed to create prerequisite for ${prereq.courseCode}:`,
+        error.message,
+      );
     }
   }
 }
@@ -181,9 +194,14 @@ async function seedRequirements(programMap) {
       }
 
       await client.mutation(api.requirements.create, requirementData);
-      console.log(`  ✓ Created requirement for: ${req.programName} (${req.type})`);
+      console.log(
+        `  ✓ Created requirement for: ${req.programName} (${req.type})`,
+      );
     } catch (error) {
-      console.error(`  ✗ Failed to create requirement for ${req.programName}:`, error.message);
+      console.error(
+        `  ✗ Failed to create requirement for ${req.programName}:`,
+        error.message,
+      );
     }
   }
 }
@@ -198,9 +216,14 @@ async function seedCourseOfferings() {
   for (const offering of offerings) {
     try {
       await client.mutation(api.courseOfferings.create, offering);
-      console.log(`  ✓ Created offering: ${offering.courseCode} ${offering.section} (${offering.term} ${offering.year})`);
+      console.log(
+        `  ✓ Created offering: ${offering.courseCode} ${offering.section} (${offering.term} ${offering.year})`,
+      );
     } catch (error) {
-      console.error(`  ✗ Failed to create offering ${offering.courseCode}:`, error.message);
+      console.error(
+        `  ✗ Failed to create offering ${offering.courseCode}:`,
+        error.message,
+      );
     }
   }
 }
@@ -220,7 +243,9 @@ async function seedStudents(programMap) {
         .filter((id) => id !== undefined);
 
       if (programIds.length === 0) {
-        console.error(`  ✗ No valid programs found for student ${student.userId}`);
+        console.error(
+          `  ✗ No valid programs found for student ${student.userId}`,
+        );
         continue;
       }
 
@@ -230,7 +255,9 @@ async function seedStudents(programMap) {
         startingDate: student.startingDate,
         expectedGraduationDate: student.expectedGraduationDate,
       });
-      console.log(`  ✓ Created student for user: ${TEST_USER_ID} with programs: ${student.programNames.join(", ")}`);
+      console.log(
+        `  ✓ Created student for user: ${TEST_USER_ID} with programs: ${student.programNames.join(", ")}`,
+      );
     } catch (error) {
       console.error(`  ✗ Failed to create student:`, error.message);
     }
@@ -250,9 +277,14 @@ async function seedUserCourses() {
         ...userCourse,
         userId: TEST_USER_ID, // Use configured test user ID
       });
-      console.log(`  ✓ Created user course: ${userCourse.courseCode} - ${userCourse.title}`);
+      console.log(
+        `  ✓ Created user course: ${userCourse.courseCode} - ${userCourse.title}`,
+      );
     } catch (error) {
-      console.error(`  ✗ Failed to create user course ${userCourse.courseCode}:`, error.message);
+      console.error(
+        `  ✗ Failed to create user course ${userCourse.courseCode}:`,
+        error.message,
+      );
     }
   }
 }
@@ -270,9 +302,14 @@ async function seedUserCourseOfferings() {
         userId: TEST_USER_ID, // Use configured test user ID
         classNumber: offering.classNumber,
       });
-      console.log(`  ✓ Created user course offering: class ${offering.classNumber}`);
+      console.log(
+        `  ✓ Created user course offering: class ${offering.classNumber}`,
+      );
     } catch (error) {
-      console.error(`  ✗ Failed to create user course offering for class ${offering.classNumber}:`, error.message);
+      console.error(
+        `  ✗ Failed to create user course offering for class ${offering.classNumber}:`,
+        error.message,
+      );
     }
   }
 }

@@ -6,14 +6,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Joannides"
-    ],
+    "instructor": ["Joannides"],
     "location": "Warren Weaver Hall Room 109",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "11:00",
     "endTime": "12:15",
     "status": "open",
@@ -26,14 +21,9 @@
     "section": "002",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Kapp"
-    ],
+    "instructor": ["Kapp"],
     "location": "Warren Weaver Hall Room 109",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "14:00",
     "endTime": "15:15",
     "status": "waitlist",
@@ -47,14 +37,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Schoenfeld"
-    ],
+    "instructor": ["Schoenfeld"],
     "location": "Warren Weaver Hall Room 101",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "14:00",
     "endTime": "15:15",
     "status": "closed",
@@ -67,14 +52,9 @@
     "section": "002",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Kapp"
-    ],
+    "instructor": ["Kapp"],
     "location": "Warren Weaver Hall Room 101",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "11:00",
     "endTime": "12:15",
     "status": "open",
@@ -87,14 +67,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Gottlieb"
-    ],
+    "instructor": ["Gottlieb"],
     "location": "Warren Weaver Hall Room 109",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "15:30",
     "endTime": "16:45",
     "status": "open",
@@ -107,14 +82,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Zahran"
-    ],
+    "instructor": ["Zahran"],
     "location": "Warren Weaver Hall Room 101",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "15:30",
     "endTime": "16:45",
     "status": "closed",
@@ -127,14 +97,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Cole"
-    ],
+    "instructor": ["Cole"],
     "location": "Warren Weaver Hall Room 109",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "12:30",
     "endTime": "13:45",
     "status": "open",
@@ -147,15 +112,9 @@
     "section": "051",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Patil",
-      "Zahran"
-    ],
+    "instructor": ["Patil", "Zahran"],
     "location": "Online",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "14:00",
     "endTime": "15:15",
     "status": "closed",
@@ -168,15 +127,9 @@
     "section": "003",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Wu",
-      "Zeidenberg"
-    ],
+    "instructor": ["Wu", "Zeidenberg"],
     "location": "181 Mercer St (Paulson Center) Room 323",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "15:30",
     "endTime": "16:45",
     "status": "open",
@@ -189,15 +142,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Siegel"
-    ],
+    "instructor": ["Siegel"],
     "location": "Warren Weaver Hall Room 317",
-    "days": [
-      "monday",
-      "wednesday",
-      "friday"
-    ],
+    "days": ["monday", "wednesday", "friday"],
     "startTime": "10:00",
     "endTime": "10:50",
     "status": "open",
@@ -210,14 +157,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Chen"
-    ],
+    "instructor": ["Chen"],
     "location": "Warren Weaver Hall Room 109",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "09:30",
     "endTime": "10:45",
     "status": "open",
@@ -230,14 +172,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Lee"
-    ],
+    "instructor": ["Lee"],
     "location": "Warren Weaver Hall Room 101",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "09:30",
     "endTime": "10:45",
     "status": "waitlist",
@@ -251,14 +188,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Haas"
-    ],
+    "instructor": ["Haas"],
     "location": "6 Washington Pl (Meyer Hall) Room 121",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "11:00",
     "endTime": "12:15",
     "status": "open",
@@ -271,13 +203,9 @@
     "section": "004",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Kim"
-    ],
+    "instructor": ["Kim"],
     "location": "31 Washington Pl (Silver Ctr) Room 203",
-    "days": [
-      "monday"
-    ],
+    "days": ["monday"],
     "startTime": "12:30",
     "endTime": "13:45",
     "status": "closed",
@@ -291,14 +219,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Maudlin"
-    ],
+    "instructor": ["Maudlin"],
     "location": "6 Washington Pl (Meyer Hall) Room 122",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "16:55",
     "endTime": "18:10",
     "status": "open",
@@ -311,13 +234,9 @@
     "section": "004",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Mora"
-    ],
+    "instructor": ["Mora"],
     "location": "181 Mercer St (Paulson Center) Room 323",
-    "days": [
-      "friday"
-    ],
+    "days": ["friday"],
     "startTime": "12:30",
     "endTime": "13:45",
     "status": "closed",
@@ -331,14 +250,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Smith"
-    ],
+    "instructor": ["Smith"],
     "location": "19 W 4th St Room 101",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "11:00",
     "endTime": "12:15",
     "status": "open",
@@ -351,14 +265,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Johnson"
-    ],
+    "instructor": ["Johnson"],
     "location": "19 W 4th St Room 102",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "14:00",
     "endTime": "15:15",
     "status": "open",
@@ -371,14 +280,9 @@
     "section": "001",
     "year": 2025,
     "term": "spring",
-    "instructor": [
-      "Zhang"
-    ],
+    "instructor": ["Zhang"],
     "location": "60 5th Ave Room 150",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "15:30",
     "endTime": "16:45",
     "status": "waitlist",
@@ -392,14 +296,9 @@
     "section": "001",
     "year": 2025,
     "term": "fall",
-    "instructor": [
-      "Joannides"
-    ],
+    "instructor": ["Joannides"],
     "location": "Warren Weaver Hall Room 109",
-    "days": [
-      "monday",
-      "wednesday"
-    ],
+    "days": ["monday", "wednesday"],
     "startTime": "11:00",
     "endTime": "12:15",
     "status": "open",
@@ -412,14 +311,9 @@
     "section": "001",
     "year": 2025,
     "term": "fall",
-    "instructor": [
-      "Schoenfeld"
-    ],
+    "instructor": ["Schoenfeld"],
     "location": "Warren Weaver Hall Room 101",
-    "days": [
-      "tuesday",
-      "thursday"
-    ],
+    "days": ["tuesday", "thursday"],
     "startTime": "14:00",
     "endTime": "15:15",
     "status": "open",
