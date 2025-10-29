@@ -26,7 +26,8 @@ Edit the configuration section at the top of `seed.js`:
 
 ```javascript
 // Your Convex deployment URL
-const CONVEX_URL = process.env.CONVEX_URL || "https://your-deployment.convex.cloud";
+const CONVEX_URL =
+  process.env.CONVEX_URL || "https://your-deployment.convex.cloud";
 
 // User ID for testing - all user-specific data will be created for this user
 const TEST_USER_ID = process.env.TEST_USER_ID || "user_test_123";
@@ -41,29 +42,6 @@ export TEST_USER_ID="user_2abc123xyz"
 
 ## Usage
 
-### Method 1: Simple Seeding (JSONL Import)
-
-For basic tables that don't require complex relationships:
-
-```bash
-# Make the script executable
-chmod +x seed-simple.sh
-
-# Run the script
-./seed-simple.sh
-```
-
-This seeds:
-- appConfigs
-- programs
-- courses
-- courseOfferings
-- userCourseOfferings
-
-### Method 2: Complete Seeding (Node.js)
-
-For all tables including complex relationships:
-
 ```bash
 # Install dependencies (if needed)
 npm install convex
@@ -73,6 +51,7 @@ node seed.js
 ```
 
 This seeds all tables including:
+
 - All tables from Method 1
 - prerequisites (with course relationships)
 - requirements (with program relationships)
@@ -82,6 +61,7 @@ This seeds all tables including:
 ## Sample Data Details
 
 ### Programs (6 programs)
+
 - Computer Science (BA)
 - Computer Science (BS)
 - Data Science (BS)
@@ -90,6 +70,7 @@ This seeds all tables including:
 - Computer Science (MS)
 
 ### Courses (15 courses)
+
 - CSCI-UA 101: Introduction to Computer Science
 - CSCI-UA 102: Data Structures
 - CSCI-UA 201: Computer Systems Organization
@@ -107,6 +88,7 @@ This seeds all tables including:
 - DSGA-UA 201: Introduction to Data Science
 
 ### Course Offerings (21 sections)
+
 - Spring 2025: 19 sections
 - Fall 2025: 2 sections
 - Various times, locations, and instructors
@@ -140,6 +122,7 @@ All seed data files use standard **JSON format** (`.json`) with arrays of object
 ```
 
 This format is:
+
 - Easy to read and edit in any text editor
 - Supports syntax highlighting and validation
 - Compatible with Convex CLI import command
@@ -157,15 +140,19 @@ To customize the sample data:
 ## Troubleshooting
 
 ### "Course not found" errors
+
 Ensure all course codes referenced in prerequisites and requirements exist in `courses.jsonl`.
 
 ### "Program not found" errors
+
 Ensure all program names referenced in requirements and students exist in `programs.jsonl`.
 
 ### Authentication errors
+
 Verify your Convex deployment URL and ensure you have proper access credentials.
 
 ### User ID not found in dashboard
+
 Make sure you're using the correct user ID format (e.g., Clerk user IDs start with `user_`).
 
 ## Integration with Existing Scripts
