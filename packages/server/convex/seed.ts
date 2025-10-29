@@ -1,11 +1,12 @@
 /**
  * Database seeding mutations for AlbertPlus
- * 
+ *
  * These are internal mutations that can be called from the Convex dashboard
  * or via the Convex CLI to seed the database with sample data.
  */
 
 import { v } from "convex/values";
+import type { Id } from "./_generated/dataModel";
 import { internalMutation } from "./_generated/server";
 
 /**
@@ -14,150 +15,168 @@ import { internalMutation } from "./_generated/server";
  */
 export const seedAll = internalMutation({
   args: {
-    appConfigs: v.array(v.object({
-      key: v.string(),
-      value: v.string(),
-    })),
-    programs: v.array(v.object({
-      name: v.string(),
-      level: v.union(v.literal("undergraduate"), v.literal("graduate")),
-      programUrl: v.string(),
-    })),
-    courses: v.array(v.object({
-      code: v.string(),
-      program: v.string(),
-      level: v.number(),
-      title: v.string(),
-      credits: v.number(),
-      description: v.string(),
-      courseUrl: v.string(),
-    })),
-    courseOfferings: v.array(v.object({
-      courseCode: v.string(),
-      classNumber: v.number(),
-      title: v.string(),
-      section: v.string(),
-      year: v.number(),
-      term: v.union(
-        v.literal("spring"),
-        v.literal("summer"),
-        v.literal("fall"),
-        v.literal("j-term"),
-      ),
-      instructor: v.array(v.string()),
-      location: v.optional(v.string()),
-      days: v.array(
-        v.union(
-          v.literal("monday"),
-          v.literal("tuesday"),
-          v.literal("wednesday"),
-          v.literal("thursday"),
-          v.literal("friday"),
-          v.literal("saturday"),
-          v.literal("sunday"),
-        ),
-      ),
-      startTime: v.string(),
-      endTime: v.string(),
-      status: v.union(
-        v.literal("open"),
-        v.literal("closed"),
-        v.literal("waitlist"),
-      ),
-      waitlistNum: v.optional(v.number()),
-      isCorequisite: v.boolean(),
-      corequisiteOf: v.optional(v.number()),
-    })),
-    prerequisites: v.array(v.union(
+    appConfigs: v.array(
+      v.object({
+        key: v.string(),
+        value: v.string(),
+      }),
+    ),
+    programs: v.array(
+      v.object({
+        name: v.string(),
+        level: v.union(v.literal("undergraduate"), v.literal("graduate")),
+        programUrl: v.string(),
+      }),
+    ),
+    courses: v.array(
+      v.object({
+        code: v.string(),
+        program: v.string(),
+        level: v.number(),
+        title: v.string(),
+        credits: v.number(),
+        description: v.string(),
+        courseUrl: v.string(),
+      }),
+    ),
+    courseOfferings: v.array(
       v.object({
         courseCode: v.string(),
-        type: v.literal("required"),
-        courses: v.array(v.string()),
-      }),
-      v.object({
-        courseCode: v.string(),
-        type: v.literal("alternative"),
-        courses: v.array(v.string()),
-      }),
-      v.object({
-        courseCode: v.string(),
-        type: v.literal("options"),
-        courses: v.array(v.string()),
-        creditsRequired: v.number(),
-      }),
-    )),
-    requirements: v.array(v.union(
-      v.object({
-        programName: v.string(),
-        isMajor: v.boolean(),
-        type: v.literal("required"),
-        courses: v.array(v.string()),
-      }),
-      v.object({
-        programName: v.string(),
-        isMajor: v.boolean(),
-        type: v.literal("alternative"),
-        courses: v.array(v.string()),
-      }),
-      v.object({
-        programName: v.string(),
-        isMajor: v.boolean(),
-        type: v.literal("options"),
-        courses: v.array(v.string()),
-        courseLevels: v.array(
-          v.object({
-            program: v.string(),
-            level: v.number(),
-          }),
-        ),
-        creditsRequired: v.number(),
-      }),
-    )),
-    students: v.array(v.object({
-      userId: v.string(),
-      programNames: v.array(v.string()),
-      startingDate: v.object({
+        classNumber: v.number(),
+        title: v.string(),
+        section: v.string(),
         year: v.number(),
-        term: v.union(v.literal("spring"), v.literal("fall")),
-      }),
-      expectedGraduationDate: v.object({
-        year: v.number(),
-        term: v.union(v.literal("spring"), v.literal("fall")),
-      }),
-    })),
-    userCourses: v.array(v.object({
-      userId: v.string(),
-      courseCode: v.string(),
-      title: v.string(),
-      year: v.number(),
-      term: v.union(
-        v.literal("spring"),
-        v.literal("summer"),
-        v.literal("fall"),
-        v.literal("j-term"),
-      ),
-      grade: v.optional(
-        v.union(
-          v.literal("a"),
-          v.literal("a-"),
-          v.literal("b+"),
-          v.literal("b"),
-          v.literal("b-"),
-          v.literal("c+"),
-          v.literal("c"),
-          v.literal("c-"),
-          v.literal("d+"),
-          v.literal("d"),
-          v.literal("p"),
-          v.literal("f"),
-          v.literal("w"),
+        term: v.union(
+          v.literal("spring"),
+          v.literal("summer"),
+          v.literal("fall"),
+          v.literal("j-term"),
         ),
+        instructor: v.array(v.string()),
+        location: v.optional(v.string()),
+        days: v.array(
+          v.union(
+            v.literal("monday"),
+            v.literal("tuesday"),
+            v.literal("wednesday"),
+            v.literal("thursday"),
+            v.literal("friday"),
+            v.literal("saturday"),
+            v.literal("sunday"),
+          ),
+        ),
+        startTime: v.string(),
+        endTime: v.string(),
+        status: v.union(
+          v.literal("open"),
+          v.literal("closed"),
+          v.literal("waitlist"),
+        ),
+        waitlistNum: v.optional(v.number()),
+        isCorequisite: v.boolean(),
+        corequisiteOf: v.optional(v.number()),
+      }),
+    ),
+    prerequisites: v.array(
+      v.union(
+        v.object({
+          courseCode: v.string(),
+          type: v.literal("required"),
+          courses: v.array(v.string()),
+        }),
+        v.object({
+          courseCode: v.string(),
+          type: v.literal("alternative"),
+          courses: v.array(v.string()),
+        }),
+        v.object({
+          courseCode: v.string(),
+          type: v.literal("options"),
+          courses: v.array(v.string()),
+          creditsRequired: v.number(),
+        }),
       ),
-    })),
-    userCourseOfferings: v.array(v.object({
-      userId: v.string(),
-      classNumber: v.number(),
-    })),
+    ),
+    requirements: v.array(
+      v.union(
+        v.object({
+          programName: v.string(),
+          isMajor: v.boolean(),
+          type: v.literal("required"),
+          courses: v.array(v.string()),
+        }),
+        v.object({
+          programName: v.string(),
+          isMajor: v.boolean(),
+          type: v.literal("alternative"),
+          courses: v.array(v.string()),
+        }),
+        v.object({
+          programName: v.string(),
+          isMajor: v.boolean(),
+          type: v.literal("options"),
+          courses: v.array(v.string()),
+          courseLevels: v.array(
+            v.object({
+              program: v.string(),
+              level: v.number(),
+            }),
+          ),
+          creditsRequired: v.number(),
+        }),
+      ),
+    ),
+    students: v.array(
+      v.object({
+        userId: v.string(),
+        programNames: v.array(v.string()),
+        startingDate: v.object({
+          year: v.number(),
+          term: v.union(v.literal("spring"), v.literal("fall")),
+        }),
+        expectedGraduationDate: v.object({
+          year: v.number(),
+          term: v.union(v.literal("spring"), v.literal("fall")),
+        }),
+      }),
+    ),
+    userCourses: v.array(
+      v.object({
+        userId: v.string(),
+        courseCode: v.string(),
+        title: v.string(),
+        year: v.number(),
+        term: v.union(
+          v.literal("spring"),
+          v.literal("summer"),
+          v.literal("fall"),
+          v.literal("j-term"),
+        ),
+        grade: v.optional(
+          v.union(
+            v.literal("a"),
+            v.literal("a-"),
+            v.literal("b+"),
+            v.literal("b"),
+            v.literal("b-"),
+            v.literal("c+"),
+            v.literal("c"),
+            v.literal("c-"),
+            v.literal("d+"),
+            v.literal("d"),
+            v.literal("p"),
+            v.literal("f"),
+            v.literal("w"),
+          ),
+        ),
+      }),
+    ),
+    userCourseOfferings: v.array(
+      v.object({
+        userId: v.string(),
+        classNumber: v.number(),
+      }),
+    ),
   },
   handler: async (ctx, args) => {
     console.log("🌱 Starting database seeding...");
@@ -179,14 +198,14 @@ export const seedAll = internalMutation({
 
     // 2. Seed programs and build ID map
     console.log("📚 Seeding programs...");
-    const programMap = new Map<string, any>();
+    const programMap = new Map<string, Id<"programs">>();
     for (const program of args.programs) {
       const existing = await ctx.db
         .query("programs")
         .withIndex("by_program_name", (q) => q.eq("name", program.name))
         .unique();
 
-      let programId;
+      let programId: Id<"programs">;
       if (existing) {
         await ctx.db.patch(existing._id, program);
         programId = existing._id;
@@ -198,14 +217,14 @@ export const seedAll = internalMutation({
 
     // 3. Seed courses and build ID map
     console.log("📖 Seeding courses...");
-    const courseMap = new Map<string, any>();
+    const courseMap = new Map<string, Id<"courses">>();
     for (const course of args.courses) {
       const existing = await ctx.db
         .query("courses")
         .withIndex("by_course_code", (q) => q.eq("code", course.code))
         .unique();
 
-      let courseId;
+      let courseId: Id<"courses">;
       if (existing) {
         await ctx.db.patch(existing._id, course);
         courseId = existing._id;
@@ -224,17 +243,20 @@ export const seedAll = internalMutation({
         continue;
       }
 
-      const prerequisiteData: any = {
-        courseId,
-        type: prereq.type,
-        courses: prereq.courses,
-      };
-
       if (prereq.type === "options" && "creditsRequired" in prereq) {
-        prerequisiteData.creditsRequired = prereq.creditsRequired;
+        await ctx.db.insert("prerequisites", {
+          courseId,
+          type: prereq.type,
+          courses: prereq.courses,
+          creditsRequired: prereq.creditsRequired,
+        });
+      } else {
+        await ctx.db.insert("prerequisites", {
+          courseId,
+          type: prereq.type,
+          courses: prereq.courses,
+        });
       }
-
-      await ctx.db.insert("prerequisites", prerequisiteData);
     }
 
     // 5. Seed requirements
@@ -246,23 +268,31 @@ export const seedAll = internalMutation({
         continue;
       }
 
-      const requirementData: any = {
-        programId,
-        isMajor: req.isMajor,
-        type: req.type,
-        courses: req.courses,
-      };
-
-      if (req.type === "options" && "courseLevels" in req && "creditsRequired" in req) {
-        requirementData.courseLevels = req.courseLevels;
-        requirementData.creditsRequired = req.creditsRequired;
+      if (
+        req.type === "options" &&
+        "courseLevels" in req &&
+        "creditsRequired" in req
+      ) {
+        await ctx.db.insert("requirements", {
+          programId,
+          isMajor: req.isMajor,
+          type: req.type,
+          courses: req.courses,
+          courseLevels: req.courseLevels,
+          creditsRequired: req.creditsRequired,
+        });
+      } else {
+        await ctx.db.insert("requirements", {
+          programId,
+          isMajor: req.isMajor,
+          type: req.type,
+          courses: req.courses,
+        });
       }
-
-      await ctx.db.insert("requirements", requirementData);
     }
 
     // 6. Seed course offerings
-    console.log("🗓️  Seeding course offerings...");
+    console.log("🗓  Seeding course offerings...");
     for (const offering of args.courseOfferings) {
       const existing = await ctx.db
         .query("courseOfferings")

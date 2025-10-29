@@ -8,8 +8,7 @@
     "check": "biome check",
     "check:types": "tsc --noEmit",
     "seed:configs": "convex import --table appConfigs --replace seed/appConfigs.json",
-    "seed": "bun seed/seed.ts",
-    "seed:doppler": "doppler run -- bun seed/seed.ts"
+    "seed": "bun seed/seed.ts"
   },
   "dependencies": {
     "convex": "^1.28.0",

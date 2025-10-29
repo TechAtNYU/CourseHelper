@@ -193,8 +193,7 @@ You can add a convenient npm script:
 ```json
 {
   "scripts": {
-    "seed": "bun seed/seed.ts",
-    "seed:doppler": "doppler run -- bun seed/seed.ts"
+    "seed": "bun seed/seed.ts"
   }
 }
 ```
@@ -204,6 +203,8 @@ Then run:
 export TEST_USER_ID="your_user_id"
 npm run seed
 ```
+
+**Note**: The script is already configured in `package.json`.
 
 ## Notes
 

@@ -1,57 +1,33 @@
 /**
  * Database Seeding Script for AlbertPlus
- * 
+ *
  * This script reads all JSON seed files and calls the Convex internal mutation
- * to seed the database with proper relationship handling.
- * 
+ * via the Convex CLI to seed the database with proper relationship handling.
+ *
  * Usage:
  *   bun seed/seed.ts
- * 
+ *
  * Configuration:
  *   Set TEST_USER_ID environment variable to seed data for a specific user
  *   export TEST_USER_ID="user_2abc123xyz"
  */
 
-import { internal } from "../convex/_generated/api.js";
-import { ConvexHttpClient } from "convex/browser";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
 
-// ============================================================================
-// CONFIGURATION
-// ============================================================================
+const execAsync = promisify(exec);
 
-// User ID for testing - all user-specific data will be created for this user
 const TEST_USER_ID = process.env.TEST_USER_ID || "user_test_123";
 
-// Convex deployment URL from environment
-const CONVEX_URL = process.env.CONVEX_URL;
-
-if (!CONVEX_URL) {
-  console.error("❌ Error: CONVEX_URL environment variable is not set");
-  console.error("Please run: export CONVEX_URL=<your-deployment-url>");
-  console.error("Or run this script with: doppler run -- bun seed/seed.ts");
-  process.exit(1);
-}
-
-// ============================================================================
-
-const client = new ConvexHttpClient(CONVEX_URL);
-
-/**
- * Read JSON file using Bun
- */
 async function readJSON(filename: string) {
   const file = Bun.file(new URL(filename, import.meta.url));
   return await file.json();
 }
 
-/**
- * Main seeding function
- */
 async function seedDatabase() {
   console.log("🌱 Loading seed data files...\n");
 
   try {
-    // Load all seed data
     const appConfigs = await readJSON("appConfigs.json");
     const programs = await readJSON("programs.json");
     const courses = await readJSON("courses.json");
@@ -62,23 +38,27 @@ async function seedDatabase() {
     const userCoursesData = await readJSON("userCourses.json");
     const userCourseOfferingsData = await readJSON("userCourseOfferings.json");
 
-    // Replace user IDs with TEST_USER_ID
+    // biome-ignore lint/suspicious/noExplicitAny: JSON data doesn't have types
     const students = studentsData.map((student: any) => ({
       ...student,
       userId: TEST_USER_ID,
     }));
 
+    // biome-ignore lint/suspicious/noExplicitAny: JSON data doesn't have types
     const userCourses = userCoursesData.map((course: any) => ({
       ...course,
       userId: TEST_USER_ID,
     }));
 
-    const userCourseOfferings = userCourseOfferingsData.map((offering: any) => ({
-      ...offering,
-      userId: TEST_USER_ID,
-    }));
+    const userCourseOfferings = userCourseOfferingsData.map(
+      // biome-ignore lint/suspicious/noExplicitAny: JSON data doesn't have types
+      (offering: any) => ({
+        ...offering,
+        userId: TEST_USER_ID,
+      }),
+    );
 
-    console.log(`📊 Loaded seed data:`);
+    console.log("📊 Loaded seed data:");
     console.log(`  - ${appConfigs.length} app configs`);
     console.log(`  - ${programs.length} programs`);
     console.log(`  - ${courses.length} courses`);
@@ -90,10 +70,7 @@ async function seedDatabase() {
     console.log(`  - ${userCourseOfferings.length} user course offerings`);
     console.log(`\n🔑 Using TEST_USER_ID: ${TEST_USER_ID}\n`);
 
-    // Call the internal mutation
-    console.log("🚀 Calling Convex internal mutation...\n");
-    
-    const result = await client.mutation(internal.seed.seedAll, {
+    const data = JSON.stringify({
       appConfigs,
       programs,
       courses,
@@ -105,17 +82,26 @@ async function seedDatabase() {
       userCourseOfferings,
     });
 
+    console.log("🚀 Calling Convex internal mutation via CLI...\n");
+
+    const command = `npx convex run seed:seedAll --no-push '${data.replace(/'/g, "'\\''")}'`;
+
+    const { stdout, stderr } = await execAsync(command, {
+      cwd: new URL("..", import.meta.url).pathname,
+      maxBuffer: 10 * 1024 * 1024,
+    });
+
+    if (stderr) {
+      console.error("stderr:", stderr);
+    }
+
+    console.log(stdout);
     console.log("\n✅ Database seeding completed successfully!");
-    console.log(`\n📝 Result:`, result);
-    
   } catch (error) {
     console.error("\n❌ Database seeding failed:");
     console.error(error);
     process.exit(1);
-  } finally {
-    client.close();
   }
 }
 
-// Run the seeding
 seedDatabase();
