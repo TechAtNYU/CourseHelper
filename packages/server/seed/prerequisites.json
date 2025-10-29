@@ -1,0 +1,42 @@
+[
+  {
+    "courseCode": "CSCI-UA 102",
+    "type": "required",
+    "courses": ["CSCI-UA 101"]
+  },
+  {
+    "courseCode": "CSCI-UA 201",
+    "type": "required",
+    "courses": ["CSCI-UA 102"]
+  },
+  {
+    "courseCode": "CSCI-UA 202",
+    "type": "required",
+    "courses": ["CSCI-UA 201"]
+  },
+  {
+    "courseCode": "CSCI-UA 310",
+    "type": "required",
+    "courses": ["CSCI-UA 102", "MATH-UA 120"]
+  },
+  {
+    "courseCode": "CSCI-UA 480",
+    "type": "alternative",
+    "courses": ["CSCI-UA 310", "CSCI-UA 479"]
+  },
+  {
+    "courseCode": "CSCI-UA 479",
+    "type": "required",
+    "courses": ["CSCI-UA 102"]
+  },
+  {
+    "courseCode": "MATH-UA 122",
+    "type": "required",
+    "courses": ["MATH-UA 121"]
+  },
+  {
+    "courseCode": "DSGA-UA 201",
+    "type": "alternative",
+    "courses": ["CSCI-UA 101", "MATH-UA 121"]
+  }
+]

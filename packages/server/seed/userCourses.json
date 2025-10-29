@@ -1,0 +1,154 @@
+[
+  {
+    "userId": "user_001",
+    "courseCode": "CSCI-UA 101",
+    "title": "Introduction to Computer Science",
+    "year": 2023,
+    "term": "fall",
+    "grade": "a"
+  },
+  {
+    "userId": "user_001",
+    "courseCode": "MATH-UA 121",
+    "title": "Calculus I",
+    "year": 2023,
+    "term": "fall",
+    "grade": "a-"
+  },
+  {
+    "userId": "user_001",
+    "courseCode": "CSCI-UA 102",
+    "title": "Data Structures",
+    "year": 2024,
+    "term": "spring",
+    "grade": "b+"
+  },
+  {
+    "userId": "user_001",
+    "courseCode": "MATH-UA 122",
+    "title": "Calculus II",
+    "year": 2024,
+    "term": "spring",
+    "grade": "b"
+  },
+  {
+    "userId": "user_001",
+    "courseCode": "MATH-UA 120",
+    "title": "Discrete Mathematics",
+    "year": 2024,
+    "term": "fall",
+    "grade": "a"
+  },
+  {
+    "userId": "user_001",
+    "courseCode": "CSCI-UA 201",
+    "title": "Computer Systems Organization",
+    "year": 2024,
+    "term": "fall",
+    "grade": "a-"
+  },
+  {
+    "userId": "user_002",
+    "courseCode": "CSCI-UA 101",
+    "title": "Introduction to Computer Science",
+    "year": 2022,
+    "term": "fall",
+    "grade": "a"
+  },
+  {
+    "userId": "user_002",
+    "courseCode": "MATH-UA 121",
+    "title": "Calculus I",
+    "year": 2022,
+    "term": "fall",
+    "grade": "a"
+  },
+  {
+    "userId": "user_002",
+    "courseCode": "CSCI-UA 102",
+    "title": "Data Structures",
+    "year": 2023,
+    "term": "spring",
+    "grade": "a"
+  },
+  {
+    "userId": "user_002",
+    "courseCode": "MATH-UA 122",
+    "title": "Calculus II",
+    "year": 2023,
+    "term": "spring",
+    "grade": "a-"
+  },
+  {
+    "userId": "user_002",
+    "courseCode": "CSCI-UA 201",
+    "title": "Computer Systems Organization",
+    "year": 2023,
+    "term": "fall",
+    "grade": "a"
+  },
+  {
+    "userId": "user_002",
+    "courseCode": "CSCI-UA 202",
+    "title": "Operating Systems",
+    "year": 2024,
+    "term": "spring",
+    "grade": "a-"
+  },
+  {
+    "userId": "user_002",
+    "courseCode": "CSCI-UA 310",
+    "title": "Basic Algorithms",
+    "year": 2024,
+    "term": "fall",
+    "grade": "b+"
+  },
+  {
+    "userId": "user_003",
+    "courseCode": "CSCI-UA 101",
+    "title": "Introduction to Computer Science",
+    "year": 2024,
+    "term": "spring",
+    "grade": "b+"
+  },
+  {
+    "userId": "user_003",
+    "courseCode": "MATH-UA 121",
+    "title": "Calculus I",
+    "year": 2024,
+    "term": "spring",
+    "grade": "b"
+  },
+  {
+    "userId": "user_003",
+    "courseCode": "DSGA-UA 201",
+    "title": "Introduction to Data Science",
+    "year": 2024,
+    "term": "fall",
+    "grade": "a-"
+  },
+  {
+    "userId": "user_004",
+    "courseCode": "ECON-UA 1",
+    "title": "Microeconomics",
+    "year": 2023,
+    "term": "fall",
+    "grade": "a"
+  },
+  {
+    "userId": "user_004",
+    "courseCode": "MATH-UA 121",
+    "title": "Calculus I",
+    "year": 2023,
+    "term": "fall",
+    "grade": "b+"
+  },
+  {
+    "userId": "user_004",
+    "courseCode": "ECON-UA 2",
+    "title": "Macroeconomics",
+    "year": 2024,
+    "term": "spring",
+    "grade": "a-"
+  }
+]
