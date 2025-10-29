@@ -7,6 +7,7 @@ import { useState } from "react";
 import { CourseSelector } from "@/app/dashboard/schedule/components/course-selection";
 import CourseSelectorSkeleton from "@/app/dashboard/schedule/components/course-selection/components/CourseSelectorSkeleton";
 import type { CourseOffering } from "@/app/dashboard/schedule/components/course-selection/types";
+import Selector from "@/app/dashboard/schedule/components/Selector";
 import {
   type Term,
   useCurrentTerm,
@@ -37,6 +38,9 @@ const SchedulePage = () => {
   const [hoveredCourse, setHoveredCourse] = useState<CourseOffering | null>(
     null,
   );
+  const [mobileView, setMobileView] = useState<"selector" | "calendar">(
+    "selector",
+  );
 
   const allClasses = useQuery(
     api.userCourseOfferings.getUserCourseOfferings,
@@ -57,22 +61,51 @@ const SchedulePage = () => {
   if (!courseData) return <CourseSelectorSkeleton />;
 
   return (
-    <div className="flex gap-4 h-full w-full">
-      <div className="w-[350px] h-full overflow-y-auto">
-        <CourseSelector
-          courses={courseData.courses}
-          courseOfferings={courseData.courseOfferings}
-          onHover={setHoveredCourse}
-        />
+    <div className="flex flex-col gap-4 h-full w-full">
+      {/* Mobile toggle buttons */}
+      <div className="md:hidden p-2">
+        <Selector value={mobileView} onValueChange={setMobileView} />
       </div>
 
-      <div className="flex-1 min-w-0">
-        <div className="sticky top-[var(--header-height)]">
-          <ScheduleCalendar
-            classes={classes}
-            title={title}
-            hoveredCourse={hoveredCourse}
+      {/* Mobile view */}
+      <div className="md:hidden flex-1 overflow-hidden">
+        {mobileView === "selector" ? (
+          <div className="h-full overflow-y-auto">
+            <CourseSelector
+              courses={courseData.courses}
+              courseOfferings={courseData.courseOfferings}
+              onHover={setHoveredCourse}
+            />
+          </div>
+        ) : (
+          <div className="h-full">
+            <ScheduleCalendar
+              classes={classes}
+              title={title}
+              hoveredCourse={hoveredCourse}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Desktop view */}
+      <div className="hidden md:flex gap-4 h-full w-full">
+        <div className="w-[350px] h-full overflow-y-auto">
+          <CourseSelector
+            courses={courseData.courses}
+            courseOfferings={courseData.courseOfferings}
+            onHover={setHoveredCourse}
           />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="sticky top-[var(--header-height)]">
+            <ScheduleCalendar
+              classes={classes}
+              title={title}
+              hoveredCourse={hoveredCourse}
+            />
+          </div>
         </div>
       </div>
     </div>
