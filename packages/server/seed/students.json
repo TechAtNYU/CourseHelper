@@ -1,43 +1,7 @@
 [
   {
-    "userId": "user_001",
+    "userId": "test_user",
     "programNames": ["Computer Science (BA)"],
-    "startingDate": {
-      "year": 2023,
-      "term": "fall"
-    },
-    "expectedGraduationDate": {
-      "year": 2027,
-      "term": "spring"
-    }
-  },
-  {
-    "userId": "user_002",
-    "programNames": ["Computer Science (BS)", "Mathematics (BA)"],
-    "startingDate": {
-      "year": 2022,
-      "term": "fall"
-    },
-    "expectedGraduationDate": {
-      "year": 2026,
-      "term": "spring"
-    }
-  },
-  {
-    "userId": "user_003",
-    "programNames": ["Data Science (BS)"],
-    "startingDate": {
-      "year": 2024,
-      "term": "spring"
-    },
-    "expectedGraduationDate": {
-      "year": 2028,
-      "term": "spring"
-    }
-  },
-  {
-    "userId": "user_004",
-    "programNames": ["Economics (BA)"],
     "startingDate": {
       "year": 2023,
       "term": "fall"
