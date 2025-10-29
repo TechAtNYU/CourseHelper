@@ -32,11 +32,11 @@ export const CourseCard = ({
 }: CourseCardProps) => {
   return (
     <div className="w-full">
-      <Card className={clsx(!isExpanded && "hover:bg-neutral-100")}>
-        <CardHeader
-          className="cursor-pointer"
-          onClick={() => onToggleExpand(course.code)}
-        >
+      <Card
+        className={clsx(!isExpanded && "hover:bg-neutral-100")}
+        onClick={() => onToggleExpand(course.code)}
+      >
+        <CardHeader className="cursor-pointer">
           <div className="flex w-full items-center justify-between gap-2 min-w-0">
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <div className="shrink-0 rounded p-1">
@@ -77,7 +77,10 @@ export const CourseCard = ({
 
         {/* Course Sections */}
         {isExpanded && course.offerings.length > 0 && (
-          <CardContent className="space-y-2">
+          <CardContent
+            className="space-y-2"
+            onClick={(e) => e.stopPropagation()}
+          >
             {course.offerings.map((offering) => (
               <CourseSectionItem
                 key={offering._id}

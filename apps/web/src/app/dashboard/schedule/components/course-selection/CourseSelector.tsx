@@ -1,6 +1,10 @@
 "use client";
+import { api } from "@albert-plus/server/convex/_generated/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useMutation, useQuery } from "convex/react";
+import { ConvexError } from "convex/values";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CourseCard, CourseFilters } from "./components";
 import { useCourseExpansion, useCourseFiltering } from "./hooks";
@@ -23,6 +27,17 @@ const CourseSelector = ({
 
   const { toggleCourseExpansion, isExpanded } = useCourseExpansion();
 
+  const currentOfferings = useQuery(
+    api.userCourseOfferings.getUserCourseOfferings,
+  );
+  const addCourseOffering = useMutation(
+    api.userCourseOfferings.addUserCourseOffering,
+  );
+
+  const removeCourseOffering = useMutation(
+    api.userCourseOfferings.removeUserCourseOffering,
+  );
+
   const [hoveredSection, setHoveredSection] = useState<CourseOffering | null>(
     null,
   );
@@ -38,16 +53,36 @@ const CourseSelector = ({
   });
 
   useEffect(() => {
-    onHover?.(hoveredSection);
-  }, [hoveredSection, onHover]);
+    if (
+      !currentOfferings?.some(
+        (o) => o.classNumber === hoveredSection?.classNumber,
+      )
+    ) {
+      onHover?.(hoveredSection);
+    }
+  }, [hoveredSection, onHover, currentOfferings]);
 
-  const handleSectionSelect = (offering: CourseOffering) => {
+  const handleSectionSelect = async (offering: CourseOffering) => {
     if (offering.status === "closed") {
-      // TODO: a toast component
+      toast.error("This section is closed.");
       return;
     }
-    // TODO: import addClassToCalendar function
-    console.log("Selected offering:", offering);
+    setHoveredSection(null);
+    try {
+      const id = await addCourseOffering({ classNumber: offering.classNumber });
+      toast.success(`${offering.courseCode} ${offering.section} added`, {
+        action: {
+          label: "Undo",
+          onClick: () => removeCourseOffering({ id }),
+        },
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof ConvexError
+          ? (error.data as string)
+          : "Unexpected error occurred";
+      toast.error(errorMessage);
+    }
   };
 
   return (

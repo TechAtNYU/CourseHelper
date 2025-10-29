@@ -104,35 +104,3 @@ export const upsertCourseInternal = internalMutation({
     }
   },
 });
-
-// WARN: we might not need this see other functions I added in courseOfferings
-
-export const getAllCoursesWithOfferings = protectedQuery({
-  args: {
-    term: v.union(
-      v.literal("spring"),
-      v.literal("summer"),
-      v.literal("fall"),
-      v.literal("j-term"),
-    ),
-    year: v.number(),
-  },
-  handler: async (ctx, args) => {
-    const courses = await ctx.db.query("courses").collect();
-
-    const courseOfferings = await ctx.db
-      .query("courseOfferings")
-      .withIndex("by_term_year", (q) =>
-        q
-          .eq("isCorequisite", false)
-          .eq("term", args.term)
-          .eq("year", args.year),
-      )
-      .collect();
-
-    return {
-      courses,
-      courseOfferings,
-    };
-  },
-});

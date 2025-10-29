@@ -1,6 +1,7 @@
 "use client";
 
 import type { api } from "@albert-plus/server/convex/_generated/api";
+import type { Doc } from "@albert-plus/server/convex/_generated/dataModel";
 import type { FunctionReturnType } from "convex/server";
 import { addDays, startOfWeek } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,6 +24,7 @@ export interface Class {
   color: string;
   times: TimeSlot[];
   description: string;
+  isPreview?: boolean;
 }
 
 export type EventColor =
@@ -59,9 +61,14 @@ export interface ScheduleCalendarProps {
     | FunctionReturnType<typeof api.userCourseOfferings.getUserCourseOfferings>
     | undefined;
   title: string | undefined;
+  hoveredCourse?: Doc<"courseOfferings"> | null;
 }
 
-export function ScheduleCalendar({ classes, title }: ScheduleCalendarProps) {
+export function ScheduleCalendar({
+  classes,
+  title,
+  hoveredCourse,
+}: ScheduleCalendarProps) {
   if (!classes || !title) {
     return <Skeleton className="h-full w-full rounded-lg" />;
   }
@@ -130,6 +137,57 @@ export function ScheduleCalendar({ classes, title }: ScheduleCalendarProps) {
       description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
     };
   });
+
+  // Add hovered course preview
+  if (hoveredCourse) {
+    const offering = hoveredCourse;
+    const startTime = `${offering.startTime.split(":")[0]} ${offering.startTime.split(":")[1]}`;
+    const endTime = `${offering.endTime.split(":")[0]} ${offering.endTime.split(":")[1]}`;
+
+    const times = offering.days.map((day) => {
+      const dayName = day.charAt(0).toUpperCase() + day.slice(1);
+      return `${dayName} ${startTime} ${endTime}`;
+    });
+
+    const slots: { start: Date; end: Date }[] = [];
+    const weekdayMap: Record<string, number> = {
+      Sunday: 0,
+      Monday: 1,
+      Tuesday: 2,
+      Wednesday: 3,
+      Thursday: 4,
+      Friday: 5,
+      Saturday: 6,
+    };
+    const startOfCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 0 });
+
+    for (const slot of times) {
+      const parts = slot.split(" ");
+      const day = parts[0];
+      const startHour = Number(parts[1]);
+      const startMinute = Number(parts[2]);
+      const endHour = Number(parts[3]);
+      const endMinute = Number(parts[4]);
+
+      const dayOffset = weekdayMap[day];
+      if (dayOffset !== undefined) {
+        const date = addDays(startOfCurrentWeek, dayOffset);
+        const start = new Date(date);
+        start.setHours(startHour, startMinute, 0, 0);
+        const end = new Date(date);
+        end.setHours(endHour, endMinute, 0, 0);
+        slots.push({ start, end });
+      }
+    }
+
+    transformedClasses.push({
+      id: `preview-${offering._id}`,
+      title: `${offering.courseCode} - ${offering.title}`,
+      color: "cyan",
+      times: slots,
+      description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • Preview`,
+    });
+  }
 
   return (
     <div

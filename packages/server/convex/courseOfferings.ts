@@ -125,6 +125,46 @@ export const getCourseOfferings = protectedQuery({
   },
 });
 
+export const getCourseOfferingsWithCourses = protectedQuery({
+  args: {
+    term: v.union(
+      v.literal("spring"),
+      v.literal("summer"),
+      v.literal("fall"),
+      v.literal("j-term"),
+    ),
+    year: v.number(),
+  },
+  handler: async (ctx, { term, year }) => {
+    const offerings = await ctx.db
+      .query("courseOfferings")
+      .withIndex("by_term_year", (q) =>
+        q.eq("isCorequisite", false).eq("term", term).eq("year", year),
+      )
+      .collect();
+
+    const courseCodes = [...new Set(offerings.map((o) => o.courseCode))];
+
+    const coursesMap = new Map();
+    await Promise.all(
+      courseCodes.map(async (code) => {
+        const course = await ctx.db
+          .query("courses")
+          .withIndex("by_course_code", (q) => q.eq("code", code))
+          .unique();
+        if (course) {
+          coursesMap.set(code, course);
+        }
+      }),
+    );
+
+    return {
+      courses: Array.from(coursesMap.values()),
+      courseOfferings: offerings,
+    };
+  },
+});
+
 export const upsertCourseOfferingInternal = internalMutation({
   args: courseOfferings,
   handler: async (ctx, args) => {
