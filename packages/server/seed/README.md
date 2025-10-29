@@ -18,50 +18,64 @@ The seeding system provides comprehensive sample data for all database tables, i
 
 ## Configuration
 
-Before running the seed scripts, you need to configure:
+### Environment Variables
 
-### For Node.js Script (`seed.js`)
+The seeding script requires:
 
-Edit the configuration section at the top of `seed.js`:
+1. **`CONVEX_URL`** - Your Convex deployment URL
+   - Automatically set when using `doppler run`
+   - Or set manually: `export CONVEX_URL="https://your-deployment.convex.cloud"`
 
-```javascript
-// Your Convex deployment URL
-const CONVEX_URL =
-  process.env.CONVEX_URL || "https://your-deployment.convex.cloud";
-
-// User ID for testing - all user-specific data will be created for this user
-const TEST_USER_ID = process.env.TEST_USER_ID || "user_test_123";
-```
-
-Or set environment variables:
-
-```bash
-export CONVEX_URL="https://your-deployment.convex.cloud"
-export TEST_USER_ID="user_2abc123xyz"
-```
+2. **`TEST_USER_ID`** - Your Clerk user ID for user-specific data
+   - **Required**: `export TEST_USER_ID="user_2abc123xyz"`
+   - All students, userCourses, and userCourseOfferings will use this ID
 
 ## Usage
 
+### Prerequisites
+
+1. Make sure you have Convex CLI configured and deployed
+2. Set your `CONVEX_URL` environment variable (or use `doppler`)
+3. Set your `TEST_USER_ID` to your actual Clerk user ID
+
+### Seeding the Database
+
 ```bash
-# Install dependencies (if needed)
-npm install convex
+# Navigate to the server directory
+cd packages/server
+
+# Set your user ID (replace with your actual Clerk user ID)
+export TEST_USER_ID="user_2abc123xyz"
 
 # Run the seeding script
-node seed.js
+bun seed/seed.ts
 ```
 
-This seeds all tables including:
+Or if you're using Doppler for environment management:
 
-- All tables from Method 1
-- prerequisites (with course relationships)
-- requirements (with program relationships)
-- students (with program associations)
-- userCourses (with user data)
+```bash
+cd packages/server
+export TEST_USER_ID="user_2abc123xyz"
+doppler run -- bun seed/seed.ts
+```
+
+### What Gets Seeded
+
+The script seeds **all tables** in the correct order with proper relationship handling:
+
+1. **appConfigs** - Application configuration
+2. **programs** - Academic programs
+3. **courses** - Course catalog
+4. **prerequisites** - Course prerequisites (with course ID relationships)
+5. **requirements** - Program requirements (with program ID relationships)
+6. **courseOfferings** - Course sections
+7. **students** - Student profiles (with program ID relationships)
+8. **userCourses** - Completed courses
+9. **userCourseOfferings** - Course registrations
 
 ## Sample Data Details
 
 ### Programs (6 programs)
-
 - Computer Science (BA)
 - Computer Science (BS)
 - Data Science (BS)
@@ -70,7 +84,6 @@ This seeds all tables including:
 - Computer Science (MS)
 
 ### Courses (15 courses)
-
 - CSCI-UA 101: Introduction to Computer Science
 - CSCI-UA 102: Data Structures
 - CSCI-UA 201: Computer Systems Organization
@@ -88,7 +101,6 @@ This seeds all tables including:
 - DSGA-UA 201: Introduction to Data Science
 
 ### Course Offerings (21 sections)
-
 - Spring 2025: 19 sections
 - Fall 2025: 2 sections
 - Various times, locations, and instructors
@@ -122,11 +134,26 @@ All seed data files use standard **JSON format** (`.json`) with arrays of object
 ```
 
 This format is:
-
 - Easy to read and edit in any text editor
 - Supports syntax highlighting and validation
-- Compatible with Convex CLI import command
+- Compatible with Convex internal mutations
 - Standard JSON that works with all tools
+
+## How It Works
+
+The seeding system uses a **Convex internal mutation** (`convex/seed.ts`) that:
+
+1. Accepts all seed data as arguments
+2. Handles relationships by creating ID maps for programs and courses
+3. Uses upsert logic (updates existing records or creates new ones)
+4. Maintains referential integrity across all tables
+
+The TypeScript script (`seed/seed.ts`):
+
+1. Reads all JSON seed files
+2. Replaces user IDs with your `TEST_USER_ID`
+3. Calls the internal mutation with all data
+4. Reports success or errors
 
 ## Customization
 
@@ -139,41 +166,49 @@ To customize the sample data:
 
 ## Troubleshooting
 
-### "Course not found" errors
+### "CONVEX_URL environment variable is not set"
+Set your Convex deployment URL:
+```bash
+export CONVEX_URL="https://your-deployment.convex.cloud"
+```
 
-Ensure all course codes referenced in prerequisites and requirements exist in `courses.jsonl`.
+Or use Doppler which sets it automatically:
+```bash
+doppler run -- bun seed/seed.ts
+```
 
-### "Program not found" errors
+### "Course not found" warnings
+Ensure all course codes referenced in prerequisites and requirements exist in `courses.json`.
 
-Ensure all program names referenced in requirements and students exist in `programs.jsonl`.
-
-### Authentication errors
-
-Verify your Convex deployment URL and ensure you have proper access credentials.
+### "Program not found" warnings
+Ensure all program names referenced in requirements and students exist in `programs.json`.
 
 ### User ID not found in dashboard
-
 Make sure you're using the correct user ID format (e.g., Clerk user IDs start with `user_`).
 
-## Integration with Existing Scripts
+## Adding to package.json
 
-The repository already has a script for seeding appConfigs:
+You can add a convenient npm script:
 
-```bash
-npm run seed:configs
+```json
+{
+  "scripts": {
+    "seed": "bun seed/seed.ts",
+    "seed:doppler": "doppler run -- bun seed/seed.ts"
+  }
+}
 ```
 
-This is equivalent to running:
-
+Then run:
 ```bash
-convex import --table appConfigs --replace seed/appConfigs.json
+export TEST_USER_ID="your_user_id"
+npm run seed
 ```
-
-You can add similar scripts to `package.json` for other tables.
 
 ## Notes
 
-- The `--replace` flag will delete existing data before importing
-- Use caution when running in production environments
-- Consider backing up data before running seed scripts
-- The Node.js script requires the Convex API endpoints to be properly defined in your `convex/` directory
+- The seeding uses **upsert logic** - it updates existing records or creates new ones
+- Safe to run multiple times without creating duplicates
+- User-specific data (students, userCourses, userCourseOfferings) always uses `TEST_USER_ID`
+- Prerequisites and requirements are cleared and recreated each time
+- Consider backing up data before running in production environments
