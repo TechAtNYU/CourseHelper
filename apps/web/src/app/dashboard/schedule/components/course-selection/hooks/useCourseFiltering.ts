@@ -47,10 +47,19 @@ export const useCourseFiltering = (
       }
     });
 
-    return Array.from(uniqueCourses.entries()).map(([code, course]) => ({
-      ...course!,
-      offerings: offeringsByCode[code] || [],
-    }));
+    return Array.from(uniqueCourses.entries())
+      .filter(
+        (
+          entry,
+        ): entry is [
+          string,
+          NonNullable<CourseOfferingWithCourse["course"]>,
+        ] => entry[1] !== null && entry[1] !== undefined,
+      )
+      .map(([code, course]) => ({
+        ...course,
+        offerings: offeringsByCode[code] || [],
+      }));
   }, [courseOfferingsWithCourses]);
 
   // Get unique credits for filter buttons
