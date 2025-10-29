@@ -16,7 +16,7 @@ echo ""
 
 # Seed appConfigs
 echo "📝 Seeding appConfigs..."
-convex import --table appConfigs --replace appConfigs.jsonl
+convex import --table appConfigs --replace appConfigs.json
 if [ $? -eq 0 ]; then
   echo "  ✓ appConfigs seeded successfully"
 else
@@ -26,7 +26,7 @@ echo ""
 
 # Seed programs
 echo "📚 Seeding programs..."
-convex import --table programs --replace programs.jsonl
+convex import --table programs --replace programs.json
 if [ $? -eq 0 ]; then
   echo "  ✓ programs seeded successfully"
 else
@@ -36,7 +36,7 @@ echo ""
 
 # Seed courses
 echo "📖 Seeding courses..."
-convex import --table courses --replace courses.jsonl
+convex import --table courses --replace courses.json
 if [ $? -eq 0 ]; then
   echo "  ✓ courses seeded successfully"
 else
@@ -46,7 +46,7 @@ echo ""
 
 # Seed courseOfferings
 echo "🗓️  Seeding course offerings..."
-convex import --table courseOfferings --replace courseOfferings.jsonl
+convex import --table courseOfferings --replace courseOfferings.json
 if [ $? -eq 0 ]; then
   echo "  ✓ courseOfferings seeded successfully"
 else
@@ -56,7 +56,7 @@ echo ""
 
 # Seed userCourseOfferings
 echo "🎯 Seeding user course offerings..."
-convex import --table userCourseOfferings --replace userCourseOfferings.jsonl
+convex import --table userCourseOfferings --replace userCourseOfferings.json
 if [ $? -eq 0 ]; then
   echo "  ✓ userCourseOfferings seeded successfully"
 else

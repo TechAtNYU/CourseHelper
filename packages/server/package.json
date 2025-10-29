@@ -7,7 +7,7 @@
     "dashboard": "convex dashboard",
     "check": "biome check",
     "check:types": "tsc --noEmit",
-    "seed:configs": "convex import --table appConfigs --replace seed/appConfigs.jsonl"
+    "seed:configs": "convex import --table appConfigs --replace seed/appConfigs.json"
   },
   "dependencies": {
     "convex": "^1.28.0",

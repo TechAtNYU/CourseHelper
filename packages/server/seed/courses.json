@@ -1,0 +1,137 @@
+[
+  {
+    "code": "CSCI-UA 101",
+    "program": "CSCI-UA",
+    "level": 100,
+    "title": "Introduction to Computer Science",
+    "credits": 4,
+    "description": "How to design algorithms to solve problems and how to translate these algorithms into working computer programs. Experience is acquired through projects in a high-level programming language. Intended primarily for computer science majors but also suitable for students of other scientific disciplines. Programming assignments.",
+    "courseUrl": "https://cs.nyu.edu/courses/spring25/CSCI-UA.0101-001/"
+  },
+  {
+    "code": "CSCI-UA 102",
+    "program": "CSCI-UA",
+    "level": 100,
+    "title": "Data Structures",
+    "credits": 4,
+    "description": "Use and design of data structures, which organize information in computer memory. Stacks, queues, linked lists, binary trees: how to implement them in a high-level language, how to analyze their effect on algorithm efficiency, and how to modify them. Programming assignments.",
+    "courseUrl": "https://cs.nyu.edu/courses/spring25/CSCI-UA.0102-001/"
+  },
+  {
+    "code": "CSCI-UA 201",
+    "program": "CSCI-UA",
+    "level": 200,
+    "title": "Computer Systems Organization",
+    "credits": 4,
+    "description": "Covers the internal structure of computers, machine (assembly) language programming, and the use of pointers in high-level languages. Topics include the logical design of computers, computer architecture, the internal representation of data, instruction sets, and addressing logic, as well as pointers, structures, and other features of high-level languages that relate to assembly language. Programming assignments are in both assembly language and other languages.",
+    "courseUrl": "https://cs.nyu.edu/courses/spring25/CSCI-UA.0201-001/"
+  },
+  {
+    "code": "CSCI-UA 202",
+    "program": "CSCI-UA",
+    "level": 200,
+    "title": "Operating Systems",
+    "credits": 4,
+    "description": "Covers the principles and design of operating systems. Topics include process scheduling and synchronization, deadlocks, memory management (segmentation, paging, swapping), resource allocation, file systems, and protection. Programming assignments.",
+    "courseUrl": "https://cs.nyu.edu/courses/spring25/CSCI-UA.0202-001/"
+  },
+  {
+    "code": "CSCI-UA 310",
+    "program": "CSCI-UA",
+    "level": 300,
+    "title": "Basic Algorithms",
+    "credits": 4,
+    "description": "Introduction to the study of algorithms. Presents two main themes: designing appropriate data structures, and analyzing the efficiency of the algorithms which use them. Algorithms for sorting, searching, and graph problems are used as case studies. Presents techniques for designing efficient algorithms and methods for proving them correct.",
+    "courseUrl": "https://cs.nyu.edu/courses/spring25/CSCI-UA.0310-001/"
+  },
+  {
+    "code": "CSCI-UA 480",
+    "program": "CSCI-UA",
+    "level": 400,
+    "title": "Special Topics in Computer Science",
+    "credits": 4,
+    "description": "Advanced topics in computer science. Content varies by semester.",
+    "courseUrl": "https://cs.nyu.edu/courses/spring25/CSCI-UA.0480-001/"
+  },
+  {
+    "code": "CSCI-UA 479",
+    "program": "CSCI-UA",
+    "level": 400,
+    "title": "Data Management and Analysis",
+    "credits": 4,
+    "description": "Introduces the fundamental concepts and techniques of data science, such as data collection, data extraction, data integration, data cleaning, data modeling, and data analysis. Covers both theoretical and practical aspects of data science using real-world datasets and modern tools.",
+    "courseUrl": "https://cs.nyu.edu/courses/spring25/CSCI-UA.0479-001/"
+  },
+  {
+    "code": "MATH-UA 120",
+    "program": "MATH-UA",
+    "level": 100,
+    "title": "Discrete Mathematics",
+    "credits": 4,
+    "description": "Introduction to the foundations of computer science. Logic, techniques of proof (induction and contradiction), sequences and summations, elementary number theory, sets, functions, relations, counting techniques (permutations, combinations, recurrence relations, generating functions), discrete probability, graphs and trees.",
+    "courseUrl": "https://math.nyu.edu/dynamic/courses/"
+  },
+  {
+    "code": "MATH-UA 121",
+    "program": "MATH-UA",
+    "level": 100,
+    "title": "Calculus I",
+    "credits": 4,
+    "description": "Limits, continuity, derivatives, introduction to integrals, the Fundamental Theorem of Calculus. Differentiation and integration of algebraic, trigonometric, and transcendental functions, with applications.",
+    "courseUrl": "https://math.nyu.edu/dynamic/courses/"
+  },
+  {
+    "code": "MATH-UA 122",
+    "program": "MATH-UA",
+    "level": 100,
+    "title": "Calculus II",
+    "credits": 4,
+    "description": "Techniques of integration, applications of the integral, improper integrals, infinite series, Taylor series, polar coordinates.",
+    "courseUrl": "https://math.nyu.edu/dynamic/courses/"
+  },
+  {
+    "code": "CORE-UA 214",
+    "program": "CORE-UA",
+    "level": 200,
+    "title": "Physical Science: How Things Work",
+    "credits": 4,
+    "description": "Explores the physical principles underlying everyday phenomena and modern technology. Topics include mechanics, electricity, magnetism, waves, and quantum physics.",
+    "courseUrl": "https://cas.nyu.edu/core-program.html"
+  },
+  {
+    "code": "PHIL-UA 20",
+    "program": "PHIL-UA",
+    "level": 0,
+    "title": "Ancient Greek and Roman Philosophy",
+    "credits": 4,
+    "description": "Survey of ancient Greek and Roman philosophy from the pre-Socratics through the Hellenistic period. Emphasis on Plato and Aristotle.",
+    "courseUrl": "https://as.nyu.edu/philosophy.html"
+  },
+  {
+    "code": "ECON-UA 1",
+    "program": "ECON-UA",
+    "level": 0,
+    "title": "Microeconomics",
+    "credits": 4,
+    "description": "Introduction to microeconomic theory. Topics include consumer choice, production and costs, market structures, game theory, and market failures.",
+    "courseUrl": "https://as.nyu.edu/econ.html"
+  },
+  {
+    "code": "ECON-UA 2",
+    "program": "ECON-UA",
+    "level": 0,
+    "title": "Macroeconomics",
+    "credits": 4,
+    "description": "Introduction to macroeconomic theory. Topics include national income accounting, economic growth, inflation, unemployment, fiscal and monetary policy.",
+    "courseUrl": "https://as.nyu.edu/econ.html"
+  },
+  {
+    "code": "DSGA-UA 201",
+    "program": "DSGA-UA",
+    "level": 200,
+    "title": "Introduction to Data Science",
+    "credits": 4,
+    "description": "Introduction to data science concepts and techniques. Topics include data wrangling, visualization, statistical inference, machine learning, and ethical considerations.",
+    "courseUrl": "https://cds.nyu.edu/academics/"
+  }
+]

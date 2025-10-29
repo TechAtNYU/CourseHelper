@@ -124,34 +124,35 @@ The sample data represents a realistic student journey through a Computer Scienc
 
 ## File Formats
 
-### JSONL Format (`.jsonl`)
-One JSON object per line, used for simple imports:
-
-```jsonl
-{"key":"current_term","value":"fall"}
-{"key":"current_year","value":"2025"}
-```
-
-### JSON Format (`.json`)
-Standard JSON arrays, used for complex data:
+All seed data files use standard **JSON format** (`.json`) with arrays of objects:
 
 ```json
 [
   {
-    "courseCode": "CSCI-UA 102",
-    "type": "required",
-    "courses": ["CSCI-UA 101"]
+    "key": "current_term",
+    "value": "fall"
+  },
+  {
+    "key": "current_year",
+    "value": "2025"
   }
 ]
 ```
+
+This format is:
+- Easy to read and edit in any text editor
+- Supports syntax highlighting and validation
+- Compatible with Convex CLI import command
+- Standard JSON that works with all tools
 
 ## Customization
 
 To customize the sample data:
 
-1. Edit the respective `.json` or `.jsonl` files
+1. Edit the respective `.json` files in any text editor
 2. Maintain the schema structure as defined in `convex/schemas/`
 3. Ensure referential integrity (e.g., course codes match between files)
+4. Validate JSON syntax before running seed scripts
 
 ## Troubleshooting
 
@@ -178,7 +179,7 @@ npm run seed:configs
 This is equivalent to running:
 
 ```bash
-convex import --table appConfigs --replace seed/appConfigs.jsonl
+convex import --table appConfigs --replace seed/appConfigs.json
 ```
 
 You can add similar scripts to `package.json` for other tables.

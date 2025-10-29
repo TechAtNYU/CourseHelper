@@ -38,19 +38,6 @@ const TEST_USER_ID = process.env.TEST_USER_ID || "user_test_123";
 const client = new ConvexHttpClient(CONVEX_URL);
 
 /**
- * Read JSONL file and parse each line as JSON
- */
-function readJSONL(filename) {
-  const filepath = path.join(__dirname, filename);
-  const content = fs.readFileSync(filepath, "utf-8");
-  return content
-    .trim()
-    .split("\n")
-    .filter((line) => line.trim())
-    .map((line) => JSON.parse(line));
-}
-
-/**
  * Read JSON file
  */
 function readJSON(filename) {
@@ -64,7 +51,7 @@ function readJSON(filename) {
  */
 async function seedAppConfigs() {
   console.log("📝 Seeding appConfigs...");
-  const configs = readJSONL("appConfigs.jsonl");
+  const configs = readJSON("appConfigs.json");
 
   for (const config of configs) {
     try {
@@ -84,7 +71,7 @@ async function seedAppConfigs() {
  */
 async function seedPrograms() {
   console.log("📚 Seeding programs...");
-  const programs = readJSONL("programs.jsonl");
+  const programs = readJSON("programs.json");
   const programMap = new Map();
 
   for (const program of programs) {
@@ -109,7 +96,7 @@ async function seedPrograms() {
  */
 async function seedCourses() {
   console.log("📖 Seeding courses...");
-  const courses = readJSONL("courses.jsonl");
+  const courses = readJSON("courses.json");
   const courseMap = new Map();
 
   for (const course of courses) {
@@ -206,7 +193,7 @@ async function seedRequirements(programMap) {
  */
 async function seedCourseOfferings() {
   console.log("🗓️  Seeding course offerings...");
-  const offerings = readJSONL("courseOfferings.jsonl");
+  const offerings = readJSON("courseOfferings.json");
 
   for (const offering of offerings) {
     try {
@@ -275,7 +262,7 @@ async function seedUserCourses() {
  */
 async function seedUserCourseOfferings() {
   console.log("🎯 Seeding user course offerings...");
-  const userOfferings = readJSONL("userCourseOfferings.jsonl");
+  const userOfferings = readJSON("userCourseOfferings.json");
 
   for (const offering of userOfferings) {
     try {
