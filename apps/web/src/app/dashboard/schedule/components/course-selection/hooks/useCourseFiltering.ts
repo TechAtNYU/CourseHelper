@@ -51,10 +51,8 @@ export const useCourseFiltering = (
       .filter(
         (
           entry,
-        ): entry is [
-          string,
-          NonNullable<CourseOfferingWithCourse["course"]>,
-        ] => entry[1] !== null && entry[1] !== undefined,
+        ): entry is [string, NonNullable<CourseOfferingWithCourse["course"]>] =>
+          entry[1] !== null && entry[1] !== undefined,
       )
       .map(([code, course]) => ({
         ...course,

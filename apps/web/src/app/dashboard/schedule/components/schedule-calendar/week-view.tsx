@@ -295,15 +295,22 @@ export function WeekView({ classes }: WeekViewProps) {
                       />
                     </ContextMenuTrigger>
                     <ContextMenuContent>
-                      {positionedEvent.event.userCourseOfferingId &&
-                        positionedEvent.event.classNumber && (
+                      {(() => {
+                        const userCourseOfferingId =
+                          positionedEvent.event.userCourseOfferingId;
+                        const classNumber = positionedEvent.event.classNumber;
+
+                        if (!userCourseOfferingId || !classNumber) {
+                          return null;
+                        }
+
+                        return (
                           <ContextMenuItem
                             variant="destructive"
                             onSelect={() => {
                               handleRemove(
-                                positionedEvent.event
-                                  .userCourseOfferingId as Id<"userCourseOfferings">,
-                                positionedEvent.event.classNumber!,
+                                userCourseOfferingId as Id<"userCourseOfferings">,
+                                classNumber,
                                 positionedEvent.event.title,
                               );
                             }}
@@ -311,7 +318,8 @@ export function WeekView({ classes }: WeekViewProps) {
                             <TrashIcon className="size-4 me-2" />
                             Delete
                           </ContextMenuItem>
-                        )}
+                        );
+                      })()}
                     </ContextMenuContent>
                   </ContextMenu>
                 </div>
