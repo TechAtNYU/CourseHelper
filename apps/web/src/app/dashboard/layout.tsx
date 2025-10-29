@@ -31,6 +31,8 @@ export default async function Layout({
             avatar: user?.imageUrl || "",
             initial: `${user?.firstName?.[0]}${user?.lastName?.[0]}` || "UU",
             isAdmin: Boolean(user?.publicMetadata?.is_admin),
+            userId:
+              process.env.NODE_ENV === "development" ? user?.id : undefined,
           }}
         />
         <SidebarInset>
