@@ -102,26 +102,47 @@ export const getCourseOfferings = protectedQuery({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, { query, paginationOpts, term, year }) => {
-    if (query) {
-      return await ctx.db
-        .query("courseOfferings")
-        .withSearchIndex("search_title", (q) =>
-          q
-            .search("title", query)
-            .eq("isCorequisite", false)
-            .eq("term", term)
-            .eq("year", year),
-        )
-        .paginate(paginationOpts);
-    }
+    const result = query
+      ? await ctx.db
+          .query("courseOfferings")
+          .withSearchIndex("search_title", (q) =>
+            q
+              .search("title", query)
+              .eq("isCorequisite", false)
+              .eq("term", term)
+              .eq("year", year),
+          )
+          .paginate(paginationOpts)
+      : await ctx.db
+          .query("courseOfferings")
+          .withIndex("by_term_year", (q) =>
+            q.eq("isCorequisite", false).eq("term", term).eq("year", year),
+          )
+          .order("desc")
+          .paginate(paginationOpts);
 
-    return await ctx.db
-      .query("courseOfferings")
-      .withIndex("by_term_year", (q) =>
-        q.eq("isCorequisite", false).eq("term", term).eq("year", year),
-      )
-      .order("desc")
-      .paginate(paginationOpts);
+    const courseCodes = [...new Set(result.page.map((o) => o.courseCode))];
+
+    const coursesMap = new Map();
+    await Promise.all(
+      courseCodes.map(async (code) => {
+        const course = await ctx.db
+          .query("courses")
+          .withIndex("by_course_code", (q) => q.eq("code", code))
+          .unique();
+        if (course) {
+          coursesMap.set(code, course);
+        }
+      }),
+    );
+
+    return {
+      ...result,
+      page: result.page.map((offering) => ({
+        ...offering,
+        course: coursesMap.get(offering.courseCode) ?? null,
+      })),
+    };
   },
 });
 
