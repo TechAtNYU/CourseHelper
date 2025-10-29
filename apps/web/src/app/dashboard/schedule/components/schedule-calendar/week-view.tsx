@@ -84,11 +84,30 @@ export function WeekView({ classes }: WeekViewProps) {
     }
   };
 
-  const days = useMemo(() => {
+  const allDays = useMemo(() => {
     const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
     const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
     return eachDayOfInterval({ start: weekStart, end: weekEnd });
   }, [currentDate]);
+
+  // Filter out Saturday and Sunday if they have no classes
+  const days = useMemo(() => {
+    const daysWithClasses = new Set<number>();
+
+    classes.forEach((event) => {
+      if (!event.times?.length) return;
+      event.times.forEach((slot) => {
+        const start = new Date(slot.start);
+        daysWithClasses.add(start.getDay());
+      });
+    });
+
+    return allDays.filter((day) => {
+      const dayOfWeek = day.getDay();
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) return true;
+      return daysWithClasses.has(dayOfWeek);
+    });
+  }, [allDays, classes]);
 
   const hours = useMemo(() => {
     const dayStart = startOfDay(currentDate);
@@ -198,9 +217,14 @@ export function WeekView({ classes }: WeekViewProps) {
     });
   }, [days, classes]);
 
+  const gridCols = days.length + 1; // +1 for the time column
+
   return (
     <div data-slot="week-view" className="flex h-full flex-col">
-      <div className="bg-background/80 border-border/70 sticky top-0 z-30 grid grid-cols-8 border-b backdrop-blur-md">
+      <div
+        className="bg-background/80 border-border/70 sticky top-0 z-30 grid border-b backdrop-blur-md"
+        style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
+      >
         <div className="text-muted-foreground/70 py-2 text-center text-sm">
           <span className="max-[479px]:sr-only">{format(new Date(), "O")}</span>
         </div>
@@ -218,7 +242,10 @@ export function WeekView({ classes }: WeekViewProps) {
         ))}
       </div>
 
-      <div className="grid flex-1 grid-cols-8 overflow-hidden">
+      <div
+        className="grid flex-1 overflow-hidden"
+        style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
+      >
         <div className="border-border/70 grid auto-cols-fr border-r">
           {hours.map((hour, index) => (
             <div
