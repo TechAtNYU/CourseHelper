@@ -1,5 +1,9 @@
 "use client";
 
+import { api } from "@albert-plus/server/convex/_generated/api";
+import type { Id } from "@albert-plus/server/convex/_generated/dataModel";
+import { useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import {
   addHours,
   areIntervalsOverlapping,
@@ -15,7 +19,15 @@ import {
   startOfDay,
   startOfWeek,
 } from "date-fns";
+import { TrashIcon } from "lucide-react";
 import { useMemo } from "react";
+import { toast } from "sonner";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
   type Class,
   EndHour,
@@ -41,6 +53,36 @@ interface PositionedEvent {
 
 export function WeekView({ classes }: WeekViewProps) {
   const currentDate = new Date();
+
+  const removeOffering = useMutation(
+    api.userCourseOfferings.removeUserCourseOffering,
+  );
+
+  const addOffering = useMutation(
+    api.userCourseOfferings.addUserCourseOffering,
+  );
+
+  const handleRemove = async (
+    id: Id<"userCourseOfferings">,
+    classNumber: number,
+    title: string,
+  ) => {
+    try {
+      await removeOffering({ id });
+      toast.success(`${title} removed`, {
+        action: {
+          label: "Undo",
+          onClick: () => addOffering({ classNumber }),
+        },
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof ConvexError
+          ? (error.data as string)
+          : "Unexpected error occurred";
+      toast.error(errorMessage);
+    }
+  };
 
   const days = useMemo(() => {
     const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
@@ -217,11 +259,34 @@ export function WeekView({ classes }: WeekViewProps) {
                 }}
               >
                 <div className="size-full">
-                  <EventItem
-                    event={positionedEvent.event}
-                    timeSlotIndex={positionedEvent.timeSlotIndex}
-                    showTime
-                  />
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <EventItem
+                        event={positionedEvent.event}
+                        timeSlotIndex={positionedEvent.timeSlotIndex}
+                        showTime
+                      />
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                      {positionedEvent.event.userCourseOfferingId &&
+                        positionedEvent.event.classNumber && (
+                          <ContextMenuItem
+                            variant="destructive"
+                            onSelect={() => {
+                              handleRemove(
+                                positionedEvent.event
+                                  .userCourseOfferingId as Id<"userCourseOfferings">,
+                                positionedEvent.event.classNumber!,
+                                positionedEvent.event.title,
+                              );
+                            }}
+                          >
+                            <TrashIcon className="size-4 me-2" />
+                            Delete
+                          </ContextMenuItem>
+                        )}
+                    </ContextMenuContent>
+                  </ContextMenu>
                 </div>
               </div>
             ))}

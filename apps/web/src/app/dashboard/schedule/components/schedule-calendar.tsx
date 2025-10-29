@@ -20,6 +20,8 @@ export interface TimeSlot {
 
 export interface Class {
   id: string;
+  userCourseOfferingId?: string;
+  classNumber?: number;
   title: string;
   color: string;
   times: TimeSlot[];
@@ -131,6 +133,8 @@ export function ScheduleCalendar({
 
     return {
       id: offering._id,
+      userCourseOfferingId: c._id,
+      classNumber: c.classNumber,
       title: `${offering.courseCode} - ${offering.title}`,
       color,
       times: slots,
