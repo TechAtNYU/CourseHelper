@@ -21,6 +21,7 @@ import type * as schemas_courseOfferings from "../schemas/courseOfferings.js";
 import type * as schemas_courses from "../schemas/courses.js";
 import type * as schemas_programs from "../schemas/programs.js";
 import type * as schemas_students from "../schemas/students.js";
+import type * as seed from "../seed.js";
 import type * as students from "../students.js";
 import type * as userCourseOfferings from "../userCourseOfferings.js";
 import type * as userCourses from "../userCourses.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   "schemas/courses": typeof schemas_courses;
   "schemas/programs": typeof schemas_programs;
   "schemas/students": typeof schemas_students;
+  seed: typeof seed;
   students: typeof students;
   userCourseOfferings: typeof userCourseOfferings;
   userCourses: typeof userCourses;
