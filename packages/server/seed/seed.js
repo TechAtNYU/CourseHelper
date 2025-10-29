@@ -5,7 +5,7 @@
  * It handles dependencies between tables and ensures data integrity.
  *
  * Usage:
- *   node seed.js
+ *   bun seed.js
  *
  * Requirements:
  *   - Convex CLI installed and configured
@@ -13,13 +13,7 @@
  */
 
 import { ConvexHttpClient } from "convex/browser";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import { api } from "../convex/_generated/api.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // ============================================================================
 // CONFIGURATION - Update these values before running
@@ -41,10 +35,9 @@ const client = new ConvexHttpClient(CONVEX_URL);
 /**
  * Read JSON file
  */
-function readJSON(filename) {
-  const filepath = path.join(__dirname, filename);
-  const content = fs.readFileSync(filepath, "utf-8");
-  return JSON.parse(content);
+async function readJSON(filename) {
+  const file = Bun.file(new URL(filename, import.meta.url));
+  return await file.json();
 }
 
 /**
@@ -52,7 +45,7 @@ function readJSON(filename) {
  */
 async function seedAppConfigs() {
   console.log("📝 Seeding appConfigs...");
-  const configs = readJSON("appConfigs.json");
+  const configs = await readJSON("appConfigs.json");
 
   for (const config of configs) {
     try {
@@ -75,7 +68,7 @@ async function seedAppConfigs() {
  */
 async function seedPrograms() {
   console.log("📚 Seeding programs...");
-  const programs = readJSON("programs.json");
+  const programs = await readJSON("programs.json");
   const programMap = new Map();
 
   for (const program of programs) {
@@ -103,7 +96,7 @@ async function seedPrograms() {
  */
 async function seedCourses() {
   console.log("📖 Seeding courses...");
-  const courses = readJSON("courses.json");
+  const courses = await readJSON("courses.json");
   const courseMap = new Map();
 
   for (const course of courses) {
@@ -135,7 +128,7 @@ async function seedCourses() {
  */
 async function seedPrerequisites(courseMap) {
   console.log("🔗 Seeding prerequisites...");
-  const prerequisites = readJSON("prerequisites.json");
+  const prerequisites = await readJSON("prerequisites.json");
 
   for (const prereq of prerequisites) {
     try {
@@ -171,7 +164,7 @@ async function seedPrerequisites(courseMap) {
  */
 async function seedRequirements(programMap) {
   console.log("📋 Seeding requirements...");
-  const requirements = readJSON("requirements.json");
+  const requirements = await readJSON("requirements.json");
 
   for (const req of requirements) {
     try {
@@ -210,8 +203,8 @@ async function seedRequirements(programMap) {
  * Seed course offerings
  */
 async function seedCourseOfferings() {
-  console.log("🗓️  Seeding course offerings...");
-  const offerings = readJSON("courseOfferings.json");
+  console.log("🗓  Seeding course offerings...");
+  const offerings = await readJSON("courseOfferings.json");
 
   for (const offering of offerings) {
     try {
@@ -233,7 +226,7 @@ async function seedCourseOfferings() {
  */
 async function seedStudents(programMap) {
   console.log("👥 Seeding students...");
-  const students = readJSON("students.json");
+  const students = await readJSON("students.json");
 
   for (const student of students) {
     try {
@@ -269,7 +262,7 @@ async function seedStudents(programMap) {
  */
 async function seedUserCourses() {
   console.log("📚 Seeding user courses...");
-  const userCourses = readJSON("userCourses.json");
+  const userCourses = await readJSON("userCourses.json");
 
   for (const userCourse of userCourses) {
     try {
@@ -294,7 +287,7 @@ async function seedUserCourses() {
  */
 async function seedUserCourseOfferings() {
   console.log("🎯 Seeding user course offerings...");
-  const userOfferings = readJSON("userCourseOfferings.json");
+  const userOfferings = await readJSON("userCourseOfferings.json");
 
   for (const offering of userOfferings) {
     try {
