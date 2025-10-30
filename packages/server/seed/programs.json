@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Computer Science (BA)",
+    "level": "undergraduate",
+    "programUrl": "https://cas.nyu.edu/academic-programs/bulletin/departments-and-programs/department-of-computer-science/computer-science-ba.html"
+  },
+  {
+    "name": "Computer Science (BS)",
+    "level": "undergraduate",
+    "programUrl": "https://cas.nyu.edu/academic-programs/bulletin/departments-and-programs/department-of-computer-science/computer-science-bs.html"
+  },
+  {
+    "name": "Data Science (BS)",
+    "level": "undergraduate",
+    "programUrl": "https://cas.nyu.edu/academic-programs/bulletin/departments-and-programs/data-science/data-science-bs.html"
+  },
+  {
+    "name": "Mathematics (BA)",
+    "level": "undergraduate",
+    "programUrl": "https://cas.nyu.edu/academic-programs/bulletin/departments-and-programs/department-of-mathematics/mathematics-ba.html"
+  },
+  {
+    "name": "Economics (BA)",
+    "level": "undergraduate",
+    "programUrl": "https://cas.nyu.edu/academic-programs/bulletin/departments-and-programs/department-of-economics/economics-ba.html"
+  },
+  {
+    "name": "Computer Science (MS)",
+    "level": "graduate",
+    "programUrl": "https://cs.nyu.edu/home/master/prospective_mscs.html"
+  }
+]

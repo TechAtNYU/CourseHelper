@@ -27,6 +27,7 @@ export function NavUser({
     email: string;
     avatar: string;
     initial: string;
+    userId?: string;
   };
 }) {
   const { isMobile } = useSidebar();
@@ -75,6 +76,11 @@ export function NavUser({
                   <span className="truncate text-xs text-muted-foreground">
                     {user.email}
                   </span>
+                  {user.userId && (
+                    <span className="truncate text-xs text-muted-foreground font-mono">
+                      {user.userId}
+                    </span>
+                  )}
                 </div>
               </div>
             </DropdownMenuLabel>
