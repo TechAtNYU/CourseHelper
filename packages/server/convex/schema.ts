@@ -13,16 +13,19 @@ export default defineSchema({
   appConfigs: defineTable(appConfigs).index("by_key", ["key"]),
   programs: defineTable(programs)
     .index("by_program_name", ["name"])
+    .index("by_school", ["school"])
     .searchIndex("search_name", {
       searchField: "name",
+      filterFields: ["school"],
     }),
   requirements: defineTable(requirements).index("by_program", ["programId"]),
   courses: defineTable(courses)
     .index("by_course_code", ["code"])
     .index("by_level", ["level"])
+    .index("by_school_level", ["school", "level"])
     .searchIndex("search_title", {
       searchField: "title",
-      filterFields: ["level"],
+      filterFields: ["level", "school"],
     }),
   prerequisites: defineTable(prerequisites).index("by_course", ["courseId"]),
   courseOfferings: defineTable(courseOfferings)
