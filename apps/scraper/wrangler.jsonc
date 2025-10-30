@@ -9,6 +9,9 @@
   "observability": {
     "enabled": true
   },
+  "assets": {
+    "directory": "public"
+  },
   "triggers": {
     "crons": ["0 */6 * * *"] // Run every 6 hours
   },
