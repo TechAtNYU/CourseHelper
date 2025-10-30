@@ -6,8 +6,8 @@ import {
 } from "./schemas/courseOfferings";
 import { courses, prerequisites, userCourses } from "./schemas/courses";
 import { programs, requirements } from "./schemas/programs";
-import { students } from "./schemas/students";
 import { schools } from "./schemas/schools";
+import { students } from "./schemas/students";
 
 export default defineSchema({
   appConfigs: defineTable(appConfigs).index("by_key", ["key"]),
