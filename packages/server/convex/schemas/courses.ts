@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { schoolName } from "./schools";
 
 const courses = {
   code: v.string(), // CSCI-UA 101
@@ -6,7 +7,7 @@ const courses = {
   level: v.number(), // 100
   title: v.string(), // Intro to Computer Science
   credits: v.number(), // 4
-  school: v.string(), // College of Arts and Science
+  school: schoolName,
   description: v.string(),
   courseUrl: v.string(),
 };

@@ -4,6 +4,7 @@ import { getManyFrom } from "convex-helpers/server/relationships";
 import { internalMutation } from "./_generated/server";
 import { protectedQuery } from "./helpers/auth";
 import { programs } from "./schemas/programs";
+import { schoolName } from "./schemas/schools";
 
 export const getProgramById = protectedQuery({
   args: { id: v.id("programs") },
@@ -62,7 +63,7 @@ export const getProgramByName = protectedQuery({
 export const getPrograms = protectedQuery({
   args: {
     query: v.optional(v.string()),
-    schools: v.optional(v.array(v.string())),
+    schools: v.optional(v.array(schoolName)),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, { query, schools, paginationOpts }) => {
