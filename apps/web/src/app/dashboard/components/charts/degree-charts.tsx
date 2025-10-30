@@ -57,7 +57,10 @@ export function ProgramRequirementsChart({
       )) {
         // Check if the course code is in any of the nested course arrays
         const isInRequirement = data.courses.some((courseGroup) =>
-          courseGroup.includes(userCourse.courseCode),
+          courseGroup.some(
+            (course) =>
+              course.toLowerCase() === userCourse.courseCode.toLowerCase(),
+          ),
         );
 
         if (isInRequirement) {

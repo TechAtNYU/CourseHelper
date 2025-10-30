@@ -29,6 +29,7 @@ function Checkbox({
             viewBox="0 0 9 9"
             fill="currentcolor"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <path
               fillRule="evenodd"
@@ -43,6 +44,7 @@ function Checkbox({
             viewBox="0 0 9 9"
             fill="currentcolor"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <path
               fillRule="evenodd"
