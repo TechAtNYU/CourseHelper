@@ -5,16 +5,6 @@ import type { Id } from "./_generated/dataModel";
 import { apiAction } from "./helpers/auth";
 import { AppConfigKey } from "./schemas/appConfigs";
 
-export const ZUpsertCourse = z.object({
-  program: z.string(),
-  code: z.string(),
-  level: z.coerce.number(),
-  title: z.string(),
-  credits: z.int(),
-  description: z.string(),
-  courseUrl: z.string(),
-});
-
 export const ZUpsertCourseWithPrerequisites = z.object({
   program: z.string(),
   code: z.string(),
@@ -23,6 +13,7 @@ export const ZUpsertCourseWithPrerequisites = z.object({
   credits: z.int(),
   description: z.string(),
   courseUrl: z.string(),
+  school: z.string(),
   prerequisites: z.array(
     z.discriminatedUnion("type", [
       z.object({
@@ -42,15 +33,10 @@ export const ZUpsertCourseWithPrerequisites = z.object({
   ),
 });
 
-export const ZUpsertProgram = z.object({
-  name: z.string(),
-  level: z.enum(["undergraduate", "graduate"]),
-  programUrl: z.string(),
-});
-
 export const ZUpsertProgramWithRequirements = z.object({
   name: z.string(),
   level: z.enum(["undergraduate", "graduate"]),
+  school: z.string(),
   programUrl: z.string(),
   requirements: z.array(
     z.discriminatedUnion("type", [
