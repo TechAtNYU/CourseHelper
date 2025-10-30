@@ -21,6 +21,13 @@ export const seedAll = internalMutation({
         value: v.string(),
       }),
     ),
+    schools: v.array(
+      v.object({
+        name: v.string(),
+        shortName: v.string(),
+        level: v.union(v.literal("undergraduate"), v.literal("graduate")),
+      }),
+    ),
     programs: v.array(
       v.object({
         name: v.string(),
@@ -196,7 +203,27 @@ export const seedAll = internalMutation({
       }
     }
 
-    // 2. Seed programs and build ID map
+    // 2. Seed schools
+    console.log("🏫 Seeding schools...");
+    for (const school of args.schools) {
+      const existing = await ctx.db
+        .query("schools")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("name"), school.name),
+            q.eq(q.field("level"), school.level),
+          ),
+        )
+        .first();
+
+      if (existing) {
+        await ctx.db.patch(existing._id, school);
+      } else {
+        await ctx.db.insert("schools", school);
+      }
+    }
+
+    // 3. Seed programs and build ID map
     console.log("📚 Seeding programs...");
     const programMap = new Map<string, Id<"programs">>();
     for (const program of args.programs) {

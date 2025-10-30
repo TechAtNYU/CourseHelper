@@ -29,6 +29,7 @@ async function seedDatabase() {
 
   try {
     const appConfigs = await readJSON("appConfigs.json");
+    const schools = await readJSON("schools.json");
     const programs = await readJSON("programs.json");
     const courses = await readJSON("courses.json");
     const courseOfferings = await readJSON("courseOfferings.json");
@@ -60,6 +61,7 @@ async function seedDatabase() {
 
     console.log("📊 Loaded seed data:");
     console.log(`  - ${appConfigs.length} app configs`);
+    console.log(`  - ${schools.length} schools`);
     console.log(`  - ${programs.length} programs`);
     console.log(`  - ${courses.length} courses`);
     console.log(`  - ${courseOfferings.length} course offerings`);
@@ -72,6 +74,7 @@ async function seedDatabase() {
 
     const data = JSON.stringify({
       appConfigs,
+      schools,
       programs,
       courses,
       courseOfferings,
