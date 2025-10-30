@@ -2,6 +2,7 @@
   {
     "userId": "test_user",
     "programNames": ["Computer Science (BA)"],
+    "school": "College of Arts and Science",
     "startingDate": {
       "year": 2023,
       "term": "fall"
