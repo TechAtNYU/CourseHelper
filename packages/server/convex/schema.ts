@@ -7,6 +7,7 @@ import {
 import { courses, prerequisites, userCourses } from "./schemas/courses";
 import { programs, requirements } from "./schemas/programs";
 import { students } from "./schemas/students";
+import { schools } from "./schemas/schools";
 
 export default defineSchema({
   appConfigs: defineTable(appConfigs).index("by_key", ["key"]),
@@ -40,4 +41,5 @@ export default defineSchema({
     "userId",
   ]),
   students: defineTable(students).index("by_user_id", ["userId"]),
+  schools: defineTable(schools).index("by_school_name", ["name"]),
 });

@@ -6,6 +6,7 @@ const courses = {
   level: v.number(), // 100
   title: v.string(), // Intro to Computer Science
   credits: v.number(), // 4
+  school: v.string(), // College of Arts and Science
   description: v.string(),
   courseUrl: v.string(),
 };
