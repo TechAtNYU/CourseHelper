@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Helper - Mock Data Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            color: black;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .control-group input {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .control-group input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button-primary {
+            color: black;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-secondary {
+            background: white;
+            border: 2px solid #667eea;
+        }
+
+        .button-secondary:hover {
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .stats {
+            padding: 30px;
+            background: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .data-section {
+            padding: 30px;
+        }
+
+        .data-section h2 {
+            margin-bottom: 15px;
+            color: #343a40;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            max-height: 500px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .sample-preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .sample-preview h4 {
+            margin-bottom: 10px;
+        }
+
+        .sample-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mock Data Generator</h1>
+        </div>
+
+        <div class="controls">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="numCourses">Number of Courses</label>
+                    <input type="number" id="numCourses" value="200" min="10" max="500">
+                </div>
+                <div class="control-group">
+                    <label for="sectionsPerCourse">Max Sections per Course</label>
+                    <input type="number" id="sectionsPerCourse" value="6" min="1" max="10">
+                </div>
+            </div>
+            <button class="button button-primary" onclick="generateData()">
+                Generate
+            </button>
+        </div>
+
+        <div id="stats" style="display: none;">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="label">Total Courses</div>
+                    <div class="value" id="totalCourses">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Total Offerings</div>
+                    <div class="value" id="totalOfferings">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Term</div>
+                    <div class="value" id="term" style="font-size: 24px;">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Year</div>
+                    <div class="value" id="year">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dataSection" class="data-section" style="display: none;">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('all')">All Data</button>
+                <button class="tab" onclick="switchTab('courses')">Courses Only</button>
+                <button class="tab" onclick="switchTab('offerings')">Offerings Only</button>
+                <button class="tab" onclick="switchTab('preview')">Preview</button>
+            </div>
+
+            <div id="tab-all" class="tab-content active">
+                <h2>
+                    Complete Data
+                    <button class="button button-secondary" onclick="copyData('all')">📋 Copy All</button>
+                </h2>
+                <div class="code-block">
+                    <pre id="allData"></pre>
+                </div>
+            </div>
+
+            <div id="tab-courses" class="tab-content">
+                <h2>
+                    Courses Array
+                    <button class="button button-secondary" onclick="copyData('courses')">📋 Copy Courses</button>
+                </h2>
+                <div class="code-block">
+                    <pre id="coursesData"></pre>
+                </div>
+            </div>
+
+            <div id="tab-offerings" class="tab-content">
+                <h2>
+                    Course Offerings Array
+                    <button class="button button-secondary" onclick="copyData('offerings')">📋 Copy Offerings</button>
+                </h2>
+                <div class="code-block">
+                    <pre id="offeringsData"></pre>
+                </div>
+            </div>
+
+            <div id="tab-preview" class="tab-content">
+                <h2>Data Preview</h2>
+                <div class="sample-preview">
+                    <h4>Sample Course:</h4>
+                    <div class="sample-item" id="sampleCourse"></div>
+                </div>
+                <div class="sample-preview">
+                    <h4>Sample Course Offering:</h4>
+                    <div class="sample-item" id="sampleOffering"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+
+        // Include the same generation logic
+        const PROGRAMS = [
+            { code: "CSCI-UA", name: "Computer Science" },
+            { code: "MATH-UA", name: "Mathematics" },
+            { code: "PHYS-UA", name: "Physics" },
+            { code: "CHEM-UA", name: "Chemistry" },
+            { code: "BIOL-UA", name: "Biology" },
+            { code: "ECON-UA", name: "Economics" },
+            { code: "PSYCH-UA", name: "Psychology" },
+            { code: "ENGL-UA", name: "English" },
+            { code: "HIST-UA", name: "History" },
+            { code: "PHIL-UA", name: "Philosophy" },
+            { code: "POLI-UA", name: "Political Science" },
+            { code: "SOCL-UA", name: "Sociology" },
+            { code: "ART-UA", name: "Art" },
+            { code: "MUSC-UA", name: "Music" },
+            { code: "THEA-UA", name: "Theater" },
+        ];
+
+        const LEVELS = [100, 200, 300, 400, 500];
+
+        const INSTRUCTORS = [
+            "Dr. Sarah Johnson", "Prof. Michael Chen", "Dr. Emily Rodriguez",
+            "Prof. James Williams", "Dr. Maria Garcia", "Prof. David Lee",
+            "Dr. Jennifer Taylor", "Prof. Robert Anderson", "Dr. Lisa Martinez",
+            "Prof. Christopher Brown", "Dr. Amanda White", "Prof. Daniel Kim",
+            "Dr. Nicole Patel", "Prof. Kevin O'Brien", "Dr. Rachel Cohen",
+        ];
+
+        const LOCATIONS = [
+            "Warren Weaver Hall 101", "Silver Center 208", "Kimmel Center 914",
+            "Bobst Library 619", "Tisch Hall 302", "Courant Institute 317",
+            "Meyer Hall 121", "Washington Square Hall 102", "Global Center 234",
+            "Vanderbilt Hall 208", "Cantor Film Center 106", "Shimkin Hall 369",
+        ];
+
+        const TIME_SLOTS = [
+            { start: "08:00", end: "09:15" }, { start: "09:30", end: "10:45" },
+            { start: "11:00", end: "12:15" }, { start: "12:30", end: "13:45" },
+            { start: "14:00", end: "15:15" }, { start: "15:30", end: "16:45" },
+            { start: "17:00", end: "18:15" }, { start: "18:30", end: "19:45" },
+        ];
+
+        const DAY_COMBINATIONS = [
+            ["monday", "wednesday"], ["tuesday", "thursday"],
+            ["monday", "wednesday", "friday"], ["tuesday", "thursday", "friday"],
+            ["monday"], ["tuesday"], ["wednesday"], ["thursday"], ["friday"],
+        ];
+
+        const STATUSES = ["open", "closed", "waitlist"];
+        const TERM = "spring";
+        const YEAR = 2025;
+
+        const courseTitles = {
+            "CSCI-UA": ["Introduction to Computer Science", "Data Structures", "Algorithms", "Computer Systems Organization", "Operating Systems", "Database Systems", "Web Development", "Machine Learning", "Artificial Intelligence", "Computer Graphics", "Software Engineering", "Computer Networks", "Cybersecurity", "Mobile App Development", "Cloud Computing"],
+            "MATH-UA": ["Calculus I", "Calculus II", "Linear Algebra", "Differential Equations", "Discrete Mathematics", "Probability Theory", "Statistics", "Abstract Algebra", "Real Analysis", "Complex Analysis", "Number Theory", "Topology", "Mathematical Logic", "Numerical Methods", "Applied Mathematics"],
+            "PHYS-UA": ["General Physics I", "General Physics II", "Classical Mechanics", "Electromagnetism", "Quantum Mechanics", "Thermodynamics", "Optics", "Modern Physics", "Astrophysics", "Particle Physics", "Condensed Matter Physics", "Nuclear Physics", "Biophysics", "Computational Physics", "Special Relativity"],
+            "CHEM-UA": ["General Chemistry I", "General Chemistry II", "Organic Chemistry I", "Organic Chemistry II", "Physical Chemistry", "Analytical Chemistry", "Biochemistry", "Inorganic Chemistry", "Environmental Chemistry", "Polymer Chemistry", "Medicinal Chemistry", "Chemical Kinetics", "Spectroscopy", "Electrochemistry", "Materials Science"],
+            "BIOL-UA": ["Introduction to Biology", "Cell Biology", "Molecular Biology", "Genetics", "Ecology", "Evolution", "Microbiology", "Immunology", "Neuroscience", "Developmental Biology", "Marine Biology", "Plant Biology", "Biotechnology", "Anatomy & Physiology", "Bioinformatics"],
+            "ECON-UA": ["Principles of Microeconomics", "Principles of Macroeconomics", "Intermediate Microeconomics", "Intermediate Macroeconomics", "Econometrics", "Game Theory", "International Economics", "Labor Economics", "Financial Economics", "Public Economics", "Development Economics", "Environmental Economics", "Behavioral Economics", "Urban Economics", "Economic History"],
+        };
+
+        const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+        const randomBool = () => Math.random() > 0.5;
+
+        function generateDefaultTitle(program, level, index) {
+            const levelName = level === 100 ? "Introduction" : level === 200 ? "Intermediate" : level === 300 ? "Advanced" : level === 400 ? "Senior Seminar" : "Graduate Topics";
+            return `${levelName} ${program} ${index + 1}`;
+        }
+
+        function generateCourses(numCourses) {
+            const courses = [];
+            const usedCodes = new Set();
+            let attempts = 0;
+            const maxAttempts = numCourses * 10; // Prevent infinite loops
+
+            while (courses.length < numCourses && attempts < maxAttempts) {
+                attempts++;
+
+                const program = random(PROGRAMS);
+                const level = random(LEVELS);
+                const courseNumber = randomInt(1, 999);
+                const code = `${program.code} ${courseNumber}`;
+
+                // Skip if this code has already been used
+                if (usedCodes.has(code)) {
+                    continue;
+                }
+
+                usedCodes.add(code);
+
+                const titles = courseTitles[program.code] || [];
+                const title = titles[courses.length % titles.length] || generateDefaultTitle(program.name, level, courses.length);
+
+                const credits = [3, 4, 4, 4][randomInt(0, 3)];
+
+                courses.push({
+                    code,
+                    program: program.code,
+                    level,
+                    title,
+                    credits,
+                    description: `This course covers fundamental and advanced topics in ${title.toLowerCase()}. Students will engage in lectures, discussions, and hands-on projects to develop comprehensive understanding of the subject matter.`,
+                    courseUrl: `https://www.nyu.edu/courses/${code.replace(" ", "-").toLowerCase()}`,
+                });
+            }
+
+            if (courses.length < numCourses) {
+                console.warn(`Could only generate ${courses.length} unique courses out of ${numCourses} requested`);
+            }
+
+            return courses;
+        }
+
+        function generateCourseOfferings(courses, sectionsPerCourse) {
+            const offerings = [];
+            let classNumber = 10000;
+
+            for (const course of courses) {
+                const numSections = randomInt(1, sectionsPerCourse);
+
+                for (let i = 0; i < numSections; i++) {
+                    const section = String(i + 1).padStart(3, "0");
+                    const days = random(DAY_COMBINATIONS);
+                    const timeSlot = random(TIME_SLOTS);
+                    const status = random(STATUSES);
+                    const instructor = [random(INSTRUCTORS)];
+
+                    if (randomBool() && randomBool()) {
+                        const coInstructor = random(INSTRUCTORS);
+                        if (!instructor.includes(coInstructor)) {
+                            instructor.push(coInstructor);
+                        }
+                    }
+
+                    offerings.push({
+                        courseCode: course.code,
+                        classNumber: classNumber++,
+                        title: course.title,
+                        section,
+                        year: YEAR,
+                        term: TERM,
+                        instructor,
+                        location: random(LOCATIONS),
+                        days,
+                        startTime: timeSlot.start,
+                        endTime: timeSlot.end,
+                        status,
+                        waitlistNum: status === "waitlist" ? randomInt(1, 30) : undefined,
+                        isCorequisite: false,
+                        corequisiteOf: undefined,
+                    });
+
+                    if (course.credits === 4 && randomBool() && randomBool()) {
+                        const recitationSection = `${section}R`;
+                        const recitationDays = [random(["monday", "tuesday", "wednesday", "thursday", "friday"])];
+                        const recitationTime = random(TIME_SLOTS);
+
+                        offerings.push({
+                            courseCode: course.code,
+                            classNumber: classNumber++,
+                            title: `${course.title} - Recitation`,
+                            section: recitationSection,
+                            year: YEAR,
+                            term: TERM,
+                            instructor: [random(INSTRUCTORS)],
+                            location: random(LOCATIONS),
+                            days: recitationDays,
+                            startTime: recitationTime.start,
+                            endTime: recitationTime.end,
+                            status: "open",
+                            isCorequisite: true,
+                            corequisiteOf: classNumber - 1,
+                        });
+                    }
+                }
+            }
+
+            return offerings;
+        }
+
+        function generateData() {
+            const numCourses = parseInt(document.getElementById('numCourses').value);
+            const sectionsPerCourse = parseInt(document.getElementById('sectionsPerCourse').value);
+
+            const courses = generateCourses(numCourses);
+            const courseOfferings = generateCourseOfferings(courses, sectionsPerCourse);
+
+            currentData = {
+                courses,
+                courseOfferings,
+                stats: {
+                    totalCourses: courses.length,
+                    totalOfferings: courseOfferings.length,
+                    term: TERM,
+                    year: YEAR,
+                },
+            };
+
+            displayData();
+        }
+
+        function displayData() {
+            // Update stats
+            document.getElementById('stats').style.display = 'block';
+            document.getElementById('totalCourses').textContent = currentData.stats.totalCourses;
+            document.getElementById('totalOfferings').textContent = currentData.stats.totalOfferings;
+            document.getElementById('term').textContent = currentData.stats.term.toUpperCase();
+            document.getElementById('year').textContent = currentData.stats.year;
+
+            // Display data
+            document.getElementById('dataSection').style.display = 'block';
+            document.getElementById('allData').textContent = JSON.stringify(currentData, null, 2);
+            document.getElementById('coursesData').textContent = JSON.stringify(currentData.courses, null, 2);
+            document.getElementById('offeringsData').textContent = JSON.stringify(currentData.courseOfferings, null, 2);
+
+            // Preview samples
+            document.getElementById('sampleCourse').textContent = JSON.stringify(currentData.courses[0], null, 2);
+            document.getElementById('sampleOffering').textContent = JSON.stringify(currentData.courseOfferings[0], null, 2);
+        }
+
+        function switchTab(tab) {
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            // Add active to selected tab
+            document.querySelector(`.tab:nth-child(${tab === 'all' ? 1 : tab === 'courses' ? 2 : tab === 'offerings' ? 3 : 4})`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+        }
+
+        async function copyData(type) {
+            let dataToCopy;
+            switch (type) {
+                case 'all':
+                    dataToCopy = JSON.stringify(currentData, null, 2);
+                    break;
+                case 'courses':
+                    dataToCopy = JSON.stringify(currentData.courses, null, 2);
+                    break;
+                case 'offerings':
+                    dataToCopy = JSON.stringify(currentData.courseOfferings, null, 2);
+                    break;
+            }
+
+            try {
+                await navigator.clipboard.writeText(dataToCopy);
+                alert('✅ Data copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                alert('❌ Failed to copy data');
+            }
+        }
+
+        // Generate initial data on load
+        window.addEventListener('load', () => {
+            generateData();
+        });
+    </script>
+</body>
+</html>

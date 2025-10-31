@@ -220,9 +220,9 @@ export function WeekView({ classes }: WeekViewProps) {
   const gridCols = days.length + 1; // +1 for the time column
 
   return (
-    <div data-slot="week-view" className="flex h-full flex-col">
+    <div data-slot="week-view" className="flex min-h-0 flex-1 flex-col">
       <div
-        className="bg-background/80 border-border/70 sticky top-0 z-30 grid border-b backdrop-blur-md"
+        className="bg-background/80 border-border/70 sticky top-0 z-30 grid shrink-0 border-b backdrop-blur-md"
         style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
       >
         <div className="text-muted-foreground/70 py-2 text-center text-sm">
@@ -243,7 +243,7 @@ export function WeekView({ classes }: WeekViewProps) {
       </div>
 
       <div
-        className="grid flex-1 overflow-hidden"
+        className="grid min-h-0 flex-1 overflow-y-auto"
         style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
       >
         <div className="border-border/70 grid auto-cols-fr border-r">
