@@ -14,7 +14,6 @@ For the standard setup, you will need:
 
 - **Node.js**: Version 20 or higher.
 - **Bun**: A fast JavaScript all-in-one toolkit. Bun is used as the package manager for this project. You can find installation instructions on the [official Bun website](https://bun.sh/).
-- **Doppler**: For managing environment variables and secrets. You will need to create a Doppler account and project to store the necessary API keys and configuration.
 
 ### Nix-based Setup
 
@@ -25,11 +24,9 @@ For a more declarative and reproducible development environment, you can use Nix
 
 By using the Nix flake, the correct versions of Node.js, Bun, Doppler, and other development tools will be automatically provisioned for you.
 
-## Environmental Variables
+## Environment Variables
 
-We use Doppler for managing environmental variables. Follow the instruction on [Doppler docs](https://docs.doppler.com/docs/start).
-
-WIP
+We use Doppler for managing environmental variables. Follow the instruction on [Doppler docs](https://docs.doppler.com/docs/start). See the [Environment Variables](/getting-started/environment-variables) page for a complete list of all required variables for each application in the monorepo.
 
 ## Running the Development Server
 
