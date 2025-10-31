@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { discoverPrograms, scrapeProgram } from "../index";
+import { discoverPrograms, scrapeProgram } from "./index";
 
 describe("Programs Scraper", () => {
   describe("discoverPrograms", () => {
