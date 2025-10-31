@@ -1,5 +1,5 @@
 ---
-title: Tech Stack Overview
+title: Tech Stack
 ---
 
 # Tech Stack Overview
