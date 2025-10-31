@@ -29,10 +29,12 @@ export default defineConfig({
           label: "Getting Started",
           items: [
             { label: "Overview", slug: "getting-started/overview" },
-            { label: "Prerequisites", slug: "getting-started/prerequisites" },
-            { label: "Installation", slug: "getting-started/installation" },
             { label: "Quick Start", slug: "getting-started/quick-start" },
-            { label: "Environment Variables", slug: "getting-started/environment-variables" },
+            {
+              label: "Environment Variables",
+              slug: "getting-started/environment-variables",
+            },
+            { label: "Tech Stack", slug: "getting-started/tech-stack" },
           ],
         },
         {
@@ -45,40 +47,17 @@ export default defineConfig({
           ],
         },
         {
-          label: "Applications",
+          label: "Modules",
           items: [
-            { label: "Web App", slug: "applications/web-app" },
-            { label: "Browser Extension", slug: "applications/browser-extension" },
-            { label: "Scraper", slug: "applications/scraper" },
-            { label: "Documentation", slug: "applications/documentation" },
+            { label: "Web App", slug: "modules/web-app" },
+            {
+              label: "Browser Extension",
+              slug: "modules/browser-extension",
+            },
+            { label: "Scraper", slug: "modules/scraper" },
+            { label: "Convex", slug: "modules/convex" },
+            { label: "Documentation", slug: "modules/documentation" },
           ],
-        },
-        {
-          label: "Backend",
-          items: [
-            { label: "Convex Overview", slug: "backend/convex-overview" },
-            { label: "Database Schema", slug: "backend/database-schema" },
-            { label: "API Reference", slug: "backend/api-reference" },
-          ],
-        },
-        {
-          label: "Development",
-          items: [
-            { label: "Environment Setup", slug: "development/environment-setup" },
-            { label: "Code Style", slug: "development/code-style" },
-            { label: "Project Structure", slug: "development/project-structure" },
-            { label: "Commands", slug: "development/commands" },
-          ],
-        },
-        {
-          label: "Tech Stack",
-          items: [
-            { label: "Overview", slug: "tech-stack/overview" },
-          ],
-        },
-        {
-          label: "Reference",
-          autogenerate: { directory: "reference" },
         },
       ],
     }),
