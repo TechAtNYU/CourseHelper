@@ -1,40 +1,48 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+# title: Welcome to AlbertPlus
+description: A comprehensive guide to the AlbertPlus project, its architecture, and how to contribute.
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: The next-generation companion for NYU's Albert course registration system.
   image:
     file: ../../assets/houston.webp
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Getting Started
+      link: /getting-started/overview/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+    - text: View on GitHub
+      link: https://github.com/TechAtNYU/AlbertPlus
       icon: external
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## What is AlbertPlus?
+
+AlbertPlus is a powerful, open-source platform designed to enhance the course registration experience for New York University (NYU) students. It provides a modern, intuitive interface and a suite of tools to help students plan their academic journey, build schedules, and navigate the complexities of course selection. This project is developed and maintained by the vibrant community at Tech@NYU.
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="For Students" icon="rocket">
+		Discover a seamless way to browse courses, track your degree progress, and create the perfect schedule with our intuitive web app and browser extension.
 	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
+	<Card title="For Contributors" icon="pencil">
+		Dive into our comprehensive technical documentation to understand the project's architecture, development workflow, and how you can contribute.
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="For the Community" icon="community">
+		AlbertPlus is a testament to the collaborative spirit of the NYU tech community. Join us in building the future of course registration.
 	</Card>
 </CardGrid>
+
+## Key Features
+
+- **Modern Web Interface**: A fast, responsive, and user-friendly web application built with Next.js and React.
+- **Browser Extension**: A companion Chrome extension that integrates directly with the Albert website.
+- **Real-time Course Data**: An automated scraper keeps course information up-to-date.
+- **Degree Progress Tracking**: Upload and parse your degree progress report to see which requirements you've fulfilled.
+- **Schedule Builder**: Visually construct and manage your course schedule with a drag-and-drop calendar interface.
+- **Comprehensive Backend**: A robust serverless backend powered by Convex, providing real-time data synchronization.
+
+## Getting Involved
+
+Whether you're a student looking to improve your registration experience or a developer eager to contribute to a meaningful project, AlbertPlus welcomes you. Explore our documentation to get started, and join our community on Discord to connect with other contributors.
