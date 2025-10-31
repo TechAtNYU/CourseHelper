@@ -2,8 +2,6 @@
 title: "Web Application"
 ---
 
-# Web Application
-
 The web application, located in the `apps/web` directory, is the heart of the AlbertPlus platform. It is a modern, feature-rich application built with Next.js and React, providing students with a powerful and intuitive interface for course planning and registration.
 
 ## Key Technologies

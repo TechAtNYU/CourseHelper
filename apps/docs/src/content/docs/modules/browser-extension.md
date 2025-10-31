@@ -2,8 +2,6 @@
 title: "Browser Extension"
 ---
 
-# Browser Extension
-
 The AlbertPlus browser extension, located in the `apps/browser` directory, is a companion tool that integrates directly with the NYU Albert website. It is designed to provide a seamless and enhanced user experience by overlaying AlbertPlus features on top of the existing Albert interface.
 
 ## Key Technologies

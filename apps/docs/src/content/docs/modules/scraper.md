@@ -2,8 +2,6 @@
 title: "Scraper"
 ---
 
-# Scraper
-
 The scraper, located in the `apps/scraper` directory, is a critical component of the AlbertPlus platform. It is a Cloudflare Worker responsible for automatically collecting and updating course and program data from NYU's public-facing systems. This ensures that the information presented to students in the web app is accurate and up-to-date.
 
 ## Key Technologies

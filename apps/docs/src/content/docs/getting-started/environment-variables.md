@@ -2,8 +2,6 @@
 title: "Enviroment Variables"
 ---
 
-# Environment Variables
-
 This page provides a comprehensive reference for all the environment variables required to run the AlbertPlus project. These variables should be managed and stored in your Doppler project.
 
 ## Web Application (`apps/web`)

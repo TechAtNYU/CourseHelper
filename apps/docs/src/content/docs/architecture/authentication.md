@@ -2,8 +2,6 @@
 title: Authentication
 ---
 
-# Authentication
-
 Authentication in AlbertPlus is handled by [Clerk](https://clerk.com/), a complete user management service. Clerk provides a seamless and secure authentication experience for both the web application and the browser extension, and it integrates smoothly with the Convex backend.
 
 ## Authentication in the Web App

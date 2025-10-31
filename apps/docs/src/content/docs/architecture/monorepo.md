@@ -2,8 +2,6 @@
 title: "Monorepo"
 ---
 
-# Monorepo
-
 AlbertPlus utilizes a monorepo architecture, managed by Turborepo, to streamline development and code sharing across its various applications and packages. This structure enhances code consistency, simplifies dependency management, and improves the overall developer workflow.
 
 ## Directory Layout

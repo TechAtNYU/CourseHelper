@@ -25,10 +25,10 @@ export default defineConfig({
         baseUrl: "https://github.com/TechAtNYU/AlbertPlus/edit/main/apps/docs",
       },
       sidebar: [
+        { label: "Overview", slug: "overview" },
         {
           label: "Getting Started",
           items: [
-            { label: "Overview", slug: "getting-started/overview" },
             { label: "Quick Start", slug: "getting-started/quick-start" },
             {
               label: "Environment Variables",

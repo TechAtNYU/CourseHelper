@@ -2,8 +2,6 @@
 title: "Tech Stack"
 ---
 
-# Tech Stack Overview
-
 AlbertPlus is built with a modern, robust, and scalable technology stack. This section provides a comprehensive overview of the key technologies used across the platform.
 
 ## Core Technologies

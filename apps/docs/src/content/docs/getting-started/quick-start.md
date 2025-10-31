@@ -2,8 +2,6 @@
 title: "Quick Start"
 ---
 
-# Quick Start
-
 ## Prerequisites
 
 Before you begin, ensure you have the following software installed on your system. This project offers two primary setup methods: a standard setup using Node.js and Bun, and a more reproducible environment using Nix.

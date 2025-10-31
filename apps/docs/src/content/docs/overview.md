@@ -2,8 +2,6 @@
 title: "Overview"
 ---
 
-# Overview
-
 Welcome to the AlbertPlus project! This documentation will guide you through the process of setting up your development environment, understanding the project architecture, and contributing to the AlbertPlus platform.
 
 ## What is AlbertPlus?
@@ -19,8 +17,8 @@ AlbertPlus is a comprehensive, open-source platform designed to enhance the cour
 You can explore the deployed instances of AlbertPlus:
 
 - **Web App**: [dev.albertplus.com](https://dev.albertplus.com) - The main web application for course planning and schedule building
+- **Scraper**: [scraper.albertplus.com](https://scraper.albertplus.com) - The Cloudflare Worker that scrapes course data from NYU public sites
 - **Documentation**: [docs.albertplus.com](https://docs.albertplus.com) - This documentation site
-- **Scraper**: [scraper.albertplus.com](https://scraper.albertplus.com) - The Cloudflare Worker that scrapes course data from NYU
 
 ## Who is this for?
 

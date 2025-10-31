@@ -2,8 +2,6 @@
 title: "Overview"
 ---
 
-# Overview
-
 AlbertPlus is designed as a modern, scalable, and maintainable platform. It leverages a monorepo architecture, a serverless backend, and a suite of specialized applications to deliver a comprehensive user experience. This section provides a high-level overview of the key architectural components.
 
 ## Core Modules

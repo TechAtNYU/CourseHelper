@@ -2,8 +2,6 @@
 title: "Data Flow"
 ---
 
-# Data Flow
-
 Understanding the flow of data is crucial to comprehending how AlbertPlus works. The platform is designed around a robust data pipeline that ensures course information is accurate, up-to-date, and delivered efficiently to the user.
 
 ## Course Data Pipeline
@@ -73,14 +71,14 @@ graph TD
     WA --> C
     BE --> C
     C --> CVX
-    
+
     CT --> SW
     SW --> NYU
     SW --> CQ
     CQ --> SW
     SW --> D1
     SW --> CVX
-    
+
     WA --> PJS
     PJS --> WA
     WA --> CVX

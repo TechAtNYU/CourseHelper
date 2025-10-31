@@ -2,8 +2,6 @@
 title: Documentation
 ---
 
-# Documentation Site
-
 The documentation site you are currently viewing is a key part of the AlbertPlus project. It is located in the `apps/docs` directory and is built using modern documentation tools to provide a comprehensive and easy-to-navigate resource for developers and contributors.
 
 ## Key Technologies
