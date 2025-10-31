@@ -5,9 +5,9 @@ import { useId } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const items = [
-  { value: "1", label: "Light", image: "/origin/ui-light.png" },
-  { value: "2", label: "Dark", image: "/origin/ui-dark.png" },
-  { value: "3", label: "System", image: "/origin/ui-system.png" },
+  { value: "1", label: "Light", image: "/ui-light.png" },
+  { value: "2", label: "Dark", image: "/ui-dark.png" },
+  { value: "3", label: "System", image: "/ui-system.png" },
 ];
 
 export default function ThemeSelector() {
@@ -28,8 +28,8 @@ export default function ThemeSelector() {
             <Image
               src={item.image}
               alt={item.label}
-              width={88}
-              height={70}
+              width={120}
+              height={95}
               className="relative cursor-pointer overflow-hidden rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none peer-focus-visible:ring-[3px] peer-focus-visible:ring-ring/50 peer-data-disabled:cursor-not-allowed peer-data-disabled:opacity-50 peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent"
             />
             <span className="group mt-2 flex items-center gap-1 peer-data-[state=unchecked]:text-muted-foreground/70">
