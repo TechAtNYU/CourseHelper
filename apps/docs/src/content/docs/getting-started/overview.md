@@ -14,6 +14,14 @@ AlbertPlus is a comprehensive, open-source platform designed to enhance the cour
 
 (WIP)
 
+## Try It Out
+
+You can explore the deployed instances of AlbertPlus:
+
+- **Web App**: [dev.albertplus.com](https://dev.albertplus.com) - The main web application for course planning and schedule building
+- **Documentation**: [docs.albertplus.com](https://docs.albertplus.com) - This documentation site
+- **Scraper**: [scraper.albertplus.com](https://scraper.albertplus.com) - The Cloudflare Worker that scrapes course data from NYU
+
 ## Who is this for?
 
 This documentation is intended for developers who are interested in contributing to AlbertPlus or people who are interested in learning more about the technical details of AlbertPlus. It assumes a basic understanding of web development concepts, including JavaScript/TypeScript, React, and Git. Whether you are a seasoned developer or a student looking to learn, we welcome your contributions.
