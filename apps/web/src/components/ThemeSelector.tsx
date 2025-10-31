@@ -1,23 +1,32 @@
+"use client";
+
 import { CheckIcon, MinusIcon } from "lucide-react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 import { useId } from "react";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const items = [
-  { value: "1", label: "Light", image: "/ui-light.png" },
-  { value: "2", label: "Dark", image: "/ui-dark.png" },
-  { value: "3", label: "System", image: "/ui-system.png" },
+  { value: "light", label: "Light", image: "/ui-light.png" },
+  { value: "dark", label: "Dark", image: "/ui-dark.png" },
+  { value: "system", label: "System", image: "/ui-system.png" },
 ];
 
 export default function ThemeSelector() {
   const id = useId();
+  const { theme, setTheme } = useTheme();
+
   return (
     <fieldset className="space-y-4">
       <legend className="text-sm leading-none font-medium text-foreground">
         Choose a theme
       </legend>
-      <RadioGroup className="flex gap-3" defaultValue="1">
+      <RadioGroup
+        className="flex gap-3"
+        value={theme}
+        onValueChange={setTheme}
+      >
         {items.map((item) => (
           <label key={`${id}-${item.value}`} htmlFor={`${id}-${item.value}`}>
             <RadioGroupItem
