@@ -2,18 +2,13 @@
 import { api } from "@albert-plus/server/convex/_generated/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useMutation, useQuery } from "convex/react";
-import type { FunctionReturnType } from "convex/server";
 import { ConvexError } from "convex/values";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CourseCard, CourseFilters } from "./components";
 import { useCourseExpansion, useCourseFiltering } from "./hooks";
-import type { CourseOffering } from "./types";
-
-type CourseOfferingWithCourse = FunctionReturnType<
-  typeof api.courseOfferings.getCourseOfferings
->["page"][number];
+import type { CourseOffering, CourseOfferingWithCourse } from "./types";
 
 interface CourseSelectorComponentProps {
   courseOfferingsWithCourses: CourseOfferingWithCourse[];

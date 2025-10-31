@@ -1,13 +1,12 @@
-import type { api } from "@albert-plus/server/convex/_generated/api";
-import type { FunctionReturnType } from "convex/server";
 import { groupBy } from "lodash";
 import { useMemo, useReducer } from "react";
 import { DEFAULT_SELECTED_DAYS } from "../components/DaysOfWeek";
-import type { CourseWithOfferings, FilterAction, FilterState } from "../types";
-
-type CourseOfferingWithCourse = FunctionReturnType<
-  typeof api.courseOfferings.getCourseOfferings
->["page"][number];
+import type {
+  CourseOfferingWithCourse,
+  CourseWithOfferings,
+  FilterAction,
+  FilterState,
+} from "../types";
 
 const initialFilterState: FilterState = {
   creditFilter: null,
