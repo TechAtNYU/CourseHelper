@@ -1,6 +1,6 @@
 "use client";
 
-import { api } from "@dev-team-fall-25/server/convex/_generated/api";
+import { api } from "@albert-plus/server/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useState } from "react";
 import {
