@@ -8,6 +8,7 @@
 import { v } from "convex/values";
 import type { Id } from "./_generated/dataModel";
 import { internalMutation } from "./_generated/server";
+import { schoolName } from "./schemas/schools";
 
 /**
  * Seed all data from JSON files
@@ -21,10 +22,18 @@ export const seedAll = internalMutation({
         value: v.string(),
       }),
     ),
+    schools: v.array(
+      v.object({
+        name: schoolName,
+        shortName: v.string(),
+        level: v.union(v.literal("undergraduate"), v.literal("graduate")),
+      }),
+    ),
     programs: v.array(
       v.object({
         name: v.string(),
         level: v.union(v.literal("undergraduate"), v.literal("graduate")),
+        school: schoolName,
         programUrl: v.string(),
       }),
     ),
@@ -35,6 +44,7 @@ export const seedAll = internalMutation({
         level: v.number(),
         title: v.string(),
         credits: v.number(),
+        school: schoolName,
         description: v.string(),
         courseUrl: v.string(),
       }),
@@ -130,6 +140,7 @@ export const seedAll = internalMutation({
       v.object({
         userId: v.string(),
         programNames: v.array(v.string()),
+        school: schoolName,
         startingDate: v.object({
           year: v.number(),
           term: v.union(v.literal("spring"), v.literal("fall")),
@@ -196,7 +207,27 @@ export const seedAll = internalMutation({
       }
     }
 
-    // 2. Seed programs and build ID map
+    // 2. Seed schools
+    console.log("🏫 Seeding schools...");
+    for (const school of args.schools) {
+      const existing = await ctx.db
+        .query("schools")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("name"), school.name),
+            q.eq(q.field("level"), school.level),
+          ),
+        )
+        .first();
+
+      if (existing) {
+        await ctx.db.patch(existing._id, school);
+      } else {
+        await ctx.db.insert("schools", school);
+      }
+    }
+
+    // 3. Seed programs and build ID map
     console.log("📚 Seeding programs...");
     const programMap = new Map<string, Id<"programs">>();
     for (const program of args.programs) {
@@ -331,6 +362,7 @@ export const seedAll = internalMutation({
       const studentData = {
         userId: student.userId,
         programs: programIds,
+        school: student.school,
         startingDate: student.startingDate,
         expectedGraduationDate: student.expectedGraduationDate,
       };
