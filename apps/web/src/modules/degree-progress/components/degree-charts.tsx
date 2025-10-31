@@ -1,5 +1,8 @@
 "use client";
 
+import type { api } from "@albert-plus/server/convex/_generated/api";
+import type { FunctionReturnType } from "convex/server";
+import { Bar, BarChart, LabelList, Tooltip, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -7,22 +10,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { api } from "@albert-plus/server/convex/_generated/api";
-import { useQuery } from "convex/react";
-import { Bar, BarChart, LabelList, Tooltip, XAxis, YAxis } from "recharts";
 
 interface ProgramRequirementsChartProps {
-  programName: string;
+  programs: Record<
+    string,
+    FunctionReturnType<typeof api.programs.getProgramById> | undefined
+  >;
+  userCourses:
+    | FunctionReturnType<typeof api.userCourses.getUserCourses>
+    | undefined;
 }
 
 export function ProgramRequirementsChart({
-  programName,
+  programs,
+  userCourses,
 }: ProgramRequirementsChartProps) {
-  const program = useQuery(api.programs.getProgramWithGroupedRequirements, {
-    name: programName,
-  });
-
-  const userCourses = useQuery(api.userCourses.getUserCourses, {});
+  // FIXME: set program to null for now just so that it doenst error. should use programs defined above instead
+  const program = null;
 
   if (program === undefined) {
     return (

@@ -1,12 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { api } from "@albert-plus/server/convex/_generated/api";
+import {
+  type RequestForQueries,
+  useConvexAuth,
+  useQueries,
+  useQuery,
+} from "convex/react";
+import { ProgramRequirementsChart } from "@/modules/degree-progress/components/degree-charts";
 import DegreeProgreeUpload from "@/modules/report-parsing/components/degree-progress-upload";
-import { ProgramRequirementsChart } from "./components/charts/degree-charts";
-import { ProgramSelector } from "./components/charts/program-selector";
 
 const HomePage = () => {
-  const [selectedProgram, setSelectedProgram] = useState<string>("");
+  const { isAuthenticated } = useConvexAuth();
+  const student = useQuery(
+    api.students.getCurrentStudent,
+    !isAuthenticated ? "skip" : {},
+  );
+
+  const userCourses = useQuery(
+    api.userCourses.getUserCourses,
+    !isAuthenticated ? "skip" : {},
+  );
+
+  const prgramQueries: RequestForQueries = {};
+  if (isAuthenticated && student) {
+    for (const programId of student.programs) {
+      prgramQueries[programId] = {
+        query: api.programs.getProgramById,
+        args: { id: programId },
+      };
+    }
+  }
+
+  const programs = useQueries(prgramQueries);
 
   return (
     <div className="container mx-auto space-y-6 p-6">
@@ -14,22 +40,7 @@ const HomePage = () => {
 
       <DegreeProgreeUpload />
 
-      <ProgramSelector
-        selectedProgram={selectedProgram}
-        onSelectProgram={setSelectedProgram}
-      />
-
-      {selectedProgram && (
-        <ProgramRequirementsChart programName={selectedProgram} />
-      )}
-
-      {!selectedProgram && (
-        <div className="flex items-center justify-center rounded-lg border border-dashed p-12">
-          <p className="text-muted-foreground">
-            Select a program above to view its requirements
-          </p>
-        </div>
-      )}
+      <ProgramRequirementsChart programs={programs} userCourses={userCourses} />
     </div>
   );
 };
