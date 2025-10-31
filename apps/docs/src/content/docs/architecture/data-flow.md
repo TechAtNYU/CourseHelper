@@ -40,4 +40,49 @@ Another important data flow involves the parsing of a student's degree progress 
 
 The following diagram provides a visual representation of the data flow within the AlbertPlus platform:
 
-![Data Flow Diagram](../../assets/data-flow.png)
+```mermaid
+graph TD
+    subgraph "User Facing"
+        U[User]
+        WA[Web App - Next.js]
+        BE[Browser Extension - Plasmo]
+    end
+
+    subgraph "Authentication"
+        C[Clerk]
+    end
+
+    subgraph "Backend"
+        CVX[Convex Backend]
+    end
+
+    subgraph "Data Collection"
+        CT[Cloudflare Cron Trigger]
+        SW[Scraper Worker]
+        NYU[NYU Bulletin]
+        CQ[Cloudflare Queue]
+        D1[Cloudflare D1 DB]
+    end
+
+    subgraph "Client-side Processing"
+        PJS[pdf.js Parser]
+    end
+
+    U --> WA
+    U --> BE
+    WA --> C
+    BE --> C
+    C --> CVX
+    
+    CT --> SW
+    SW --> NYU
+    SW --> CQ
+    CQ --> SW
+    SW --> D1
+    SW --> CVX
+    
+    WA --> PJS
+    PJS --> WA
+    WA --> CVX
+    BE --> CVX
+```
