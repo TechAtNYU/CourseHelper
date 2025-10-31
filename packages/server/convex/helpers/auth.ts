@@ -22,7 +22,6 @@ export async function auth({
 }) {
   const identity = await ctx.auth.getUserIdentity();
   if (identity === null) {
-    console.error("Authentication failed - no identity found");
     throw new Error("Not authenticated");
   }
   return identity;
