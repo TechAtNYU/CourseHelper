@@ -1,4 +1,6 @@
-_This is an auto-generated file.file._
+---
+title: "Scraper"
+---
 
 # Scraper
 
@@ -31,13 +33,3 @@ The scraper's code is organized as follows:
 - `src/drizzle/`: The Drizzle ORM schema and database connection setup.
 - `src/lib/`: Core libraries for interacting with Convex and managing the job queue.
 - `src/modules/`: The logic for discovering and scraping courses and programs.
-
-## Deployment
-
-The scraper is deployed to Cloudflare Workers using the Wrangler CLI. The deployment process is automated via a GitHub Actions workflow (`.github/workflows/scraper.yaml`).
-
-To deploy the scraper manually, you can use the following command:
-
-```bash
-bun run --filter scraper deploy
-```
