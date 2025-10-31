@@ -23,6 +23,7 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -68,6 +69,9 @@ export function SettingsDialog() {
         </DialogDescription>
         <SidebarProvider className="items-start">
           <Sidebar collapsible="none" className="hidden md:flex border-r">
+            <SidebarHeader>
+              <h2 className="text-lg font-semibold px-2">Settings</h2>
+            </SidebarHeader>
             <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupContent>
