@@ -3,7 +3,7 @@ import type { FunctionReturnType } from "convex/server";
 import { groupBy } from "lodash";
 import { useMemo, useReducer } from "react";
 import { DEFAULT_SELECTED_DAYS } from "../components/DaysOfWeek";
-import type { FilterAction, FilterState } from "../types";
+import type { CourseWithOfferings, FilterAction, FilterState } from "../types";
 
 type CourseOfferingWithCourse = FunctionReturnType<
   typeof api.courseOfferings.getCourseOfferings
@@ -37,8 +37,11 @@ export const useCourseFiltering = (
   const { creditFilter, selectedDays } = filterState;
 
   // Group course offerings by course code
-  const coursesWithOfferings = useMemo(() => {
-    const offeringsByCode = groupBy(courseOfferingsWithCourses, "courseCode");
+  const coursesWithOfferings: CourseWithOfferings[] = useMemo(() => {
+    const offeringsByCode = groupBy<CourseOfferingWithCourse>(
+      courseOfferingsWithCourses,
+      "courseCode",
+    );
 
     const uniqueCourses = new Map<string, CourseOfferingWithCourse["course"]>();
     courseOfferingsWithCourses.forEach((offering) => {
@@ -70,7 +73,7 @@ export const useCourseFiltering = (
     return Array.from(credits).sort((a, b) => a - b);
   }, [coursesWithOfferings]);
 
-  const filteredData = useMemo(() => {
+  const filteredData: CourseWithOfferings[] = useMemo(() => {
     let filtered = coursesWithOfferings;
 
     if (creditFilter !== null) {
@@ -87,11 +90,10 @@ export const useCourseFiltering = (
 
     filtered = filtered
       .map((course) => {
-        const offerings = course.offerings.filter(
-          (offering: CourseOfferingWithCourse) =>
-            offering.days.some((day: string) =>
-              selectedDaySet.has(day.toLowerCase()),
-            ),
+        const offerings = course.offerings.filter((offering) =>
+          offering.days.some((day: string) =>
+            selectedDaySet.has(day.toLowerCase()),
+          ),
         );
 
         return {

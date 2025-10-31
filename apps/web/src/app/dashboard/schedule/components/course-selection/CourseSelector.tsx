@@ -66,7 +66,8 @@ const CourseSelector = ({
   });
 
   useEffect(() => {
-    if (!currentOfferings?.some(
+    if (
+      !currentOfferings?.some(
         (o) => o.classNumber === hoveredSection?.classNumber,
       )
     ) {
