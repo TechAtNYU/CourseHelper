@@ -32,6 +32,7 @@ export default defineConfig({
             { label: "Prerequisites", slug: "getting-started/prerequisites" },
             { label: "Installation", slug: "getting-started/installation" },
             { label: "Quick Start", slug: "getting-started/quick-start" },
+            { label: "Environment Variables", slug: "getting-started/environment-variables" },
           ],
         },
         {

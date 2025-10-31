@@ -25,3 +25,19 @@ The primary data pipeline is responsible for collecting, storing, and serving co
 3. **Client-side Consumption (Web App & Browser Extension)**
    - **Data Fetching**: The Next.js web app and the browser extension query the Convex backend to fetch course and program data.
    - **User Interface**: The data is then rendered in the user interface, allowing students to browse the course catalog, view program requirements, and build their schedules.
+
+## Degree Progress Report Parsing
+
+Another important data flow involves the parsing of a student's degree progress report.
+
+1. **File Upload**: The user uploads their degree progress report (in PDF format) through the web application.
+2. **Client-side Parsing**: The PDF is parsed directly in the browser using the `pdfjs-dist` library. This approach enhances privacy as the user's academic records are not sent to the server.
+3. **Data Extraction**: The parsed text is then processed to extract the student's completed courses and grades.
+4. **Backend Storage**: The extracted course information is stored in the `userCourses` table in the Convex database, associated with the authenticated user's ID.
+5. **Degree Audit**: This stored data can then be used to compare against program requirements, providing the student with an audit of their academic progress.
+
+## Visual Representation
+
+The following diagram provides a visual representation of the data flow within the AlbertPlus platform:
+
+![Data Flow Diagram](../../assets/data-flow.png)
