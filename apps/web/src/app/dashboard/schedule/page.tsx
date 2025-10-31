@@ -145,7 +145,7 @@ const SchedulePage = () => {
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="sticky top-[var(--header-height)]">
+          <div className="sticky top-(--header-height)">
             <ScheduleCalendar
               classes={classes}
               title={title}

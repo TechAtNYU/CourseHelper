@@ -100,7 +100,7 @@ const CourseSelector = ({
 
   return (
     <div className="flex flex-col gap-4 w-full md:max-w-[350px] h-full">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <CourseFilters
           searchInput={searchQuery}
           onSearchChange={onSearchChange}
@@ -170,14 +170,14 @@ const CourseSelector = ({
       </div>
 
       {status === "CanLoadMore" && (
-        <div className="flex justify-center py-4 flex-shrink-0">
+        <div className="flex justify-center py-4 shrink-0">
           <Button onClick={() => loadMore(200)} variant="outline">
             Load More
           </Button>
         </div>
       )}
       {status === "LoadingMore" && (
-        <div className="flex justify-center py-4 flex-shrink-0">
+        <div className="flex justify-center py-4 shrink-0">
           <p className="text-gray-500">Loading more courses...</p>
         </div>
       )}
