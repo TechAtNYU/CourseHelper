@@ -110,37 +110,39 @@ export const getCourseOfferings = protectedQuery({
     };
 
     if (query) {
-      const titleResults = await ctx.db
-        .query("courseOfferings")
-        .withSearchIndex("search_title", (q) =>
-          q
-            .search("title", query)
-            .eq("isCorequisite", false)
-            .eq("term", term)
-            .eq("year", year),
-        )
-        .collect();
+      const [titleResults, codeResults] = await Promise.all([
+        ctx.db
+          .query("courseOfferings")
+          .withSearchIndex("search_title", (q) =>
+            q
+              .search("title", query)
+              .eq("isCorequisite", false)
+              .eq("term", term)
+              .eq("year", year),
+          )
+          .collect(),
+        ctx.db
+          .query("courseOfferings")
+          .withSearchIndex("search_course_code", (q) =>
+            q
+              .search("courseCode", query)
+              .eq("isCorequisite", false)
+              .eq("term", term)
+              .eq("year", year),
+          )
+          .collect(),
+      ]);
 
-      // also search in course code
-      const allOfferings = await ctx.db
-        .query("courseOfferings")
-        .withIndex("by_term_year", (q) =>
-          q.eq("isCorequisite", false).eq("term", term).eq("year", year),
-        )
-        .collect();
-
-      const codeResults = allOfferings.filter((offering) =>
-        offering.courseCode.toLowerCase().includes(query.toLowerCase()),
-      );
-
-      const combinedMap = new Map();
-      [...titleResults, ...codeResults].forEach((offering) => {
+      const combinedMap = new Map<string, Doc<"courseOfferings">>();
+      for (const offering of titleResults) {
         combinedMap.set(offering._id, offering);
-      });
+      }
+      for (const offering of codeResults) {
+        combinedMap.set(offering._id, offering);
+      }
 
       const combinedResults = Array.from(combinedMap.values());
 
-      // manually paginate combined results
       const startIndex = paginationOpts.cursor
         ? combinedResults.findIndex((r) => r._id === paginationOpts.cursor) + 1
         : 0;
