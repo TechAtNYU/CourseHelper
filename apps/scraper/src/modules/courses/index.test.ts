@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { discoverCourses, scrapeCourse } from "./index";
+import { JobError } from "../../lib/queue";
 
 describe("Courses Scraper", () => {
   describe("discoverCourses", () => {
@@ -28,13 +29,9 @@ describe("Courses Scraper", () => {
     test("should handle invalid URLs gracefully", async () => {
       const invalidUrl = "https://invalid-url.example.com/courses/";
 
-      // This test expects the function to either throw an error or return an empty array
-      // Adjust based on the actual implementation behavior
-      await expect(async () => {
-        const result = await discoverCourses(invalidUrl);
-        // If it doesn't throw, it should at least return an empty array
-        expect(Array.isArray(result)).toBe(true);
-      }).not.toThrow();
+      expect(async () => {
+        await discoverCourses(invalidUrl);
+      }).not.toThrow(JobError);
     });
   });
 
@@ -67,9 +64,9 @@ describe("Courses Scraper", () => {
       const mockEnv = {} as any;
 
       // This test expects the function to throw an error for invalid URLs
-      await expect(async () => {
+      expect(async () => {
         await scrapeCourse(invalidUrl, mockDb, mockEnv);
-      }).toThrow();
+      }).toThrow(JobError);
     });
   });
 });
