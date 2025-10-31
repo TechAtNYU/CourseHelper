@@ -1,5 +1,5 @@
-import type { DrizzleD1Database } from "drizzle-orm/d1";
 import { mock } from "bun:test";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
 
 export function createMockDb(): DrizzleD1Database {
   return {

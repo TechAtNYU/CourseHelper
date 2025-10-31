@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { discoverCourses, scrapeCourse } from "./index";
+import { JobError } from "../../lib/queue";
 import { createMockDb } from "../__mocks__/db";
 import { createMockEnv } from "../__mocks__/env";
-import { JobError } from "../../lib/queue";
+import { discoverCourses, scrapeCourse } from "./index";
 
 describe("Courses Scraper", () => {
   describe("discoverCourses", () => {
