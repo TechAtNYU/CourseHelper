@@ -22,11 +22,7 @@ export default function ThemeSelector() {
       <legend className="text-sm leading-none font-medium text-foreground">
         Choose a theme
       </legend>
-      <RadioGroup
-        className="flex gap-3"
-        value={theme}
-        onValueChange={setTheme}
-      >
+      <RadioGroup className="flex gap-3" value={theme} onValueChange={setTheme}>
         {items.map((item) => (
           <label key={`${id}-${item.value}`} htmlFor={`${id}-${item.value}`}>
             <RadioGroupItem
