@@ -22,17 +22,17 @@ const HomePage = () => {
     !isAuthenticated ? "skip" : {},
   );
 
-  const prgramQueries: RequestForQueries = {};
+  const programQueries: RequestForQueries = {};
   if (isAuthenticated && student) {
     for (const programId of student.programs) {
-      prgramQueries[programId] = {
+      programQueries[programId] = {
         query: api.programs.getProgramById,
         args: { id: programId },
       };
     }
   }
 
-  const programs = useQueries(prgramQueries);
+  const programs = useQueries(programQueries);
 
   return (
     <div className="container mx-auto space-y-6 p-6">
