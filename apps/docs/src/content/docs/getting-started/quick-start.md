@@ -1,6 +1,35 @@
+---
+title: "Quick Start"
+---
+
 # Quick Start
 
-Once you have completed the installation and setup, you can run the AlbertPlus project on your local machine.
+## Prerequisites
+
+Before you begin, ensure you have the following software installed on your system. This project offers two primary setup methods: a standard setup using Node.js and Bun, and a more reproducible environment using Nix.
+
+### Standard Setup
+
+For the standard setup, you will need:
+
+- **Node.js**: Version 20 or higher.
+- **Bun**: A fast JavaScript all-in-one toolkit. Bun is used as the package manager for this project. You can find installation instructions on the [official Bun website](https://bun.sh/).
+- **Doppler**: For managing environment variables and secrets. You will need to create a Doppler account and project to store the necessary API keys and configuration.
+
+### Nix-based Setup
+
+For a more declarative and reproducible development environment, you can use Nix. The project includes a `flake.nix` file that defines all the necessary dependencies.
+
+- **Nix**: The purely functional package manager. Follow the instructions on the [NixOS website](https://nixos.org/download.html) to install Nix on your system.
+- **Direnv** (optional but recommended): To automatically load the Nix shell when you enter the project directory.
+
+By using the Nix flake, the correct versions of Node.js, Bun, Doppler, and other development tools will be automatically provisioned for you.
+
+## Environmental Variables
+
+We use Doppler for managing environmental variables. Follow the instruction on [Doppler docs](https://docs.doppler.com/docs/start).
+
+WIP
 
 ## Running the Development Server
 
@@ -12,31 +41,13 @@ bun run dev
 
 This command uses `turbo` to start the development servers for the web app, browser extension, and Convex backend concurrently. You will see output from each of the services in your terminal.
 
-- **Web App**: The Next.js application will be available at `http://localhost:3000`.
-- **Convex Backend**: The Convex development server will run, providing a local backend for your application. You can access the Convex dashboard to view your data and logs.
-- **Browser Extension**: The Plasmo development server will build the extension and prepare it for loading into your browser.
+If you are setting up the environment for the first time, follow the instruction to set up Convex Backend and while the server is running, run:
 
-## Running Individual Applications
+```bash
+./setup.sh
+```
 
-If you only need to work on a specific part of the project, you can run each application individually:
-
-- **Web App**:
-
-  ```bash
-  bun run --filter web dev
-  ```
-
-- **Browser Extension**:
-
-  ```bash
-  bun run --filter browser dev
-  ```
-
-- **Convex Backend**:
-
-  ```bash
-  bun run --filter @albert-plus/server dev
-  ```
+This script to place the env files to the right place and inject env variables to your convex deployment.
 
 ## Accessing the Convex Dashboard
 
@@ -47,16 +58,6 @@ bun run dashboard
 ```
 
 This command is a convenient shortcut to the `convex dashboard` command.
-
-## Building for Production
-
-To create a production-ready build of all applications, use the following command:
-
-```bash
-bun run build
-```
-
-This will generate optimized assets for the web app and browser extension.
 
 ## Linting and Type Checking
 

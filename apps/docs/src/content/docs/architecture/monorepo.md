@@ -1,12 +1,10 @@
-# Monorepo Structure
+---
+title: "Monorepo"
+---
+
+# Monorepo
 
 AlbertPlus utilizes a monorepo architecture, managed by Turborepo, to streamline development and code sharing across its various applications and packages. This structure enhances code consistency, simplifies dependency management, and improves the overall developer workflow.
-
-## Tooling
-
-- **Turborepo**: The high-performance build system for JavaScript and TypeScript codebases. It enables fast, incremental builds and parallel execution of tasks.
-- **Bun**: The package manager and JavaScript runtime. Bun's speed and comprehensive feature set make it an ideal choice for a modern monorepo.
-- **Workspaces**: The project is organized into workspaces, which are defined in the root `package.json` file. This allows for the logical separation of applications and shared packages.
 
 ## Directory Layout
 

@@ -1,5 +1,5 @@
 ---
-title: Tech Stack
+title: "Tech Stack"
 ---
 
 # Tech Stack Overview
@@ -11,8 +11,8 @@ AlbertPlus is built with a modern, robust, and scalable technology stack. This s
 - **TypeScript**: The entire codebase is written in TypeScript, providing strong typing and improved developer experience.
 - **React**: The user interfaces for both the web app and the browser extension are built with React 19.
 - **Next.js**: The web application is powered by Next.js 15, a leading React framework for building production-ready applications.
-- **Convex**: The serverless backend, providing a real-time database, serverless functions, and authentication.
-- **Bun**: The fast, all-in-one JavaScript toolkit used for package management and as the primary runtime.
+- **Convex**: The serverless backend, providing a real-time database and serverless functions.
+- **Bun**: The fast, all-in-one JavaScript toolkit that we are using as our package manager.
 - **Turborepo**: The high-performance build system for managing the monorepo.
 
 ## Specialized Technologies
@@ -22,5 +22,4 @@ AlbertPlus is built with a modern, robust, and scalable technology stack. This s
 - **Hono**: The lightweight web framework used in the Cloudflare Worker.
 - **Drizzle ORM**: The TypeScript ORM for interacting with the Cloudflare D1 database in the scraper.
 - **Astro & Starlight**: The frameworks used to build this documentation site.
-
-This combination of technologies allows AlbertPlus to be a fast, scalable, and maintainable platform, while also providing a rich and dynamic user experience.
+- **Clerk**: The managed service we use for authentication.

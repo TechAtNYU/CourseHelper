@@ -1,8 +1,12 @@
-# Architecture Overview
+---
+title: "Overview"
+---
+
+# Overview
 
 AlbertPlus is designed as a modern, scalable, and maintainable platform. It leverages a monorepo architecture, a serverless backend, and a suite of specialized applications to deliver a comprehensive user experience. This section provides a high-level overview of the key architectural components.
 
-## Core Components
+## Core Modules
 
 The AlbertPlus ecosystem is composed of several distinct yet interconnected applications and services:
 
@@ -17,5 +21,3 @@ The AlbertPlus ecosystem is composed of several distinct yet interconnected appl
 - **Modularity**: The monorepo structure allows for clear separation of concerns, with each application and package having a distinct responsibility.
 - **Scalability**: The use of serverless technologies like Convex and Cloudflare Workers ensures that the platform can handle a growing number of users and data without the need for manual infrastructure management.
 - **Developer Experience**: The project prioritizes a smooth developer experience through the use of modern tools like Turborepo, Bun, Nix, and Doppler.
-- **Real-time Capabilities**: Convex's real-time database ensures that data is synchronized across all clients, providing a dynamic and responsive user experience.
-
