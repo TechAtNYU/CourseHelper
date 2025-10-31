@@ -6,7 +6,10 @@ import type { FunctionReturnType } from "convex/server";
 import { useEffect, useRef, useState } from "react";
 import { CourseSelector } from "@/app/dashboard/schedule/components/course-selection";
 import CourseSelectorSkeleton from "@/app/dashboard/schedule/components/course-selection/components/CourseSelectorSkeleton";
-import type { CourseOffering } from "@/app/dashboard/schedule/components/course-selection/types";
+import type {
+  CourseOffering,
+  CourseOfferingWithCourse,
+} from "@/app/dashboard/schedule/components/course-selection/types";
 import Selector from "@/app/dashboard/schedule/components/Selector";
 import {
   type Term,
@@ -16,10 +19,6 @@ import {
 import { useDebounce } from "@/hooks/use-debounce";
 import { formatTermTitle } from "@/utils/format-term";
 import { ScheduleCalendar } from "./components/schedule-calendar";
-
-type CourseOfferingWithCourse = FunctionReturnType<
-  typeof api.courseOfferings.getCourseOfferings
->["page"][number];
 
 function getUserClassesByTerm(
   classes:

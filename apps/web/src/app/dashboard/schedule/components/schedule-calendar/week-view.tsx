@@ -19,15 +19,9 @@ import {
   startOfDay,
   startOfWeek,
 } from "date-fns";
-import { TrashIcon } from "lucide-react";
+import { X } from "lucide-react";
 import { useMemo } from "react";
 import { toast } from "sonner";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
 import {
   type Class,
   EndHour,
@@ -285,43 +279,34 @@ export function WeekView({ classes }: WeekViewProps) {
                   zIndex: positionedEvent.zIndex,
                 }}
               >
-                <div className="size-full">
-                  <ContextMenu>
-                    <ContextMenuTrigger>
-                      <EventItem
-                        event={positionedEvent.event}
-                        timeSlotIndex={positionedEvent.timeSlotIndex}
-                        showTime
-                      />
-                    </ContextMenuTrigger>
-                    <ContextMenuContent>
-                      {(() => {
-                        const userCourseOfferingId =
-                          positionedEvent.event.userCourseOfferingId;
-                        const classNumber = positionedEvent.event.classNumber;
-
-                        if (!userCourseOfferingId || !classNumber) {
-                          return null;
-                        }
-
-                        return (
-                          <ContextMenuItem
-                            variant="destructive"
-                            onSelect={() => {
-                              handleRemove(
-                                userCourseOfferingId as Id<"userCourseOfferings">,
-                                classNumber,
-                                positionedEvent.event.title,
-                              );
-                            }}
-                          >
-                            <TrashIcon className="size-4 me-2" />
-                            Delete
-                          </ContextMenuItem>
-                        );
-                      })()}
-                    </ContextMenuContent>
-                  </ContextMenu>
+                <div className="relative size-full group">
+                  <EventItem
+                    event={positionedEvent.event}
+                    timeSlotIndex={positionedEvent.timeSlotIndex}
+                    showTime
+                  />
+                  {positionedEvent.event.userCourseOfferingId &&
+                    positionedEvent.event.classNumber && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!positionedEvent.event.classNumber) {
+                            return null;
+                          }
+                          handleRemove(
+                            positionedEvent.event
+                              .userCourseOfferingId as Id<"userCourseOfferings">,
+                            positionedEvent.event.classNumber,
+                            positionedEvent.event.title,
+                          );
+                        }}
+                        className="absolute -right-1 -top-1 z-20 flex size-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-md transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                        aria-label="Remove course"
+                      >
+                        <X className="size-3" />
+                      </button>
+                    )}
                 </div>
               </div>
             ))}
