@@ -2,6 +2,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { AppConfigProvider } from "@/components/AppConfigProvider";
+import { SettingsDialog } from "@/components/SettingsDialog";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function Layout({
@@ -40,6 +41,7 @@ export default async function Layout({
           <main className="flex-1 p-6 space-y-6">{children}</main>
         </SidebarInset>
       </SidebarProvider>
+      <SettingsDialog />
     </AppConfigProvider>
   );
 }

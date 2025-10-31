@@ -17,7 +17,7 @@ const config = {
       { title: "Course Catalog", url: "/dashboard/courses", icon: BookOpen },
     ],
     navBottom: [
-      { title: "Settings", url: "/dashboard/settings", icon: Settings },
+      { title: "Settings", url: "#settings", icon: Settings },
       { title: "Feedback", url: "/feedback", icon: Send },
     ],
     navAdmin: [{ title: "Admin", url: "/dashboard/admin", icon: ShieldCheck }],
