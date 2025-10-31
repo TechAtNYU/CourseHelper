@@ -14,7 +14,10 @@
     "db:migrate:remote": "wrangler d1 migrations apply scraper-ops --remote",
     "db:push:local": "drizzle-kit push --config=drizzle-dev.config.ts",
     "db:push:remote": "drizzle-kit push --config=drizzle-prod.config.ts",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "test": "bun test",
+    "test:programs": "bun test src/modules/programs/__tests__",
+    "test:courses": "bun test src/modules/courses/__tests__"
   },
   "dependencies": {
     "@albert-plus/server": "workspace:*",
