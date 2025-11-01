@@ -1,11 +1,9 @@
 "use client";
 
-import { CourseSelector } from "@/modules/course-selection";
-import CourseSelectorSkeleton from "@/modules/course-selection/components/CourseSelectorSkeleton";
-import type {
-  CourseOffering,
-  CourseOfferingWithCourse,
-} from "@/modules/course-selection/types";
+import { api } from "@albert-plus/server/convex/_generated/api";
+import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
+import { useEffect, useRef, useState } from "react";
 import Selector from "@/app/dashboard/register/components/Selector";
 import {
   type Term,
@@ -13,10 +11,12 @@ import {
   useNextYear,
 } from "@/components/AppConfigProvider";
 import { useSearchParam } from "@/hooks/use-search-param";
-import { api } from "@albert-plus/server/convex/_generated/api";
-import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
-import type { FunctionReturnType } from "convex/server";
-import { useEffect, useRef, useState } from "react";
+import { CourseSelector } from "@/modules/course-selection";
+import CourseSelectorSkeleton from "@/modules/course-selection/components/CourseSelectorSkeleton";
+import type {
+  CourseOffering,
+  CourseOfferingWithCourse,
+} from "@/modules/course-selection/types";
 import { ScheduleCalendar } from "../../../modules/schedule-calendar/schedule-calendar";
 
 function getUserClassesByTerm(
@@ -34,7 +34,7 @@ function getUserClassesByTerm(
   });
 }
 
-const SchedulePage = () => {
+const RegisterPage = () => {
   const { isAuthenticated } = useConvexAuth();
   const currentYear = useNextYear();
   const currentTerm = useNextTerm();
@@ -146,4 +146,4 @@ const SchedulePage = () => {
   );
 };
 
-export default SchedulePage;
+export default RegisterPage;

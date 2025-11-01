@@ -8,7 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Term, UserCourse } from "../types";
+import type { UserCourse } from "../types";
+import { Term } from "@/components/AppConfigProvider";
 
 type ConfirmModalProps = {
   open: boolean;
