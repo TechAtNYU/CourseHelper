@@ -238,7 +238,7 @@ export function ScheduleCalendar({
 
   return (
     <div
-      className="flex h-full max-h-[calc(100vh-var(--header-height)-2rem)] flex-col rounded-lg border has-data-[slot=month-view]:flex-1"
+      className="flex h-full max-h-[calc(100vh-var(--header-height)-2rem)] flex-col overflow-hidden rounded-lg border has-data-[slot=month-view]:flex-1"
       style={
         {
           "--event-height": `${EventHeight}px`,
