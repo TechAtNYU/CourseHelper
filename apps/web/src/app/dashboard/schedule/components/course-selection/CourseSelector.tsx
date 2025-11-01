@@ -3,10 +3,10 @@ import { api } from "@albert-plus/server/convex/_generated/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
-import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useSearchParam } from "@/hooks/use-search-param";
 import { CourseCard, CourseFilters } from "./components";
 import { useCourseExpansion, useCourseFiltering } from "./hooks";
 import type { CourseOffering, CourseOfferingWithCourse } from "./types";
@@ -30,8 +30,8 @@ const CourseSelector = ({
   status,
   isSearching = false,
 }: CourseSelectorComponentProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const { searchValue: filtersParam, setSearchValue: setFiltersParam } =
+    useSearchParam({ paramKey: "filters", debounceDelay: 0 });
 
   const { filterState, dispatch, filteredData, availableCredits } =
     useCourseFiltering(courseOfferingsWithCourses);
@@ -51,16 +51,10 @@ const CourseSelector = ({
     null,
   );
 
-  const isFiltersExpanded = searchParams.get("filters") === "true";
+  const isFiltersExpanded = filtersParam === "true";
 
   const handleToggleFilters = () => {
-    const params = new URLSearchParams(searchParams);
-    if (isFiltersExpanded) {
-      params.delete("filters");
-    } else {
-      params.set("filters", "true");
-    }
-    router.replace(`?${params.toString()}`, { scroll: false });
+    setFiltersParam(isFiltersExpanded ? "" : "true");
   };
 
   const parentRef = React.useRef<HTMLDivElement>(null);

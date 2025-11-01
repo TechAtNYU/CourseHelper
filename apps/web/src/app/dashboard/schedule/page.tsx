@@ -3,7 +3,6 @@
 import { api } from "@albert-plus/server/convex/_generated/api";
 import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { CourseSelector } from "@/app/dashboard/schedule/components/course-selection";
 import CourseSelectorSkeleton from "@/app/dashboard/schedule/components/course-selection/components/CourseSelectorSkeleton";
@@ -17,7 +16,7 @@ import {
   useCurrentTerm,
   useCurrentYear,
 } from "@/components/AppConfigProvider";
-import { useDebounce } from "@/hooks/use-debounce";
+import { useSearchParam } from "@/hooks/use-search-param";
 import { formatTermTitle } from "@/utils/format-term";
 import { ScheduleCalendar } from "./components/schedule-calendar";
 
@@ -40,8 +39,6 @@ const SchedulePage = () => {
   const { isAuthenticated } = useConvexAuth();
   const currentYear = useCurrentYear();
   const currentTerm = useCurrentTerm();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [hoveredCourse, setHoveredCourse] = useState<CourseOffering | null>(
     null,
@@ -50,26 +47,16 @@ const SchedulePage = () => {
     "selector",
   );
 
-  // Local state for immediate input updates
-  const [searchInput, setSearchInput] = useState(searchParams.get("q") ?? "");
-  const debouncedSearch = useDebounce(searchInput, 300);
-
-  // Update URL with debounced search value
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    if (debouncedSearch) {
-      params.set("q", debouncedSearch);
-    } else {
-      params.delete("q");
-    }
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }, [debouncedSearch, router, searchParams]);
+  // Search param state with debouncing and URL sync
+  const { searchValue, setSearchValue, debouncedSearchValue } = useSearchParam({
+    paramKey: "q",
+  });
 
   // Keep track of displayed results to prevent flashing when searching
   const [displayedResults, setDisplayedResults] = useState<
     CourseOfferingWithCourse[]
   >([]);
-  const prevSearchRef = useRef(debouncedSearch);
+  const prevSearchRef = useRef(debouncedSearchValue);
 
   const allClasses = useQuery(
     api.userCourseOfferings.getUserCourseOfferings,
@@ -82,7 +69,7 @@ const SchedulePage = () => {
       ? {
           term: currentTerm,
           year: currentYear,
-          query: debouncedSearch || undefined,
+          query: debouncedSearchValue || undefined,
         }
       : "skip",
     { initialNumItems: 500 },
@@ -92,9 +79,9 @@ const SchedulePage = () => {
   useEffect(() => {
     if (status !== "LoadingFirstPage") {
       setDisplayedResults(results);
-      prevSearchRef.current = debouncedSearch;
+      prevSearchRef.current = debouncedSearchValue;
     }
-  }, [results, debouncedSearch, status]);
+  }, [results, debouncedSearchValue, status]);
 
   const title = formatTermTitle(currentTerm, currentYear);
 
@@ -102,7 +89,7 @@ const SchedulePage = () => {
 
   const isSearching =
     status === "LoadingFirstPage" &&
-    prevSearchRef.current !== debouncedSearch &&
+    prevSearchRef.current !== debouncedSearchValue &&
     prevSearchRef.current !== "";
 
   // Only show skeleton on true initial load (not when searching)
@@ -127,8 +114,8 @@ const SchedulePage = () => {
           <CourseSelector
             courseOfferingsWithCourses={displayedResults}
             onHover={setHoveredCourse}
-            onSearchChange={setSearchInput}
-            searchQuery={searchInput}
+            onSearchChange={setSearchValue}
+            searchQuery={searchValue}
             loadMore={loadMore}
             status={status}
             isSearching={isSearching}
@@ -149,8 +136,8 @@ const SchedulePage = () => {
         <CourseSelector
           courseOfferingsWithCourses={displayedResults}
           onHover={setHoveredCourse}
-          onSearchChange={setSearchInput}
-          searchQuery={searchInput}
+          onSearchChange={setSearchValue}
+          searchQuery={searchValue}
           loadMore={loadMore}
           status={status}
           isSearching={isSearching}
