@@ -22,7 +22,7 @@ export const CourseSectionItem = ({
         "w-full text-left p-3 rounded-lg border transition-colors",
         offering.status === "closed"
           ? "cursor-not-allowed hover:bg-neutral-50/0"
-          : "cursor-pointer hover:bg-neutral-50",
+          : "cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800",
       )}
     >
       <div className="flex items-center justify-between mb-2">

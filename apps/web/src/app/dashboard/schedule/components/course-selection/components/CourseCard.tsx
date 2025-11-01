@@ -33,7 +33,9 @@ export const CourseCard = ({
   return (
     <div className="w-full">
       <Card
-        className={clsx(!isExpanded && "hover:bg-neutral-100")}
+        className={clsx(
+          !isExpanded && "hover:bg-neutral-100 dark:hover:bg-neutral-800",
+        )}
         onClick={() => onToggleExpand(course.code)}
       >
         <CardHeader className="cursor-pointer">
