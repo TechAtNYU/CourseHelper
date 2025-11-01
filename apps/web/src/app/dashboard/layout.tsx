@@ -37,7 +37,7 @@ export default async function Layout({
           }}
         />
         <SidebarInset>
-          {header}
+          <div className="sticky top-0 z-40">{header}</div>
           <main className="flex-1 p-6 space-y-6">{children}</main>
         </SidebarInset>
       </SidebarProvider>
