@@ -1,5 +1,8 @@
 "use client";
 
+import { api } from "@albert-plus/server/convex/_generated/api";
+import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
+import { useEffect, useRef, useState } from "react";
 import Selector from "@/app/dashboard/register/components/Selector";
 import { useNextTerm, useNextYear } from "@/components/AppConfigProvider";
 import { useSearchParam } from "@/hooks/use-search-param";
@@ -9,9 +12,6 @@ import type {
   CourseOffering,
   CourseOfferingWithCourse,
 } from "@/modules/course-selection/types";
-import { api } from "@albert-plus/server/convex/_generated/api";
-import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
-import { useEffect, useRef, useState } from "react";
 import {
   getUserClassesByTerm,
   ScheduleCalendar,
