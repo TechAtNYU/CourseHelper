@@ -39,7 +39,10 @@ export const useCourseFiltering = (
     const offeringsByCode = courseOfferingsWithCourses.reduce(
       (acc, offering) => {
         const key = offering.courseCode;
-        (acc[key] = acc[key] || []).push(offering);
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(offering);
         return acc;
       },
       {} as Record<string, CourseOfferingWithCourse[]>,
