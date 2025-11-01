@@ -22,11 +22,23 @@ export interface Class {
   id: string;
   userCourseOfferingId?: string;
   classNumber?: number;
+  courseCode: string;
   title: string;
   color: string;
   times: TimeSlot[];
   description: string;
   isPreview?: boolean;
+  section: string;
+  year: number;
+  term: "spring" | "summer" | "fall" | "j-term";
+  instructor: string[];
+  location?: string;
+  startTime: string;
+  endTime: string;
+  status: "open" | "closed" | "waitlist";
+  waitlistNum?: number;
+  isCorequisite: boolean;
+  corequisiteOf?: number;
 }
 
 export type EventColor =
@@ -135,10 +147,22 @@ export function ScheduleCalendar({
       id: offering._id,
       userCourseOfferingId: c._id,
       classNumber: c.classNumber,
+      courseCode: offering.courseCode,
       title: `${offering.courseCode} - ${offering.title}`,
       color,
       times: slots,
       description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • ${offering.term} ${offering.year}`,
+      section: offering.section,
+      year: offering.year,
+      term: offering.term,
+      instructor: offering.instructor,
+      location: offering.location,
+      startTime: offering.startTime,
+      endTime: offering.endTime,
+      status: offering.status,
+      waitlistNum: offering.waitlistNum,
+      isCorequisite: offering.isCorequisite,
+      corequisiteOf: offering.corequisiteOf,
     };
   });
 
@@ -191,11 +215,23 @@ export function ScheduleCalendar({
 
       transformedClasses.push({
         id: `preview-${offering._id}`,
+        courseCode: offering.courseCode,
         title: `${offering.courseCode} - ${offering.title}`,
         color: allClassColors[colorIndex % allClassColors.length],
         times: slots,
         description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • Preview`,
         isPreview: true,
+        section: offering.section,
+        year: offering.year,
+        term: offering.term,
+        instructor: offering.instructor,
+        location: offering.location,
+        startTime: offering.startTime,
+        endTime: offering.endTime,
+        status: offering.status,
+        waitlistNum: offering.waitlistNum,
+        isCorequisite: offering.isCorequisite,
+        corequisiteOf: offering.corequisiteOf,
       });
     }
   }

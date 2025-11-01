@@ -30,6 +30,7 @@ import {
   WeekCellsHeight,
 } from "../schedule-calendar";
 import { EventItem } from "./event-item";
+import { CourseInfoDialog } from "./info-dialog";
 
 interface WeekViewProps {
   classes: Class[];
@@ -54,6 +55,8 @@ export function WeekView({
   const [internalHoveredCourseId, setInternalHoveredCourseId] = useState<
     string | null
   >(null);
+  const [selectedCourse, setSelectedCourse] = useState<Class | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Combine external hover (from selector) and internal hover (from calendar)
   const hoveredCourseId = externalHoveredCourseId ?? internalHoveredCourseId;
@@ -86,6 +89,11 @@ export function WeekView({
           : "Unexpected error occurred";
       toast.error(errorMessage);
     }
+  };
+
+  const handleEventClick = (event: Class) => {
+    setSelectedCourse(event);
+    setDialogOpen(true);
   };
 
   const allDays = useMemo(() => {
@@ -287,7 +295,7 @@ export function WeekView({
                 // biome-ignore lint/a11y/noStaticElementInteractions: change div to button will cause hydration error
                 <div
                   key={positionedEvent.event.id}
-                  className="absolute z-10 px-0.5"
+                  className="absolute z-10 px-0.5 cursor-pointer"
                   style={{
                     top: `${positionedEvent.top}px`,
                     height: `${positionedEvent.height}px`,
@@ -299,6 +307,9 @@ export function WeekView({
                     setInternalHoveredCourseId(courseOfferingId)
                   }
                   onMouseLeave={() => setInternalHoveredCourseId(null)}
+                  onClick={() => handleEventClick(positionedEvent.event)}
+                  // biome lint/a11y/useKeyWithClickEvents
+                  onKeyDown={() => {}}
                 >
                   <div className="relative size-full group">
                     <EventItem
@@ -336,6 +347,13 @@ export function WeekView({
           </div>
         ))}
       </div>
+
+      <CourseInfoDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        course={selectedCourse}
+        onDelete={handleRemove}
+      />
     </div>
   );
 }
