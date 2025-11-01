@@ -50,18 +50,20 @@ const SchedulePage = () => {
     "selector",
   );
 
-  const searchInput = searchParams.get("q") ?? "";
+  // Local state for immediate input updates
+  const [searchInput, setSearchInput] = useState(searchParams.get("q") ?? "");
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  const handleSearchChange = (value: string) => {
+  // Update URL with debounced search value
+  useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set("q", value);
+    if (debouncedSearch) {
+      params.set("q", debouncedSearch);
     } else {
       params.delete("q");
     }
     router.replace(`?${params.toString()}`, { scroll: false });
-  };
+  }, [debouncedSearch, router, searchParams]);
 
   // Keep track of displayed results to prevent flashing when searching
   const [displayedResults, setDisplayedResults] = useState<
@@ -125,7 +127,7 @@ const SchedulePage = () => {
           <CourseSelector
             courseOfferingsWithCourses={displayedResults}
             onHover={setHoveredCourse}
-            onSearchChange={handleSearchChange}
+            onSearchChange={setSearchInput}
             searchQuery={searchInput}
             loadMore={loadMore}
             status={status}
@@ -147,7 +149,7 @@ const SchedulePage = () => {
         <CourseSelector
           courseOfferingsWithCourses={displayedResults}
           onHover={setHoveredCourse}
-          onSearchChange={handleSearchChange}
+          onSearchChange={setSearchInput}
           searchQuery={searchInput}
           loadMore={loadMore}
           status={status}
