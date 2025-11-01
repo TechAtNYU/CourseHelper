@@ -3,6 +3,7 @@
 import { api } from "@albert-plus/server/convex/_generated/api";
 import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { CourseSelector } from "@/app/dashboard/schedule/components/course-selection";
 import CourseSelectorSkeleton from "@/app/dashboard/schedule/components/course-selection/components/CourseSelectorSkeleton";
@@ -39,14 +40,28 @@ const SchedulePage = () => {
   const { isAuthenticated } = useConvexAuth();
   const currentYear = useCurrentYear();
   const currentTerm = useCurrentTerm();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [hoveredCourse, setHoveredCourse] = useState<CourseOffering | null>(
     null,
   );
   const [mobileView, setMobileView] = useState<"selector" | "calendar">(
     "selector",
   );
-  const [searchInput, setSearchInput] = useState<string>("");
+
+  const searchInput = searchParams.get("q") ?? "";
   const debouncedSearch = useDebounce(searchInput, 300);
+
+  const handleSearchChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value) {
+      params.set("q", value);
+    } else {
+      params.delete("q");
+    }
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
 
   // Keep track of displayed results to prevent flashing when searching
   const [displayedResults, setDisplayedResults] = useState<
@@ -110,7 +125,7 @@ const SchedulePage = () => {
           <CourseSelector
             courseOfferingsWithCourses={displayedResults}
             onHover={setHoveredCourse}
-            onSearchChange={setSearchInput}
+            onSearchChange={handleSearchChange}
             searchQuery={searchInput}
             loadMore={loadMore}
             status={status}
@@ -132,7 +147,7 @@ const SchedulePage = () => {
         <CourseSelector
           courseOfferingsWithCourses={displayedResults}
           onHover={setHoveredCourse}
-          onSearchChange={setSearchInput}
+          onSearchChange={handleSearchChange}
           searchQuery={searchInput}
           loadMore={loadMore}
           status={status}
