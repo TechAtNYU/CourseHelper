@@ -1,9 +1,5 @@
 "use client";
 
-import { api } from "@albert-plus/server/convex/_generated/api";
-import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
-import type { FunctionReturnType } from "convex/server";
-import { useEffect, useRef, useState } from "react";
 import { CourseSelector } from "@/app/dashboard/schedule/components/course-selection";
 import CourseSelectorSkeleton from "@/app/dashboard/schedule/components/course-selection/components/CourseSelectorSkeleton";
 import type {
@@ -13,11 +9,15 @@ import type {
 import Selector from "@/app/dashboard/schedule/components/Selector";
 import {
   type Term,
-  useCurrentTerm,
-  useCurrentYear,
+  useNextTerm,
+  useNextYear,
 } from "@/components/AppConfigProvider";
 import { useSearchParam } from "@/hooks/use-search-param";
 import { formatTermTitle } from "@/utils/format-term";
+import { api } from "@albert-plus/server/convex/_generated/api";
+import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
+import { useEffect, useRef, useState } from "react";
 import { ScheduleCalendar } from "./components/schedule-calendar";
 
 function getUserClassesByTerm(
@@ -37,8 +37,8 @@ function getUserClassesByTerm(
 
 const SchedulePage = () => {
   const { isAuthenticated } = useConvexAuth();
-  const currentYear = useCurrentYear();
-  const currentTerm = useCurrentTerm();
+  const currentYear = useNextYear();
+  const currentTerm = useNextTerm();
 
   const [hoveredCourse, setHoveredCourse] = useState<CourseOffering | null>(
     null,
