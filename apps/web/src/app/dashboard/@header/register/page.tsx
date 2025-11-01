@@ -16,9 +16,11 @@ export default function ScheduleHeader() {
       title="Register"
       center={
         title ? (
-          <div className="text-sm font-medium">{title}</div>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-secondary border border-border shadow-sm">
+            <span className="text-sm font-semibold">{title}</span>
+          </div>
         ) : (
-          <Skeleton className="h-5 w-24" />
+          <Skeleton className="h-7 w-28 rounded-full" />
         )
       }
     />

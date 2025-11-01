@@ -1,10 +1,10 @@
 import {
   Calendar,
+  ClipboardList,
   Home,
   MapIcon,
   Send,
   Settings,
-  University,
 } from "lucide-react";
 
 const config = {
@@ -12,7 +12,7 @@ const config = {
     navMain: [
       { title: "Home", url: "/dashboard", icon: Home },
       { title: "Schedule", url: "/dashboard/schedule", icon: Calendar },
-      { title: "Register", url: "/dashboard/register", icon: University },
+      { title: "Register", url: "/dashboard/register", icon: ClipboardList },
       { title: "Plan", url: "/dashboard/plan", icon: MapIcon },
     ],
     navBottom: [
