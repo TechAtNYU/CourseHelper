@@ -247,7 +247,7 @@ export function WeekView({
       </div>
 
       <div
-        className="grid min-h-0 flex-1 overflow-y-auto"
+        className="grid min-h-0 flex-1 overflow-y-auto no-scrollbar"
         style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
       >
         <div className="border-border/70 grid auto-cols-fr border-r">
@@ -284,55 +284,53 @@ export function WeekView({
               );
               const isHovered = hoveredCourseId === courseOfferingId;
               return (
-                <>
-                  {/* biome-ignore lint/a11y/noStaticElementInteractions: change div to button will cause hydration error */}
-                  <div
-                    key={positionedEvent.event.id}
-                    className="absolute z-10 px-0.5"
-                    style={{
-                      top: `${positionedEvent.top}px`,
-                      height: `${positionedEvent.height}px`,
-                      left: `${positionedEvent.left * 100}%`,
-                      width: `${positionedEvent.width * 100}%`,
-                      zIndex: positionedEvent.zIndex,
-                    }}
-                    onMouseEnter={() =>
-                      setInternalHoveredCourseId(courseOfferingId)
-                    }
-                    onMouseLeave={() => setInternalHoveredCourseId(null)}
-                  >
-                    <div className="relative size-full group">
-                      <EventItem
-                        event={positionedEvent.event}
-                        timeSlotIndex={positionedEvent.timeSlotIndex}
-                        showTime
-                        isHovered={isHovered}
-                      />
-                      {positionedEvent.event.userCourseOfferingId &&
-                        positionedEvent.event.classNumber && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (!positionedEvent.event.classNumber) {
-                                return null;
-                              }
-                              handleRemove(
-                                positionedEvent.event
-                                  .userCourseOfferingId as Id<"userCourseOfferings">,
-                                positionedEvent.event.classNumber,
-                                positionedEvent.event.title,
-                              );
-                            }}
-                            className="absolute -right-1 -top-1 z-20 flex size-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-md transition-opacity hover:bg-red-600 group-hover:opacity-100"
-                            aria-label="Remove course"
-                          >
-                            <X className="size-3" />
-                          </button>
-                        )}
-                    </div>
+                // biome-ignore lint/a11y/noStaticElementInteractions: change div to button will cause hydration error
+                <div
+                  key={positionedEvent.event.id}
+                  className="absolute z-10 px-0.5"
+                  style={{
+                    top: `${positionedEvent.top}px`,
+                    height: `${positionedEvent.height}px`,
+                    left: `${positionedEvent.left * 100}%`,
+                    width: `${positionedEvent.width * 100}%`,
+                    zIndex: positionedEvent.zIndex,
+                  }}
+                  onMouseEnter={() =>
+                    setInternalHoveredCourseId(courseOfferingId)
+                  }
+                  onMouseLeave={() => setInternalHoveredCourseId(null)}
+                >
+                  <div className="relative size-full group">
+                    <EventItem
+                      event={positionedEvent.event}
+                      timeSlotIndex={positionedEvent.timeSlotIndex}
+                      showTime
+                      isHovered={isHovered}
+                    />
+                    {positionedEvent.event.userCourseOfferingId &&
+                      positionedEvent.event.classNumber && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!positionedEvent.event.classNumber) {
+                              return null;
+                            }
+                            handleRemove(
+                              positionedEvent.event
+                                .userCourseOfferingId as Id<"userCourseOfferings">,
+                              positionedEvent.event.classNumber,
+                              positionedEvent.event.title,
+                            );
+                          }}
+                          className="absolute -right-1 -top-1 z-20 flex size-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-md transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                          aria-label="Remove course"
+                        >
+                          <X className="size-3" />
+                        </button>
+                      )}
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
