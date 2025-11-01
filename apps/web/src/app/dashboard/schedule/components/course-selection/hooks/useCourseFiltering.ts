@@ -1,4 +1,3 @@
-import { groupBy } from "lodash";
 import { useMemo, useReducer } from "react";
 import { DEFAULT_SELECTED_DAYS } from "../components/DaysOfWeek";
 import type {
@@ -37,9 +36,13 @@ export const useCourseFiltering = (
 
   // Group course offerings by course code
   const coursesWithOfferings: CourseWithOfferings[] = useMemo(() => {
-    const offeringsByCode = groupBy<CourseOfferingWithCourse>(
-      courseOfferingsWithCourses,
-      "courseCode",
+    const offeringsByCode = courseOfferingsWithCourses.reduce(
+      (acc, offering) => {
+        const key = offering.courseCode;
+        (acc[key] = acc[key] || []).push(offering);
+        return acc;
+      },
+      {} as Record<string, CourseOfferingWithCourse[]>,
     );
 
     const uniqueCourses = new Map<string, CourseOfferingWithCourse["course"]>();
