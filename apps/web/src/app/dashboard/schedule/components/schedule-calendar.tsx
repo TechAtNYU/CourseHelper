@@ -187,7 +187,7 @@ export function ScheduleCalendar({
     transformedClasses.push({
       id: `preview-${offering._id}`,
       title: `${offering.courseCode} - ${offering.title}`,
-      color: "cyan",
+      color: allClassColors[colorIndex % allClassColors.length],
       times: slots,
       description: `${offering.instructor.join(", ")} • ${offering.section.toUpperCase()} • Preview`,
     });
