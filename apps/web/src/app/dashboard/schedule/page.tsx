@@ -6,7 +6,7 @@ import { useCurrentTerm, useCurrentYear } from "@/components/AppConfigProvider";
 import {
   getUserClassesByTerm,
   ScheduleCalendar,
-} from "../../../modules/schedule-calendar/schedule-calendar";
+} from "@/modules/schedule-calendar/schedule-calendar";
 
 const SchedulePage = () => {
   const { isAuthenticated } = useConvexAuth();

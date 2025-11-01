@@ -1,15 +1,7 @@
 "use client";
 
-import { api } from "@albert-plus/server/convex/_generated/api";
-import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
-import type { FunctionReturnType } from "convex/server";
-import { useEffect, useRef, useState } from "react";
 import Selector from "@/app/dashboard/register/components/Selector";
-import {
-  type Term,
-  useNextTerm,
-  useNextYear,
-} from "@/components/AppConfigProvider";
+import { useNextTerm, useNextYear } from "@/components/AppConfigProvider";
 import { useSearchParam } from "@/hooks/use-search-param";
 import { CourseSelector } from "@/modules/course-selection";
 import CourseSelectorSkeleton from "@/modules/course-selection/components/CourseSelectorSkeleton";
@@ -17,22 +9,13 @@ import type {
   CourseOffering,
   CourseOfferingWithCourse,
 } from "@/modules/course-selection/types";
-import { ScheduleCalendar } from "../../../modules/schedule-calendar/schedule-calendar";
-
-function getUserClassesByTerm(
-  classes:
-    | FunctionReturnType<typeof api.userCourseOfferings.getUserCourseOfferings>
-    | undefined,
-  year: number | null,
-  term: Term | null,
-) {
-  if (!year || !term || !classes) {
-    return undefined;
-  }
-  return classes.filter((cls) => {
-    return cls.courseOffering.year === year && cls.courseOffering.term === term;
-  });
-}
+import { api } from "@albert-plus/server/convex/_generated/api";
+import { useConvexAuth, usePaginatedQuery, useQuery } from "convex/react";
+import { useEffect, useRef, useState } from "react";
+import {
+  getUserClassesByTerm,
+  ScheduleCalendar,
+} from "@/modules/schedule-calendar/schedule-calendar";
 
 const RegisterPage = () => {
   const { isAuthenticated } = useConvexAuth();
