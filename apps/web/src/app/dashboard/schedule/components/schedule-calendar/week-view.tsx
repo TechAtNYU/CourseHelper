@@ -334,10 +334,10 @@ export function WeekView({
                               positionedEvent.event.title,
                             );
                           }}
-                          className="absolute -right-1 -top-1 z-20 flex size-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-md transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                          className="absolute right-1 top-1 z-20 flex size-5 items-center justify-center rounded-full bg-black/10 dark:bg-white/10 text-foreground/70 opacity-0 shadow-md backdrop-blur-sm transition-all hover:bg-black/20 dark:hover:bg-white/20 hover:text-foreground hover:scale-110 group-hover:opacity-100"
                           aria-label="Remove course"
                         >
-                          <X className="size-3" />
+                          <X className="size-3.5 stroke-[2.5]" />
                         </button>
                       )}
                   </div>
