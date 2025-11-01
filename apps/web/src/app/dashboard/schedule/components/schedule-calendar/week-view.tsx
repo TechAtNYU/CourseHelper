@@ -20,7 +20,7 @@ import {
   startOfWeek,
 } from "date-fns";
 import { X } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   type Class,
@@ -33,6 +33,7 @@ import { EventItem } from "./event-item";
 
 interface WeekViewProps {
   classes: Class[];
+  hoveredCourseId?: string | null;
 }
 
 interface PositionedEvent {
@@ -45,8 +46,17 @@ interface PositionedEvent {
   timeSlotIndex: number;
 }
 
-export function WeekView({ classes }: WeekViewProps) {
+export function WeekView({
+  classes,
+  hoveredCourseId: externalHoveredCourseId,
+}: WeekViewProps) {
   const currentDate = new Date();
+  const [internalHoveredCourseId, setInternalHoveredCourseId] = useState<
+    string | null
+  >(null);
+
+  // Combine external hover (from selector) and internal hover (from calendar)
+  const hoveredCourseId = externalHoveredCourseId ?? internalHoveredCourseId;
 
   const removeOffering = useMutation(
     api.userCourseOfferings.removeUserCourseOffering,
@@ -267,49 +277,64 @@ export function WeekView({ classes }: WeekViewProps) {
                 className="border-border/70 relative border-b last:border-b-0"
               />
             ))}
-            {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
-              <div
-                key={positionedEvent.event.id}
-                className="absolute z-10 px-0.5"
-                style={{
-                  top: `${positionedEvent.top}px`,
-                  height: `${positionedEvent.height}px`,
-                  left: `${positionedEvent.left * 100}%`,
-                  width: `${positionedEvent.width * 100}%`,
-                  zIndex: positionedEvent.zIndex,
-                }}
-              >
-                <div className="relative size-full group">
-                  <EventItem
-                    event={positionedEvent.event}
-                    timeSlotIndex={positionedEvent.timeSlotIndex}
-                    showTime
-                  />
-                  {positionedEvent.event.userCourseOfferingId &&
-                    positionedEvent.event.classNumber && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!positionedEvent.event.classNumber) {
-                            return null;
-                          }
-                          handleRemove(
-                            positionedEvent.event
-                              .userCourseOfferingId as Id<"userCourseOfferings">,
-                            positionedEvent.event.classNumber,
-                            positionedEvent.event.title,
-                          );
-                        }}
-                        className="absolute -right-1 -top-1 z-20 flex size-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-md transition-opacity hover:bg-red-600 group-hover:opacity-100"
-                        aria-label="Remove course"
-                      >
-                        <X className="size-3" />
-                      </button>
-                    )}
-                </div>
-              </div>
-            ))}
+            {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => {
+              const courseOfferingId = positionedEvent.event.id.replace(
+                "preview-",
+                "",
+              );
+              const isHovered = hoveredCourseId === courseOfferingId;
+              return (
+                <>
+                  {/* biome-ignore lint/a11y/noStaticElementInteractions: change div to button will cause hydration error */}
+                  <div
+                    key={positionedEvent.event.id}
+                    className="absolute z-10 px-0.5"
+                    style={{
+                      top: `${positionedEvent.top}px`,
+                      height: `${positionedEvent.height}px`,
+                      left: `${positionedEvent.left * 100}%`,
+                      width: `${positionedEvent.width * 100}%`,
+                      zIndex: positionedEvent.zIndex,
+                    }}
+                    onMouseEnter={() =>
+                      setInternalHoveredCourseId(courseOfferingId)
+                    }
+                    onMouseLeave={() => setInternalHoveredCourseId(null)}
+                  >
+                    <div className="relative size-full group">
+                      <EventItem
+                        event={positionedEvent.event}
+                        timeSlotIndex={positionedEvent.timeSlotIndex}
+                        showTime
+                        isHovered={isHovered}
+                      />
+                      {positionedEvent.event.userCourseOfferingId &&
+                        positionedEvent.event.classNumber && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!positionedEvent.event.classNumber) {
+                                return null;
+                              }
+                              handleRemove(
+                                positionedEvent.event
+                                  .userCourseOfferingId as Id<"userCourseOfferings">,
+                                positionedEvent.event.classNumber,
+                                positionedEvent.event.title,
+                              );
+                            }}
+                            className="absolute -right-1 -top-1 z-20 flex size-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-md transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                            aria-label="Remove course"
+                          >
+                            <X className="size-3" />
+                          </button>
+                        )}
+                    </div>
+                  </div>
+                </>
+              );
+            })}
           </div>
         ))}
       </div>

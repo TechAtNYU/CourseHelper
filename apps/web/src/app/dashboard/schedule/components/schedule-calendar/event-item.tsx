@@ -110,6 +110,7 @@ interface EventItemProps {
   isFirstDay?: boolean;
   isLastDay?: boolean;
   className?: string;
+  isHovered?: boolean;
 }
 
 export function EventItem({
@@ -119,6 +120,7 @@ export function EventItem({
   isLastDay = true,
   className,
   timeSlotIndex,
+  isHovered = false,
 }: EventItemProps) {
   const displayStart = useMemo(() => {
     if (!event.times || event.times.length === 0) return undefined;
@@ -179,6 +181,7 @@ export function EventItem({
         "py-1 flex flex-col h-full",
         durationMinutes < 45 ? "items-center" : "items-start",
         "text-[10px] sm:text-xs",
+        (isHovered || event.isPreview) && "scale-105 shadow-lg z-50",
         className,
       )}
     >

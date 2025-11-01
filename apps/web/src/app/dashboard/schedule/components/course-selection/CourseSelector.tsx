@@ -1,7 +1,7 @@
 "use client";
 import { api } from "@albert-plus/server/convex/_generated/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -35,9 +35,6 @@ const CourseSelector = ({
 
   const { toggleCourseExpansion, isExpanded } = useCourseExpansion();
 
-  const currentOfferings = useQuery(
-    api.userCourseOfferings.getUserCourseOfferings,
-  );
   const addCourseOffering = useMutation(
     api.userCourseOfferings.addUserCourseOffering,
   );
@@ -61,14 +58,8 @@ const CourseSelector = ({
   });
 
   useEffect(() => {
-    if (
-      !currentOfferings?.some(
-        (o) => o.classNumber === hoveredSection?.classNumber,
-      )
-    ) {
-      onHover?.(hoveredSection);
-    }
-  }, [hoveredSection, onHover, currentOfferings]);
+    onHover?.(hoveredSection);
+  }, [hoveredSection, onHover]);
 
   const handleSectionSelect = async (offering: CourseOffering) => {
     if (offering.status === "closed") {
