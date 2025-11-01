@@ -181,7 +181,8 @@ export function EventItem({
         "py-1 flex flex-col h-full",
         durationMinutes < 45 ? "items-center" : "items-start",
         "text-[10px] sm:text-xs",
-        (isHovered || event.isPreview) && "scale-105 shadow-lg z-50",
+        isHovered && !event.isPreview && "scale-105 shadow-lg z-50",
+        event.isPreview && "opacity-50 border-2 border-dashed z-40",
         className,
       )}
     >
