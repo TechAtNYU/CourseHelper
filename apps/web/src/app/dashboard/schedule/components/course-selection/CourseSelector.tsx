@@ -127,6 +127,7 @@ const CourseSelector = ({
             variant="outline"
             onClick={() => {
               dispatch({ type: "RESET_FILTERS" });
+              onSearchChange("");
             }}
           >
             Reset Filters
