@@ -178,14 +178,17 @@ export function EventItem({
       isFirstDay={isFirstDay}
       isLastDay={isLastDay}
       className={cn(
-        "py-1 flex flex-col h-full",
+        "py-1 flex flex-col h-full relative",
         durationMinutes < 45 ? "items-center" : "items-start",
         "text-[10px] sm:text-xs",
         isHovered && !event.isPreview && "scale-105 shadow-lg z-50",
-        event.isPreview && "opacity-50 border-2 border-dashed z-40",
+        event.isPreview && "opacity-50 z-40",
         className,
       )}
     >
+      {event.isPreview && (
+        <div className="absolute inset-0 border border-dashed rounded pointer-events-none" />
+      )}
       {durationMinutes < 45 ? (
         <div className="truncate">
           {getDisplayTitle(event.title)}{" "}
