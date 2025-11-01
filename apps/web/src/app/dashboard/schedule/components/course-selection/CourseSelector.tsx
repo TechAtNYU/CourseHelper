@@ -85,7 +85,7 @@ const CourseSelector = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full md:max-w-[350px] h-full">
+    <div className="flex flex-col gap-4 w-full md:w-[350px] h-full">
       <div className="shrink-0">
         <CourseFilters
           searchInput={searchQuery}
@@ -103,7 +103,7 @@ const CourseSelector = ({
       </div>
 
       {filteredData.length === 0 && !isSearching && (
-        <div className="flex flex-col space-y-4 items-center justify-center h-full">
+        <div className="flex flex-col space-y-4 items-center justify-center flex-1">
           <p className="text-gray-500">No courses found.</p>
           <Button
             variant="outline"
@@ -117,43 +117,48 @@ const CourseSelector = ({
       )}
 
       {filteredData.length === 0 && isSearching && (
-        <div className="flex flex-col space-y-4 items-center justify-center h-full">
+        <div className="flex flex-col space-y-4 items-center justify-center flex-1">
           <p className="text-gray-500">Searching...</p>
         </div>
       )}
 
-      <div ref={parentRef} className="overflow-auto no-scrollbar w-full flex-1">
+      {filteredData.length > 0 && (
         <div
-          className="relative w-full"
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-          }}
+          ref={parentRef}
+          className="overflow-auto no-scrollbar w-full flex-1 min-h-0"
         >
-          {rowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const course = filteredData[virtualItem.index];
+          <div
+            className="relative w-full"
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+              const course = filteredData[virtualItem.index];
 
-            return (
-              <div
-                key={virtualItem.key}
-                data-index={virtualItem.index}
-                ref={rowVirtualizer.measureElement}
-                className="absolute top-0 left-0 w-full"
-                style={{
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
-              >
-                <CourseCard
-                  course={course}
-                  isExpanded={isExpanded(course.code)}
-                  onToggleExpand={toggleCourseExpansion}
-                  onSectionSelect={handleSectionSelect}
-                  onSectionHover={setHoveredSection}
-                />
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={virtualItem.key}
+                  data-index={virtualItem.index}
+                  ref={rowVirtualizer.measureElement}
+                  className="absolute top-0 left-0 w-full"
+                  style={{
+                    transform: `translateY(${virtualItem.start}px)`,
+                  }}
+                >
+                  <CourseCard
+                    course={course}
+                    isExpanded={isExpanded(course.code)}
+                    onToggleExpand={toggleCourseExpansion}
+                    onSectionSelect={handleSectionSelect}
+                    onSectionHover={setHoveredSection}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {status === "CanLoadMore" && (
         <div className="flex justify-center py-4 shrink-0">

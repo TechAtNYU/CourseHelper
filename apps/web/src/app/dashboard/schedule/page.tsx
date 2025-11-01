@@ -98,26 +98,24 @@ const SchedulePage = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full w-full">
+    <div className="flex flex-col gap-4 h-[calc(100vh-theme(spacing.16)-theme(spacing.12))] w-full">
       {/* Mobile toggle buttons */}
-      <div className="md:hidden p-2">
+      <div className="md:hidden shrink-0 p-2">
         <Selector value={mobileView} onValueChange={setMobileView} />
       </div>
 
       {/* Mobile view */}
-      <div className="md:hidden flex-1 overflow-hidden">
+      <div className="md:hidden flex-1 min-h-0">
         {mobileView === "selector" ? (
-          <div className="h-full overflow-y-auto">
-            <CourseSelector
-              courseOfferingsWithCourses={displayedResults}
-              onHover={setHoveredCourse}
-              onSearchChange={setSearchInput}
-              searchQuery={searchInput}
-              loadMore={loadMore}
-              status={status}
-              isSearching={isSearching}
-            />
-          </div>
+          <CourseSelector
+            courseOfferingsWithCourses={displayedResults}
+            onHover={setHoveredCourse}
+            onSearchChange={setSearchInput}
+            searchQuery={searchInput}
+            loadMore={loadMore}
+            status={status}
+            isSearching={isSearching}
+          />
         ) : (
           <div className="h-full">
             <ScheduleCalendar
@@ -130,21 +128,19 @@ const SchedulePage = () => {
       </div>
 
       {/* Desktop view */}
-      <div className="hidden md:flex gap-4 h-full w-full">
-        <div className="w-[350px] h-full overflow-y-auto">
-          <CourseSelector
-            courseOfferingsWithCourses={displayedResults}
-            onHover={setHoveredCourse}
-            onSearchChange={setSearchInput}
-            searchQuery={searchInput}
-            loadMore={loadMore}
-            status={status}
-            isSearching={isSearching}
-          />
-        </div>
+      <div className="hidden md:flex gap-4 flex-1 min-h-0">
+        <CourseSelector
+          courseOfferingsWithCourses={displayedResults}
+          onHover={setHoveredCourse}
+          onSearchChange={setSearchInput}
+          searchQuery={searchInput}
+          loadMore={loadMore}
+          status={status}
+          isSearching={isSearching}
+        />
 
         <div className="flex-1 min-w-0">
-          <div className="sticky top-(--header-height)">
+          <div className="sticky top-0">
             <ScheduleCalendar
               classes={classes}
               title={title}
