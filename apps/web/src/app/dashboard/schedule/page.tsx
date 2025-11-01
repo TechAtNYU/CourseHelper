@@ -1,8 +1,8 @@
 "use client";
 
-import { useCurrentTerm, useCurrentYear } from "@/components/AppConfigProvider";
 import { api } from "@albert-plus/server/convex/_generated/api";
 import { useConvexAuth, useQuery } from "convex/react";
+import { useCurrentTerm, useCurrentYear } from "@/components/AppConfigProvider";
 import {
   getUserClassesByTerm,
   ScheduleCalendar,

@@ -1,3 +1,4 @@
+import type { Term } from "@/components/AppConfigProvider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { UserCourse } from "../types";
-import { Term } from "@/components/AppConfigProvider";
 
 type ConfirmModalProps = {
   open: boolean;
